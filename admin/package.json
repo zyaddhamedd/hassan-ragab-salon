@@ -1,0 +1,28 @@
+{
+  "name": "hassan-ragab-admin",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --config ../local/hassan/admin.vite.config.mjs --mode hassan",
+    "build": "vite build --config ../local/hassan/admin.vite.config.mjs --mode hassan",
+    "preview": "vite preview --config ../local/hassan/admin.vite.config.mjs --mode hassan",
+    "build:production": "vite build --config ../local/hassan/admin.production.vite.config.mjs --mode hassan && node ../frontend/sanitize-production.mjs admin"
+  },
+  "dependencies": {
+    "@google/genai": "^1.35.0",
+    "axios": "^1.13.4",
+    "date-fns": "^4.1.0",
+    "lucide-react": "^0.562.0",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
+    "recharts": "^3.6.0",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "@vitejs/plugin-react": "^5.0.0",
+    "typescript": "~5.8.2",
+    "vite": "^6.2.0"
+  }
+}

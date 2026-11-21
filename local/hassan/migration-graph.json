@@ -1,0 +1,616 @@
+{
+  "count": 65,
+  "roots": [
+    "9a1b321acf1c"
+  ],
+  "heads": [
+    "zz_staff_gps_attendance"
+  ],
+  "merges": [
+    "11581aac8182",
+    "20230621_merge_branches",
+    "5989ee3d5a82",
+    "m1_product_commission"
+  ],
+  "topological_order": [
+    "9a1b321acf1c",
+    "9b2c431bdf2d",
+    "a3d5e7f9b1c2",
+    "b4e6f8a0c2d1",
+    "1c4b15b9c465",
+    "c5f7a9b3e4d2",
+    "d6g8h0i2j4k3",
+    "5989ee3d5a82",
+    "e1f3a5c7b9d2",
+    "f2g4h6i8j0k1",
+    "g3h5i7j9k1l2",
+    "h4i6j8k0l2m1",
+    "i5j7k9l1m3n2",
+    "j6k8l0m2n4o3",
+    "b364a257cf87",
+    "a6b7c8d9e0f1",
+    "k8l0m2n4o6p5",
+    "l9m1n3o5p7q6",
+    "11581aac8182",
+    "86d10b763ffc",
+    "c4790ff492ef",
+    "e9d48d4ed194",
+    "123456789abc",
+    "20230620_add_is_main_warehouse",
+    "20230621_merge_branches",
+    "m1_product_commission",
+    "n2_main_warehouse_setup",
+    "s6_stock_shipments",
+    "s7_stock_supply_requests",
+    "t1_inventory_batches_phase1",
+    "t2_inventory_batch_h1",
+    "780e5ce2c51c",
+    "p3q5r7s9t1u2",
+    "u4_shipment_cost_snapshots",
+    "v5_stock_return_requests",
+    "w6_inbound_shipments",
+    "x7_store_manager_role",
+    "y8_appointment_deposit_phase1",
+    "z9_att_bd_p1a",
+    "za_fix_uq_employee_present",
+    "zb_m4b_registered_devices",
+    "zc_m4c_device_enrollments",
+    "zd_promo_domain_foundation",
+    "ze_payment_confirmation_attempts",
+    "zf_invoice_audit_events",
+    "zg_mini_device_credentials",
+    "zh_mini_device_finalization",
+    "zi_mini_device_strict_binding",
+    "zj_mini_device_proof",
+    "zk_stock_balance_snapshots",
+    "zl_stock_recovery_read_model",
+    "zm_return_cost_snapshots",
+    "zn_shipment_cancellation",
+    "zo_promo_discount_scope",
+    "zp_booking_deposit_settlement",
+    "zq_booking_cashier_handoff",
+    "zr_payroll_settlement_ledger",
+    "zs_staff_identity_foundation",
+    "zt_staff_auth_sessions",
+    "zu_staff_personal_devices",
+    "zv_employee_shift_planning",
+    "zw_employee_shift_supersession",
+    "zx_staff_geofence_versions",
+    "zy_staff_attendance_evidence",
+    "zz_staff_gps_attendance"
+  ],
+  "revisions": {
+    "11581aac8182": {
+      "revision": "11581aac8182",
+      "down_revision": [
+        "a6b7c8d9e0f1",
+        "l9m1n3o5p7q6"
+      ],
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "11581aac8182_merge_heads.py",
+      "sha256": "f25480ec7a42592d99b0c3b1ef78af3974dfaf3395d0e5ac39b1ee7b53299b05"
+    },
+    "123456789abc": {
+      "revision": "123456789abc",
+      "down_revision": "e9d48d4ed194",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "123456789abc_update_stock_movement_created_by_fk.py",
+      "sha256": "a7dd30c2ae55c70a97f0d3d6a0038f0554861d2fcf18b84126cf7bbcdfb3a3d1"
+    },
+    "1c4b15b9c465": {
+      "revision": "1c4b15b9c465",
+      "down_revision": "b4e6f8a0c2d1",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "1c4b15b9c465_add_performance_indexes.py",
+      "sha256": "d03bfaa14c2469b882b460224ac14f8a6e3e62bbbe0d5e61fa48965f49320cb0"
+    },
+    "20230620_add_is_main_warehouse": {
+      "revision": "20230620_add_is_main_warehouse",
+      "down_revision": "a6b7c8d9e0f1",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "20230620_add_is_main_warehouse.py",
+      "sha256": "b9f0f70aa134f21c547020d9b17cec85494b0cfeb7fa1db7e7adc2117bfa209a"
+    },
+    "20230621_merge_branches": {
+      "revision": "20230621_merge_branches",
+      "down_revision": [
+        "20230620_add_is_main_warehouse",
+        "e9d48d4ed194"
+      ],
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "20230621_merge_branches.py",
+      "sha256": "6de2a54ffe75159d174a7ac1fecbcfa15bce4d71562bd92a9edbf39c3134089c"
+    },
+    "5989ee3d5a82": {
+      "revision": "5989ee3d5a82",
+      "down_revision": [
+        "1c4b15b9c465",
+        "d6g8h0i2j4k3"
+      ],
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "5989ee3d5a82_merge_heads.py",
+      "sha256": "20cc2fea31b20a466a8ba8981b297b614d62301e64ebf7e9aabfb1f62af6392d"
+    },
+    "780e5ce2c51c": {
+      "revision": "780e5ce2c51c",
+      "down_revision": "t2_inventory_batch_h1",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "780e5ce2c51c_add_purchase_date_to_inventory_batch.py",
+      "sha256": "1e1f850d6ac7be6a09e19f6dc26ae3747381b25f90f5497a32ff09ebb3d4353f"
+    },
+    "86d10b763ffc": {
+      "revision": "86d10b763ffc",
+      "down_revision": "11581aac8182",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "86d10b763ffc_.py",
+      "sha256": "b3d97641acb45e6fac7e578dac52345864e69081d690a5d237ef8007771da202"
+    },
+    "9a1b321acf1c": {
+      "revision": "9a1b321acf1c",
+      "down_revision": null,
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "9a1b321acf1c_initial_schema_full.py",
+      "sha256": "f018a260c1c2fb008bd23868931bf6761b1a46502ddd63453cde151306ae538a"
+    },
+    "9b2c431bdf2d": {
+      "revision": "9b2c431bdf2d",
+      "down_revision": "9a1b321acf1c",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "9b2c431bdf2d_convert_to_timestamptz.py",
+      "sha256": "b6e5f244bd9a2949b11d53b80b7f5e462bf80864290258631a593377c5c42a8a"
+    },
+    "a3d5e7f9b1c2": {
+      "revision": "a3d5e7f9b1c2",
+      "down_revision": "9b2c431bdf2d",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "a3d5e7f9b1c2_add_code_to_expense_categories.py",
+      "sha256": "63d9d46296eadeeded0c509326c21ad5150213175e65cc4469da7b14caa1dd2f"
+    },
+    "a6b7c8d9e0f1": {
+      "revision": "a6b7c8d9e0f1",
+      "down_revision": "b364a257cf87",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "a6b7c8d9e0f1_add_device_binding_to_branches.py",
+      "sha256": "e031efebe2088035e21a10ca99839b0bf2067544d92a7b563f53242f42191782"
+    },
+    "b364a257cf87": {
+      "revision": "b364a257cf87",
+      "down_revision": "j6k8l0m2n4o3",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "b364a257cf87_add_invoice_payments_table_and_change_.py",
+      "sha256": "e11a50f2bf3fbd9fe33d2653792ced63a8a99e71f82635d62e104ea41a0559ee"
+    },
+    "b4e6f8a0c2d1": {
+      "revision": "b4e6f8a0c2d1",
+      "down_revision": "a3d5e7f9b1c2",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "b4e6f8a0c2d1_add_employee_financial_actions_table.py",
+      "sha256": "6d64525c981ca7940108321d873b24dd5f3dcb760cde15a0eedf4149fe892c68"
+    },
+    "c4790ff492ef": {
+      "revision": "c4790ff492ef",
+      "down_revision": "86d10b763ffc",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "c4790ff492ef_add_products_and_stock_models.py",
+      "sha256": "10741726877916ebf0d43221c04e3e1aebc7bffa30361a449d3da50bbabc3dc9"
+    },
+    "c5f7a9b3e4d2": {
+      "revision": "c5f7a9b3e4d2",
+      "down_revision": "b4e6f8a0c2d1",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "c5f7a9b3e4d2_add_is_cash_event_to_expenses.py",
+      "sha256": "12993db23ca2ae0c8909f36b214f5ecc763fe058d5a9bd0412ce98f0f922f4b1"
+    },
+    "d6g8h0i2j4k3": {
+      "revision": "d6g8h0i2j4k3",
+      "down_revision": "c5f7a9b3e4d2",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "d6g8h0i2j4k3_add_business_days_table.py",
+      "sha256": "48bbac2b8d83118c75db0d3eedc416e131b8aa9be310235be5f172551f464190"
+    },
+    "e1f3a5c7b9d2": {
+      "revision": "e1f3a5c7b9d2",
+      "down_revision": "5989ee3d5a82",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "e1f3a5c7b9d2_add_cash_in_cash_out_previous_day_to_business_days.py",
+      "sha256": "cb123ec9727aab773b784ccec52988f0aad4ec6f12f7886d605765f0c2fba8e1"
+    },
+    "e9d48d4ed194": {
+      "revision": "e9d48d4ed194",
+      "down_revision": "c4790ff492ef",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "e9d48d4ed194_sprint_2_1_unified_products.py",
+      "sha256": "9f8829e9ff547924d651d981ad5cc49d81ff692b5acb82c455fb1a18896aed21"
+    },
+    "f2g4h6i8j0k1": {
+      "revision": "f2g4h6i8j0k1",
+      "down_revision": "e1f3a5c7b9d2",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "f2g4h6i8j0k1_add_business_day_id_to_invoices.py",
+      "sha256": "cbee556cf7aa48a5bd3463c3c1d9f6ad07ac3a02761a2e79cc1d19d6c6e4a799"
+    },
+    "g3h5i7j9k1l2": {
+      "revision": "g3h5i7j9k1l2",
+      "down_revision": "f2g4h6i8j0k1",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "g3h5i7j9k1l2_add_business_day_id_to_expenses.py",
+      "sha256": "1df655749fd71495f81879c35160f8803f33f728badc239855649da9cc66be3a"
+    },
+    "h4i6j8k0l2m1": {
+      "revision": "h4i6j8k0l2m1",
+      "down_revision": "g3h5i7j9k1l2",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "h4i6j8k0l2m1_add_composite_performance_indexes.py",
+      "sha256": "58c924e86ee2a8454bc55aa548b2f18999518615165ee1148408f73e0fefae6b"
+    },
+    "i5j7k9l1m3n2": {
+      "revision": "i5j7k9l1m3n2",
+      "down_revision": "h4i6j8k0l2m1",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "i5j7k9l1m3n2_close_orphaned_attendance_records.py",
+      "sha256": "38323f7f813542432b00126e395201a534b4b77168d80edf104d8171253e340d"
+    },
+    "j6k8l0m2n4o3": {
+      "revision": "j6k8l0m2n4o3",
+      "down_revision": "i5j7k9l1m3n2",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "j6k8l0m2n4o3_replace_employee_date_unique_with_partial_index.py",
+      "sha256": "20be0453349004aba1d12a3c4e366f5672067fa1e71f3b61261e184626a28780"
+    },
+    "k8l0m2n4o6p5": {
+      "revision": "k8l0m2n4o6p5",
+      "down_revision": "j6k8l0m2n4o3",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "k8l0m2n4o6p5_add_is_business_expense_to_expenses.py",
+      "sha256": "9c939a8ca4902a7e20a0c0b5b630f62bf8aadcd443c50e9824799f2dd02f5e8f"
+    },
+    "l9m1n3o5p7q6": {
+      "revision": "l9m1n3o5p7q6",
+      "down_revision": "k8l0m2n4o6p5",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "l9m1n3o5p7q6_backfill_is_business_expense_for_tip_expenses.py",
+      "sha256": "01dd1924bc490e85c2ee174e650e80c957adca516b8e3493db88aeee9a3ecad0"
+    },
+    "m1_product_commission": {
+      "revision": "m1_product_commission",
+      "down_revision": [
+        "123456789abc",
+        "20230621_merge_branches"
+      ],
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "m1_product_commission.py",
+      "sha256": "281c311047de445af24fa1645c254c55e1e5d5a904242be3c18de8dd6a7747d1"
+    },
+    "n2_main_warehouse_setup": {
+      "revision": "n2_main_warehouse_setup",
+      "down_revision": "m1_product_commission",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "n2_main_warehouse_setup.py",
+      "sha256": "058b758420a4ae56d8fdc579d8b1d5dc6c8695cac7e76c9a68981cfd4dd41497"
+    },
+    "p3q5r7s9t1u2": {
+      "revision": "p3q5r7s9t1u2",
+      "down_revision": "780e5ce2c51c",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "p3q5r7s9t1u2_add_entered_amount_to_invoice_payments.py",
+      "sha256": "d4a621a5c70c88f82dcd9f42214984223fbd3cc9e9c4a1a49d154627dfeadc32"
+    },
+    "s6_stock_shipments": {
+      "revision": "s6_stock_shipments",
+      "down_revision": "n2_main_warehouse_setup",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "s6_stock_shipments.py",
+      "sha256": "f5a386b8aded7ad4d8dd7fdde483a0ac9fbf8d6f273c9ab362835000569fc3f5"
+    },
+    "s7_stock_supply_requests": {
+      "revision": "s7_stock_supply_requests",
+      "down_revision": "s6_stock_shipments",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "s7_stock_supply_requests.py",
+      "sha256": "80d74b50f9d7c821b47211fffc2ca54b50d961a43df9c75f47f7e06e3a50f323"
+    },
+    "t1_inventory_batches_phase1": {
+      "revision": "t1_inventory_batches_phase1",
+      "down_revision": "s7_stock_supply_requests",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "t1_inventory_batches_phase1.py",
+      "sha256": "72d1bbc02b7c55538668e5d68aea4b92e07169eee7f54ab2bfec1c252479bb42"
+    },
+    "t2_inventory_batch_h1": {
+      "revision": "t2_inventory_batch_h1",
+      "down_revision": "t1_inventory_batches_phase1",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "t2_inventory_batches_phase1_hardening.py",
+      "sha256": "0c1d37cb5c6a0bf0bcfc5790165a55a930f2772089a72cae20a490ba0a2a00b2"
+    },
+    "u4_shipment_cost_snapshots": {
+      "revision": "u4_shipment_cost_snapshots",
+      "down_revision": "p3q5r7s9t1u2",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "u4_shipment_cost_snapshots.py",
+      "sha256": "9fb9ccce43064792f7763161c088e63decedd7e220141e73081f5ad34bb4668b"
+    },
+    "v5_stock_return_requests": {
+      "revision": "v5_stock_return_requests",
+      "down_revision": "u4_shipment_cost_snapshots",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "v5_stock_return_requests.py",
+      "sha256": "742ebc9c1ff97eb3f814dc8248d061c37f80e4b1b79dad291eda6603cdddc13c"
+    },
+    "w6_inbound_shipments": {
+      "revision": "w6_inbound_shipments",
+      "down_revision": "v5_stock_return_requests",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "w6_inbound_supply_shipments_on_stock_shipments.py",
+      "sha256": "1094a8993097bcbabea0af507fbf8a490fc0d630bba1d31ef7104fb6b96e0d86"
+    },
+    "x7_store_manager_role": {
+      "revision": "x7_store_manager_role",
+      "down_revision": "w6_inbound_shipments",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "x7_add_store_manager_to_user_role_enum.py",
+      "sha256": "0f1ac02b65b83a5a76260d0843a8e2911e3c25bb0eb75e1c0366ff616e56e362"
+    },
+    "y8_appointment_deposit_phase1": {
+      "revision": "y8_appointment_deposit_phase1",
+      "down_revision": "x7_store_manager_role",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "y8_appointment_deposit_transactions_phase1.py",
+      "sha256": "6143e545da12c15c0ee0573abbdfb0bed3a01e65e9d2ce1168b7b3eb7193234a"
+    },
+    "z9_att_bd_p1a": {
+      "revision": "z9_att_bd_p1a",
+      "down_revision": "y8_appointment_deposit_phase1",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "z9_att_bd_p1a.py",
+      "sha256": "6392e8c2d2b7e2fff24bae012249e559d4cf83701bac5fee2a596fa9568c20c5"
+    },
+    "za_fix_uq_employee_present": {
+      "revision": "za_fix_uq_employee_present",
+      "down_revision": "z9_att_bd_p1a",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "za_fix_uq_employee_present.py",
+      "sha256": "37dc399ffbc2b1500f04ca0b3fbbae97ba9df24f11b67fdaba2518acfcefd2d8"
+    },
+    "zb_m4b_registered_devices": {
+      "revision": "zb_m4b_registered_devices",
+      "down_revision": "za_fix_uq_employee_present",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "zb_m4b_registered_devices.py",
+      "sha256": "5af32424c36aaa84d9bea9243ffbbdc1b3cb5228b1e674f052000608ffa255b6"
+    },
+    "zc_m4c_device_enrollments": {
+      "revision": "zc_m4c_device_enrollments",
+      "down_revision": "zb_m4b_registered_devices",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "zc_m4c_device_enrollments.py",
+      "sha256": "81fd0629b0a7d7b6b2699432791746d4d27b02269e0b8ad78e39675ef16ad8b0"
+    },
+    "zd_promo_domain_foundation": {
+      "revision": "zd_promo_domain_foundation",
+      "down_revision": "zc_m4c_device_enrollments",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "zd_promo_domain_foundation.py",
+      "sha256": "cb2fffe6a00250b8d9d5d8a4d154ce354d804bde8364d0a7e42344ce6e254b93"
+    },
+    "ze_payment_confirmation_attempts": {
+      "revision": "ze_payment_confirmation_attempts",
+      "down_revision": "zd_promo_domain_foundation",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "ze_payment_confirmation_attempts.py",
+      "sha256": "a4cc2cba93a0460d6a495083b1b9cfcb2f15ddb349004ad63cb63a19fbedf097"
+    },
+    "zf_invoice_audit_events": {
+      "revision": "zf_invoice_audit_events",
+      "down_revision": "ze_payment_confirmation_attempts",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "zf_invoice_audit_events.py",
+      "sha256": "5705bc2b22e798d7dc1d03dc35c5622c98c91b6cbcfae83b9409d890351074fd"
+    },
+    "zg_mini_device_credentials": {
+      "revision": "zg_mini_device_credentials",
+      "down_revision": "zf_invoice_audit_events",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "zg_mini_device_credential_foundation.py",
+      "sha256": "235c9cbbc99412657a18081025618f3121bf61948429d264cf7533f01425bff0"
+    },
+    "zh_mini_device_finalization": {
+      "revision": "zh_mini_device_finalization",
+      "down_revision": "zg_mini_device_credentials",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "zh_mini_device_secure_finalization.py",
+      "sha256": "1f0b4ca659c714766206ec734ac0fc8387226d0c0e8469421b44377d3e47de2a"
+    },
+    "zi_mini_device_strict_binding": {
+      "revision": "zi_mini_device_strict_binding",
+      "down_revision": "zh_mini_device_finalization",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "zi_mini_device_strict_session_binding.py",
+      "sha256": "da76b53f266df3fa0cf84e436745dd375f539f49e37591a4038d8e0913fa146a"
+    },
+    "zj_mini_device_proof": {
+      "revision": "zj_mini_device_proof",
+      "down_revision": "zi_mini_device_strict_binding",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "zj_mini_device_proof_of_possession.py",
+      "sha256": "be2661ca8747094dc58aa8cd3742a3d00c2b91b8a669d5f0e0cb9db627da3af2"
+    },
+    "zk_stock_balance_snapshots": {
+      "revision": "zk_stock_balance_snapshots",
+      "down_revision": "zj_mini_device_proof",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "zk_stock_movement_balance_snapshots.py",
+      "sha256": "cb6ad9c0e6de2063cdf5610b661fe89bb234cbb550cc9b0a464a1c6e0b4e71bb"
+    },
+    "zl_stock_recovery_read_model": {
+      "revision": "zl_stock_recovery_read_model",
+      "down_revision": "zk_stock_balance_snapshots",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "zl_stock_recovery_read_model.py",
+      "sha256": "4c2775d7d6758965781f4eaa533c6225fbf6001676c2ed4b43206a7483e4f7ad"
+    },
+    "zm_return_cost_snapshots": {
+      "revision": "zm_return_cost_snapshots",
+      "down_revision": "zl_stock_recovery_read_model",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "zm_return_cost_snapshots.py",
+      "sha256": "c0f45720f6127b6b693ad74f1e6f1063f6ac583cf4812eaac3258d75972e1c5e"
+    },
+    "zn_shipment_cancellation": {
+      "revision": "zn_shipment_cancellation",
+      "down_revision": "zm_return_cost_snapshots",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "zn_shipment_cancellation.py",
+      "sha256": "d89e7d020a14c09e6df88e0df992ce5232eda511f140604626aed3c29c71c332"
+    },
+    "zo_promo_discount_scope": {
+      "revision": "zo_promo_discount_scope",
+      "down_revision": "zn_shipment_cancellation",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "zo_promo_discount_scope.py",
+      "sha256": "2530e99182771debc47a201f8971774cf4beb05cedabcb4c9bd8230fd4c989c4"
+    },
+    "zp_booking_deposit_settlement": {
+      "revision": "zp_booking_deposit_settlement",
+      "down_revision": "zo_promo_discount_scope",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "zp_booking_deposit_settlement.py",
+      "sha256": "054b5bebeb96a46107e3eb37477bb394738d393e79b5c08c11f6c6fac5b9f74d"
+    },
+    "zq_booking_cashier_handoff": {
+      "revision": "zq_booking_cashier_handoff",
+      "down_revision": "zp_booking_deposit_settlement",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "zq_booking_cashier_handoff.py",
+      "sha256": "52753c7bab87e1a81e117df666ea0aba018080e7ecda7340d7b2ca8d1558258f"
+    },
+    "zr_payroll_settlement_ledger": {
+      "revision": "zr_payroll_settlement_ledger",
+      "down_revision": "zq_booking_cashier_handoff",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "zr_payroll_settlement_ledger.py",
+      "sha256": "525730e89337058151eb6e50468d4151106c56a8aa989a02fc152b008233347d"
+    },
+    "zs_staff_identity_foundation": {
+      "revision": "zs_staff_identity_foundation",
+      "down_revision": "zr_payroll_settlement_ledger",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "zs_staff_identity_foundation.py",
+      "sha256": "5795e425230d7e915503b241b1a37a1990d8a13d4da0f14d296b0c84c5ecf4ad"
+    },
+    "zt_staff_auth_sessions": {
+      "revision": "zt_staff_auth_sessions",
+      "down_revision": "zs_staff_identity_foundation",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "zt_staff_auth_sessions.py",
+      "sha256": "a56c6eeb2c063f298f740f7bdd1690bf784669444fe89258e3dbd8ad9f05ad57"
+    },
+    "zu_staff_personal_devices": {
+      "revision": "zu_staff_personal_devices",
+      "down_revision": "zt_staff_auth_sessions",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "zu_staff_personal_devices.py",
+      "sha256": "1458b99e35c395c4ae52fc819f6c5309f210983248591060bdc3b687116ef12e"
+    },
+    "zv_employee_shift_planning": {
+      "revision": "zv_employee_shift_planning",
+      "down_revision": "zu_staff_personal_devices",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "zv_employee_shift_planning.py",
+      "sha256": "ee61218c0b44c1548f4a40db20018b2fe7c3209688f50fccbbca765555a56d42"
+    },
+    "zw_employee_shift_supersession": {
+      "revision": "zw_employee_shift_supersession",
+      "down_revision": "zv_employee_shift_planning",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "zw_employee_shift_supersession.py",
+      "sha256": "990dbbfed9261753478d5ed5a90ff9c67e9ae13c6124cfdfa72b142242544187"
+    },
+    "zx_staff_geofence_versions": {
+      "revision": "zx_staff_geofence_versions",
+      "down_revision": "zw_employee_shift_supersession",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "zx_staff_geofence_versions.py",
+      "sha256": "2c4d5ee6ee4c8fb7e835f050d61cf5ef3abed9e2dbc7d2463120babf22079a3d"
+    },
+    "zy_staff_attendance_evidence": {
+      "revision": "zy_staff_attendance_evidence",
+      "down_revision": "zx_staff_geofence_versions",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "zy_staff_attendance_evidence.py",
+      "sha256": "4eec457ee40ddcb00fa7f2387b40f07a5feb91014aa71de1fe377be6ba96d844"
+    },
+    "zz_staff_gps_attendance": {
+      "revision": "zz_staff_gps_attendance",
+      "down_revision": "zy_staff_attendance_evidence",
+      "branch_labels": null,
+      "depends_on": null,
+      "file": "zz_staff_gps_attendance.py",
+      "sha256": "dbf41576b9b1bb9b1cd88accb906fd4041f8c4f57b7bc0abeab957ffda2909bc"
+    }
+  }
+}

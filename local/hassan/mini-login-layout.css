@@ -1,0 +1,38 @@
+/* Owner-requested compact Login only. Content can still scroll on exceptionally
+   short windows/long device messages; never hide validation or approval UI. */
+@media screen {
+  html[data-omar-mini-theme="foundation"] [data-omar-login-layout="compact"] {
+    padding-block: clamp(12px, 2.5dvh, 24px);
+  }
+  html[data-omar-mini-theme="foundation"] [data-omar-login-layout="compact"] [data-omar-login-brand] {
+    margin-bottom: clamp(12px, 2dvh, 20px);
+  }
+  html[data-omar-mini-theme="foundation"] [data-omar-login-layout="compact"] [data-omar-login-logo-frame] {
+    width: min(240px, 70vw);
+    height: clamp(96px, 18dvh, 142px);
+  }
+  html[data-omar-mini-theme="foundation"] [data-omar-login-layout="compact"] [data-omar-login-white-logo] {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  html[data-omar-mini-theme="foundation"] [data-omar-login-layout="compact"] [data-omar-login-card] {
+    padding: 28px;
+  }
+  html[data-omar-mini-theme="foundation"] [data-omar-login-layout="compact"] [data-omar-login-card] > h2 {
+    margin-bottom: 20px;
+  }
+  html[data-omar-mini-theme="foundation"] [data-omar-login-layout="compact"] form > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 16px;
+  }
+  html[data-omar-mini-theme="foundation"] [data-omar-login-layout="compact"] input,
+  html[data-omar-mini-theme="foundation"] [data-omar-login-layout="compact"] button[type="submit"] {
+    padding-block: 14px;
+  }
+  html[data-omar-mini-theme="foundation"] [data-omar-login-layout="compact"] [data-omar-login-notice] {
+    margin-top: 20px;
+  }
+  html[data-omar-mini-theme="foundation"] [data-omar-login-layout="compact"] [data-omar-login-ornament] {
+    margin-top: 16px;
+  }
+}

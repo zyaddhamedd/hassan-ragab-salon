@@ -1,0 +1,19 @@
+{
+  "backend": "http://127.0.0.1:5204",
+  "admin": {
+    "port": 3200,
+    "origin": "http://127.0.0.1:3200",
+    "apiUrl": "http://127.0.0.1:5204"
+  },
+  "mini": {
+    "port": 5276,
+    "origin": "http://127.0.0.1:5276",
+    "apiUrl": ""
+  },
+  "storagePrefix": "hr:",
+  "cookies": {
+    "session": "hr_session",
+    "miniDevice": "hr_mini_device_credential",
+    "miniEnrollment": "hr_mini_enrollment_proof"
+  }
+}

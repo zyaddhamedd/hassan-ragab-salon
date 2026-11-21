@@ -1,0 +1,28 @@
+{
+  "name": "hassan-ragab-mini",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --config ../local/hassan/mini.vite.config.mjs --mode hassan",
+    "build": "vite build --config ../local/hassan/mini.vite.config.mjs --mode hassan",
+    "preview": "vite preview --config ../local/hassan/mini.vite.config.mjs --mode hassan",
+    "build:production": "vite build --config ../local/hassan/mini.production.vite.config.mjs --mode hassan && node ../frontend/sanitize-production.mjs mini"
+  },
+  "dependencies": {
+    "@types/react-virtualized-auto-sizer": "^1.0.4",
+    "@types/react-window": "^1.8.8",
+    "lucide-react": "^0.562.0",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "react-virtualized-auto-sizer": "^2.0.3",
+    "react-window": "^2.2.7",
+    "socket.io-client": "^4.8.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "@vitejs/plugin-react": "^5.0.0",
+    "typescript": "~5.8.2",
+    "vite": "^6.2.0"
+  }
+}

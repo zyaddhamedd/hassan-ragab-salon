@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تقرير موظف - {{ report.meta.employee.name }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #000;
+            --accent: #E53935;
+            --gray: #6B7280;
+            --light-gray: #F3F4F6;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: #fff;
+            color: #000;
+            margin: 0;
+            padding: 20px;
+            font-size: 12px;
+            -webkit-print-color-adjust: exact;
+        }
+
+        @media print {
+            body {
+                padding: 0;
+                margin: 0;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            @page {
+                margin: 10mm;
+            }
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #000;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 900;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .report-title {
+            font-size: 24px;
+            font-weight: 900;
+            text-transform: uppercase;
+            margin: 0 0 10px 0;
+        }
+
+        .meta-info {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .employee-card {
+            background: var(--light-gray);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .emp-detail {
+            text-align: right;
+        }
+
+        .emp-label {
+            font-size: 9px;
+            font-weight: 700;
+            color: var(--gray);
+            display: block;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .emp-value {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 900;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .bar {
+            width: 4px;
+            height: 16px;
+            background: #000;
+        }
+
+        .bar.red {
+            background: var(--accent);
+        }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .kpi-card {
+            border: 1px solid #eee;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .kpi-card.dark {
+            background: #000;
+            color: #fff;
+        }
+
+        .kpi-value {
+            font-size: 20px;
+            font-weight: 900;
+            display: block;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        th {
+            background: var(--light-gray);
+            padding: 10px;
+            text-align: right;
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--gray);
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            font-weight: 600;
+        }
+
+        .financial-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 40px;
+            border-top: 2px solid #000;
+            padding-top: 30px;
+        }
+
+        .fin-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .fin-row.total {
+            font-size: 18px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 9px;
+            color: var(--gray);
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <div class="logo">THE SECRET <span>MEN CLUB</span></div>
+        <div style="font-size: 14px; font-weight: 700; margin-bottom: 10px; color: #555;">فرع {{
+            report.meta.employee.branch }}</div>
+        <h1 class="report-title">تقرير الأداء الشامل</h1>
+        <div class="meta-info">
+            تاريخ التقرير: {{ report.meta.generated_at.split('T')[0] }} • الفترة: {{ report.meta.period.start }} - {{
+            report.meta.period.end }}
+        </div>
+    </div>
+
+    <div class="employee-card">
+        <div class="emp-detail">
+            <span class="emp-label">الموظف</span>
+            <span class="emp-value">{{ report.meta.employee.name }}</span>
+        </div>
+        <div class="emp-detail">
+            <span class="emp-label">المنصب</span>
+            <span class="emp-value">{{ report.meta.employee.role }}</span>
+        </div>
+        <div class="emp-detail">
+            <span class="emp-label">تاريخ الانضمام</span>
+            <span class="emp-value">--/--/----</span>
+        </div>
+        <div class="emp-detail">
+            <span class="emp-label">المعرف</span>
+            <span class="emp-value">#{{ report.meta.employee.id }}</span>
+        </div>
+    </div>
+
+    <!-- Summary -->
+    <div class="section-title">
+        <div class="bar red"></div>
+        ملخص الأداء
+    </div>
+
+    <div class="kpi-grid">
+        <div class="kpi-card">
+            <span class="emp-label">إجمالي الخدمات</span>
+            <span class="kpi-value">{{ report.summary.total_services }}</span>
+        </div>
+        <div class="kpi-card">
+            <span class="emp-label">ساعات العمل</span>
+            <span class="kpi-value">{{ report.summary.total_hours }}</span>
+        </div>
+        <div class="kpi-card">
+            <span class="emp-label">الإيرادات</span>
+            <span class="kpi-value">{{ "{:,.0f}".format(report.summary.total_revenue) }}</span>
+        </div>
+        <div class="kpi-card dark">
+            <span class="emp-label" style="opacity: 0.7">صافي المستحقات</span>
+            <span class="kpi-value">{{ "{:,.0f}".format(report.financials.final_net_with_salary) }}</span>
+        </div>
+    </div>
+
+    <!-- Services -->
+    <div class="section-title">
+        <div class="bar"></div>
+        تفاصيل الخدمات
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>الخدمة</th>
+                <th>العدد</th>
+                <th>الإيراد</th>
+                <th>المتوسط</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for svc in report.services_breakdown %}
+            <tr>
+                <td>{{ svc.type }}</td>
+                <td>{{ svc.count }}</td>
+                <td>{{ "{:,.0f}".format(svc.revenue) }}</td>
+                <td>{{ "{:,.0f}".format(svc.average_value) }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4" style="text-align: center; color: #999;">لا توجد خدمات مسجلة</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Attendance -->
+    <div class="section-title">
+        <div class="bar"></div>
+        الحضور
+    </div>
+    <div class="kpi-grid">
+        <div class="kpi-card" style="background:var(--light-gray); border:none">
+            <span class="emp-label">أيام العمل</span>
+            <span class="kpi-value" style="color: green">{{ report.attendance.days_worked }}</span>
+        </div>
+        <div class="kpi-card" style="background:var(--light-gray); border:none">
+            <span class="emp-label">الغياب</span>
+            <span class="kpi-value" style="color: red">{{ report.attendance.absence_days }}</span>
+        </div>
+        <div class="kpi-card" style="background:var(--light-gray); border:none">
+            <span class="emp-label">تأخير</span>
+            <span class="kpi-value">{{ report.attendance.late_days }}</span>
+        </div>
+    </div>
+
+    <!-- Financials -->
+    <div class="financial-grid">
+        <div>
+            <div class="fin-row">
+                <span>الراتب الأساسي</span>
+                <span>{{ "{:,.0f}".format(report.financials.base_salary) }}</span>
+            </div>
+            <div class="fin-row" style="color: green">
+                <span>+ العمولات</span>
+                <span>{{ "{:,.0f}".format(report.financials.total_commission) }}</span>
+            </div>
+            <div class="fin-row" style="color: green">
+                <span>+ الأوفر تايم</span>
+                <span>{{ "{:,.0f}".format(report.financials.total_overtime) }}</span>
+            </div>
+        </div>
+
+        <div>
+            <div class="fin-row" style="color: red">
+                <span>- الخصومات</span>
+                <span>({{ "{:,.0f}".format(report.financials.total_deductions) }})</span>
+            </div>
+            <div class="fin-row" style="color: red">
+                <span>- السلف</span>
+                <span>({{ "{:,.0f}".format(report.financials.total_loans) }})</span>
+            </div>
+
+            <div class="fin-row total">
+                <span>صافي الراتب المستحق</span>
+                <span style="color: var(--accent)">{{ "{:,.0f}".format(report.financials.final_net_with_salary) }}
+                    جم</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        CONFIDENTIAL REPORT • GENERATED AUTOMATICALLY
+    </div>
+
+</body>
+
+</html>

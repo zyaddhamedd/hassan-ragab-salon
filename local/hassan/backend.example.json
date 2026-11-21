@@ -1,0 +1,11 @@
+{
+  "FLASK_ENV": "development",
+  "FLASK_DEBUG": "false",
+  "PORT": "5204",
+  "ENABLE_DEV_ROUTES": "false",
+  "UPLOAD_FOLDER": "/Users/zyad/Projects/hassan-ragab-salon/.local/hassan/uploads",
+  "MINI_EXTERNAL_API_BASE_URL": "http://127.0.0.1:5204",
+  "DATABASE_URL": "postgresql://hassan_ragab_local:REPLACE_WITH_FRESH_PASSWORD@127.0.0.1:55433/hassan_ragab_local",
+  "SECRET_KEY": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+  "JWT_SECRET_KEY": "fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210"
+}

@@ -1,0 +1,193 @@
+:root {
+  --mini-shell-height: 100dvh;
+  --mini-page-pad-x: clamp(1rem, 1vw + 0.75rem, 2rem);
+  --mini-page-pad-y: clamp(1rem, 0.9vh + 0.75rem, 1.75rem);
+  --mini-sidebar-width: clamp(17rem, 22vw, 18rem);
+  --mini-modal-max-height: calc(var(--mini-shell-height) - 2rem);
+}
+
+@supports not (height: 100dvh) {
+  :root {
+    --mini-shell-height: 100vh;
+  }
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  min-height: 100%;
+}
+
+body {
+  overflow-x: hidden;
+  overscroll-behavior-x: none;
+}
+
+.mini-shell {
+  height: var(--mini-shell-height);
+  min-height: 0;
+  overflow: hidden;
+}
+
+.mini-shell-page {
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.mini-screen {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.mini-scroll-y {
+  min-height: 0;
+  flex: 1 1 auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  -webkit-overflow-scrolling: touch;
+}
+
+.mini-page-header {
+  padding: clamp(1rem, 1.15vh + 0.75rem, 1.5rem) var(--mini-page-pad-x);
+}
+
+.mini-page-body {
+  padding: var(--mini-page-pad-y) var(--mini-page-pad-x);
+}
+
+.mini-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 140;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(12px);
+}
+
+.mini-modal-panel {
+  width: min(100%, var(--mini-modal-width, 48rem));
+  max-height: min(90dvh, var(--mini-modal-max-height));
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.mini-modal-panel-static {
+  width: min(100%, var(--mini-modal-width, 48rem));
+  max-height: min(90dvh, var(--mini-modal-max-height));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.mini-sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 110;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(2px);
+}
+
+body.inventory-mobile-active {
+  background: #09090b;
+  overflow-x: hidden;
+  overscroll-behavior-x: none;
+}
+
+.inventory-mobile-shell {
+  position: relative;
+  min-height: var(--mini-shell-height);
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+@supports not (overflow: clip) {
+  .inventory-mobile-shell {
+    overflow-x: hidden;
+  }
+}
+
+.inventory-mobile-shell--centered {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.inventory-mobile-page {
+  width: 100%;
+  max-width: 100%;
+  padding-top: calc(env(safe-area-inset-top, 0px) + 14px);
+  padding-right: max(1rem, calc(env(safe-area-inset-right, 0px) + 1rem));
+  padding-bottom: calc(var(--inventory-mobile-nav-height, 96px) + 1rem);
+  padding-left: max(1rem, calc(env(safe-area-inset-left, 0px) + 1rem));
+  touch-action: pan-y;
+}
+
+.inventory-mobile-nav {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 140;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(17, 17, 20, 0.95);
+  padding-top: 10px;
+  padding-right: max(0.75rem, calc(env(safe-area-inset-right, 0px) + 0.75rem));
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 10px);
+  padding-left: max(0.75rem, calc(env(safe-area-inset-left, 0px) + 0.75rem));
+  backdrop-filter: blur(20px);
+}
+
+.inventory-mobile-panel {
+  position: fixed;
+  inset: 0;
+  z-index: 180;
+  background: #09090b;
+}
+
+.inventory-mobile-panel-frame {
+  display: flex;
+  min-height: var(--mini-shell-height);
+  max-height: var(--mini-shell-height);
+  flex-direction: column;
+  padding-top: calc(env(safe-area-inset-top, 0px) + 8px);
+}
+
+.inventory-mobile-panel-body {
+  min-height: 0;
+  flex: 1 1 auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding: 1rem;
+  padding-right: max(1rem, calc(env(safe-area-inset-right, 0px) + 1rem));
+  padding-left: max(1rem, calc(env(safe-area-inset-left, 0px) + 1rem));
+  touch-action: pan-y;
+}
+
+.inventory-mobile-panel-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  background: #111114;
+  padding-top: 0.75rem;
+  padding-right: max(1rem, calc(env(safe-area-inset-right, 0px) + 1rem));
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 0.75rem);
+  padding-left: max(1rem, calc(env(safe-area-inset-left, 0px) + 1rem));
+}
+
+@media (max-height: 800px) {
+  :root {
+    --mini-page-pad-y: clamp(0.875rem, 0.8vh + 0.65rem, 1.25rem);
+  }
+}

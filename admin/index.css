@@ -1,0 +1,275 @@
+html, body, #root {
+  min-height: 100%;
+}
+
+/* Bound page-local z-index values. Body portals and navigation have their own
+   layers, so a workspace cannot cover the shared navigation by using a larger
+   local z-index. Isolation does not change fixed-position containing blocks. */
+#root {
+  isolation: isolate;
+}
+
+body > .admin-overlay-shell {
+  z-index: var(--admin-layer-dialog);
+}
+
+:root {
+  --admin-layer-dialog: 1;
+  --admin-layer-navigation: 2;
+  --app-header-height: 64px;
+  --app-page-gutter-x: 16px;
+  --app-page-top-gap: 24px;
+  --app-page-bottom-gap: 96px;
+  --app-overlay-gap: 16px;
+  --app-sidebar-offset: 0px;
+  --app-dialog-max-height: calc(100vh - var(--app-header-height) - (var(--app-overlay-gap) * 2));
+}
+
+@media (min-width: 640px) {
+  :root {
+    --app-header-height: 80px;
+    --app-page-gutter-x: 24px;
+    --app-page-top-gap: 32px;
+    --app-overlay-gap: 24px;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --app-page-gutter-x: 48px;
+    --app-page-bottom-gap: 32px;
+  }
+}
+
+.admin-main-content {
+  min-height: calc(100vh - var(--app-header-height));
+  padding-top: var(--app-header-height);
+}
+
+/* The fixed panel may expand; App/Header always reserve just the 72px rail. */
+.admin-side-nav {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: var(--admin-layer-navigation);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: 256px;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  visibility: hidden;
+  transform: translateX(100%);
+  transition: width 180ms ease, transform 180ms ease, visibility 0s linear 180ms;
+}
+
+.admin-side-nav[data-open="true"] {
+  visibility: visible;
+  transform: translateX(0);
+  transition-delay: 0s;
+}
+
+.admin-side-nav-controls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 0 0 48px;
+  padding-inline: 12px;
+}
+
+.admin-side-nav-control {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  color: #E53935;
+}
+
+.admin-side-nav-touch-toggle { display: none; }
+
+.admin-side-nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-inline: 11px;
+  flex: 0 0 88px;
+}
+
+.admin-side-nav-items {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  /* Keep icon positions fixed when a scrollbar appears or disappears. */
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  padding: 4px 8px calc(88px + env(safe-area-inset-bottom, 0px));
+}
+
+.admin-side-nav-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  min-height: 44px;
+  margin-bottom: 4px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  text-align: start;
+}
+
+.admin-side-nav-icon { display: flex; flex: 0 0 20px; }
+.admin-side-nav-label { white-space: nowrap; }
+
+.admin-side-nav-item:focus-visible,
+.admin-side-nav-control:focus-visible {
+  outline: 2px solid #E53935;
+  outline-offset: -2px;
+}
+
+@media (min-width: 1024px) {
+  .admin-side-nav {
+    width: 72px;
+    visibility: visible;
+    transform: none;
+    transition-delay: 0s;
+  }
+  .admin-side-nav[data-expanded="true"] {
+    width: 256px;
+    box-shadow: -12px 0 28px rgb(0 0 0 / 12%);
+  }
+  .admin-side-nav-controls { justify-content: flex-start; padding-inline: 15px; }
+  .admin-side-nav-close { display: none; }
+  .admin-side-nav-touch-toggle { display: flex; }
+  .admin-side-nav-items { padding-bottom: 16px; }
+  .admin-side-nav-label { opacity: 0; visibility: hidden; transition: opacity 180ms ease; }
+  .admin-side-nav[data-expanded="true"] .admin-side-nav-label { opacity: 1; visibility: visible; }
+}
+
+@media (min-width: 1024px) and (hover: hover) and (pointer: fine) {
+  .admin-side-nav-controls { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-side-nav,
+  .admin-side-nav-label { transition: none; }
+}
+
+.admin-page-shell {
+  width: 100%;
+  max-width: 1280px;
+  margin-inline: auto;
+  padding-inline: var(--app-page-gutter-x);
+  padding-top: var(--app-page-top-gap);
+  padding-bottom: var(--app-page-bottom-gap);
+}
+
+.admin-page-shell--narrow {
+  max-width: 1152px;
+}
+
+.admin-page-state {
+  min-height: calc(50vh - var(--app-header-height));
+}
+
+.admin-overlay-shell {
+  position: fixed;
+  inset: var(--app-header-height) 0 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--app-overlay-gap);
+  overflow: hidden;
+}
+
+.admin-overlay-shell--scroll {
+  align-items: flex-start;
+  overflow-y: auto;
+}
+
+.admin-overlay-shell--viewport {
+  align-items: stretch;
+  justify-content: stretch;
+  padding: 0;
+}
+
+.admin-overlay-panel {
+  width: min(var(--app-dialog-width, 100%), calc(100vw - (var(--app-overlay-gap) * 2)));
+  max-height: var(--app-dialog-max-height);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.admin-overlay-body {
+  min-height: 0;
+  flex: 1 1 auto;
+  overflow-y: auto;
+}
+
+.admin-workspace-shell {
+  position: fixed;
+  inset: var(--app-header-height) 0 0 0;
+  overflow-y: auto;
+}
+
+@media (min-width: 1024px) {
+  .admin-workspace-shell--with-sidebar,
+  .admin-overlay-shell--with-sidebar {
+    right: var(--app-sidebar-offset);
+  }
+}
+
+@keyframes toast-in {
+  0% { transform: translateX(-20px) translateY(10px); opacity: 0; }
+  100% { transform: translateX(0) translateY(0); opacity: 1; }
+}
+
+@keyframes toast-out {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(0.98); opacity: 0; }
+}
+
+@keyframes toast-timer {
+  from { width: 100%; }
+  to { width: 0%; }
+}
+
+.animate-toast-in {
+  animation: toast-in 300ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.animate-toast-out {
+  animation: toast-out 200ms cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+.animate-toast-timer {
+  animation: toast-timer 15s linear forwards;
+}
+
+@keyframes pulse-subtle {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 2s ease-in-out infinite;
+}
+
+.pause-animation {
+  animation-play-state: paused !important;
+}
+
+/* Luxury Gold Glow for Notifications */
+.notification-glow-dark {
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 20px rgba(197, 160, 89, 0.08);
+}
+
+.notification-glow-light {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}

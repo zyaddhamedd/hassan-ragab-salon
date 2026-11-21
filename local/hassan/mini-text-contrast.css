@@ -1,0 +1,22 @@
+/* Owner-authorized text-only alpha exceptions. No component surfaces/effects change. */
+@media screen {
+  html[data-omar-mini-theme="foundation"] [data-omar-mini-shell] [data-omar-mini-screen="attendance"] p[class~="opacity-30"] {
+    color: var(--omar-mini-text-secondary);
+    opacity: 1;
+  }
+  html[data-omar-mini-theme="foundation"] [data-omar-mini-auth="login"] label[class~="opacity-60"] {
+    color: var(--omar-mini-text-secondary);
+    opacity: 1;
+  }
+  html[data-omar-mini-theme="foundation"] [data-omar-mini-auth="login"] [data-omar-login-notice] {
+    color: var(--omar-mini-text-secondary);
+  }
+  html[data-omar-mini-theme="foundation"] [data-omar-mini-inventory] :is(p,label,span,div):is([class~="text-white/20"],[class~="text-white/30"],[class~="text-white/35"],[class~="text-white/40"],[class~="text-white/45"]):not(:has(*)):not(:where(button:disabled *,[aria-disabled="true"],[aria-disabled="true"] *,[disabled],.receipt-print *,.print-template *,.print-only *,.omar-logo-slot *)) {
+    color: color-mix(in srgb, var(--omar-mini-text-secondary) 75%, var(--omar-mini-text) 25%);
+  }
+  html[data-omar-mini-theme="foundation"] [data-omar-mini-screen="attendance"] input:not(:disabled)::placeholder,
+  html[data-omar-mini-theme="foundation"] [data-omar-mini-auth="login"] input:not(:disabled)::placeholder,
+  html[data-omar-mini-theme="foundation"] [data-omar-mini-inventory] :is(input,textarea):not(:disabled)::placeholder {
+    color: var(--omar-mini-text-secondary);
+  }
+}

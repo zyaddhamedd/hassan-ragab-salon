@@ -1,0 +1,17 @@
+import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import path from 'node:path';import{createRequire}from'node:module';
+import{loginLayoutSource,loginLayoutHooks,loginLayoutStylesheet,omarLoginLayout}from'./mini-login-layout.mjs';
+import{authThemeSource}from'./mini-auth-theme.mjs';import{cashierTightLogoFile}from'./cashier-header-logo.mjs';
+import miniConfig from './mini.vite.config.mjs';import adminConfig from './admin.vite.config.mjs';
+const workspace=path.resolve(import.meta.dirname,'../..'),read=f=>fs.readFileSync(path.join(workspace,f),'utf8');
+test('only the authorized Omar Login brand/title/spacing hooks change; every handler and condition restores exactly',()=>{
+ const file='mini/components/LoginScreen.tsx',original=authThemeSource(read(file),file),result=loginLayoutSource(original,file);assert.ok(!result.includes('نظام الإدارة الموحد'));assert.ok(result.includes('data-omar-login-white-logo'));let restored=result;for(const[b,a]of[...loginLayoutHooks].reverse())restored=restored.replace(a,b);assert.equal(restored,original);assert.throws(()=>loginLayoutSource(result,file),/drift/);
+ for(const f of ['mini/App.tsx','mini/components/CashierScreen.tsx','mini/components/Logo.tsx','mini/components/Receipt.tsx','admin/components/LoginScreen.tsx'])assert.equal(loginLayoutSource('protected',f),null);
+});
+test('compact presentation and shared approved white asset activate only in Omar Mini Login',async()=>{
+ for(const[app,mode]of[['admin','omar'],['mini','production']])assert.equal(omarLoginLayout({workspace,app,mode}),null);
+ const mini=await miniConfig({mode:'omar'}),admin=await adminConfig({mode:'omar'}),names=mini.plugins.flat().filter(Boolean).map(p=>p.name);assert.ok(names.indexOf('omar-mini-login-layout')>names.indexOf('omar-mini-auth-theme'));assert.ok(names.indexOf('omar-mini-login-layout')<names.indexOf('vite:react-babel'));assert.ok(!admin.plugins.flat().filter(Boolean).some(p=>p.name==='omar-mini-login-layout'));assert.equal(omarLoginLayout({workspace,app:'mini',mode:'omar'}).resolveId('virtual:omar-login-white-logo'),path.join(workspace,cashierTightLogoFile));
+});
+test('layout CSS stays in screen media and the compact Login root; never hides overflowing auth content',()=>{
+ const require=createRequire(path.join(workspace,'mini/package.json')),css=fs.readFileSync(loginLayoutStylesheet,'utf8'),root=require('postcss').parse(css);root.walkRules(r=>{assert.equal(r.parent.name,'media');assert.equal(r.parent.params,'screen');for(const s of r.selectors)assert.ok(s.startsWith('html[data-omar-mini-theme="foundation"] [data-omar-login-layout="compact"]'));r.walkDecls(d=>{assert.ok(!d.important);assert.ok(!/overflow|display|visibility|transform|font|border|box-shadow|color/.test(d.prop));});});assert.ok(css.includes('object-fit: contain'));assert.ok(!css.includes('overflow: hidden'));
+});
+if(process.env.OMAR_COMPACT_LOGIN_EVIDENCE){const dir=fs.realpathSync(process.env.OMAR_COMPACT_LOGIN_EVIDENCE);assert.ok(dir.startsWith(workspace+'/.local/hassan/'));const entries=JSON.parse(fs.readFileSync(path.join(dir,'measurements.json'),'utf8'));for(const [name,m]of Object.entries(entries))test('full compact Login remains visible without page scroll: '+name,()=>{assert.deepEqual(m.document,m.viewport);assert.equal(m.titlePresent,false);assert.ok(m.logo.complete);assert.deepEqual(m.logo.natural,[1435,844]);assert.ok(m.logo.width>=200);for(const r of m.controls)assert.ok(r.top>=0&&r.bottom<=m.viewport[1]);});}

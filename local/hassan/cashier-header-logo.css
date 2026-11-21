@@ -1,0 +1,23 @@
+/* The new image is absent from print layout. Existing text/receipt assets remain. */
+html[data-omar-mini-theme="foundation"] [data-omar-mini-pos="cashier"] [data-omar-cashier-header-brand] > [data-omar-cashier-header-logo] {
+  display: none;
+}
+@media screen {
+  html[data-omar-mini-theme="foundation"] [data-omar-mini-pos="cashier"] [data-omar-cashier-header-brand] {
+    position: relative;
+  }
+  html[data-omar-mini-theme="foundation"] [data-omar-mini-pos="cashier"] [data-omar-cashier-header-brand] > h1,
+  html[data-omar-mini-theme="foundation"] [data-omar-mini-pos="cashier"] [data-omar-cashier-header-brand] > span {
+    visibility: hidden;
+  }
+  html[data-omar-mini-theme="foundation"] [data-omar-mini-pos="cashier"] [data-omar-cashier-header-brand] > [data-omar-cashier-header-logo] {
+    display: block;
+    position: absolute;
+    right: 0;
+    top: calc(50% - 125px * 844 / 1435 / 2);
+    width: 125px;
+    height: auto;
+    max-width: none;
+    object-fit: contain;
+  }
+}

@@ -1,0 +1,6 @@
+# Omar-only dependency overlay; preserve the shared deployment requirements.
+-r ../../backend/requirements.txt
+# Used by the optional PDF export module, omitted from shared requirements.
+reportlab
+arabic-reshaper
+python-bidi

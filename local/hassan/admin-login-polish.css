@@ -1,0 +1,19 @@
+/* Login only. Natural document scrolling remains available for short/zoomed views. */
+@media screen {
+ html[data-omar-admin-theme="foundation"] [data-omar-admin-final-area="login"] {
+  height:auto; min-height:100vh; min-height:100svh; min-height:100dvh;
+  justify-content:flex-start; overflow:visible; box-sizing:border-box;
+  padding-top:max(20px,env(safe-area-inset-top)); padding-bottom:max(20px,env(safe-area-inset-bottom));
+  padding-left:max(16px,env(safe-area-inset-left)); padding-right:max(16px,env(safe-area-inset-right));
+ }
+ html[data-omar-admin-theme="foundation"] [data-omar-admin-final-area="login"] [data-omar-login-composition] { margin-block:auto; flex:0 0 auto; gap:36px; min-width:0; }
+ html[data-omar-admin-theme="foundation"] [data-omar-admin-final-area="login"] [data-omar-login-brand] { margin:0; max-width:100%; }
+ html[data-omar-admin-theme="foundation"] [data-omar-admin-final-area="login"] [data-omar-login-logo] { display:block; width:clamp(240px,36vh,320px); max-width:100%; height:auto; object-fit:contain; }
+ html[data-omar-admin-theme="foundation"] [data-omar-admin-final-area="login"] form { min-width:0; }
+ html[data-omar-admin-theme="foundation"] [data-omar-admin-final-area="login"] form p { overflow-wrap:anywhere; }
+}
+@media screen and (max-height:600px) {
+ html[data-omar-admin-theme="foundation"] [data-omar-admin-final-area="login"] { padding-block: max(12px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-bottom)); }
+ html[data-omar-admin-theme="foundation"] [data-omar-admin-final-area="login"] [data-omar-login-composition] { gap:20px; }
+ html[data-omar-admin-theme="foundation"] [data-omar-admin-final-area="login"] [data-omar-login-logo] { width:180px; }
+}

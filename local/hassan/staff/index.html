@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#101d23"><meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
+<link rel="icon" href="../assets/mini-favicon.svg"><link rel="stylesheet" href="../prototypes/staff/style.css"><link rel="stylesheet" href="style.css">
+<title>Omar Fahim — Staff</title>
+</head>
+<body data-theme="dark">
+<div class="app">
+<header class="top"><img class="logo" src="../assets/cashier-header-logo-white-tight.svg" data-dark-src="../assets/cashier-header-logo-white-tight.svg" data-light-src="../assets/mini-print-logo.svg" alt="Omar Fahim Barber shop"><button class="icon-button theme-toggle" aria-label="تبديل المظهر"></button></header>
+<div id="notice" class="app-notice" role="alert" hidden></div>
+<main id="content" aria-busy="true"><p class="subtle">جارٍ فتح التطبيق…</p></main>
+<nav class="navigation" aria-label="التنقل الرئيسي" hidden></nav>
+<div class="prototype-note">تطبيق الموظف · لا يُسجّل الحضور إلا بتأكيد الخادم</div>
+</div>
+<template id="auth"><section class="view"><div class="eyebrow">مساحتك في Omar Fahim</div><h1 id="auth-title">أهلًا بعودتك</h1><p class="subtle">الدخول مرتبط بجهازك الشخصي المعتمد.</p>
+<div class="tabs" aria-label="إعداد الحساب"><button data-auth-mode="login" class="selected">دخول</button><button data-auth-mode="activate">تفعيل</button><button data-auth-mode="recover">استعادة</button></div>
+<form class="form" id="auth-form"><label>اسم المستخدم<input name="username" autocomplete="username" required maxlength="64" dir="ltr"></label><label id="code-field" hidden>رمز الإدارة<input name="code" autocomplete="one-time-code" maxlength="128" dir="ltr"></label><label>كلمة المرور<input type="password" name="password" autocomplete="current-password" required maxlength="128"></label><p class="form-note" id="auth-help"></p><button class="primary" type="submit">دخول آمن</button></form>
+</section></template>
+<template id="pending"><section class="view"><div class="eyebrow">أمان جهازك</div><h1>اعتماد الجهاز</h1><p class="subtle">يحتاج الجهاز إلى موافقة الإدارة قبل الدخول. لن نُفعّله تلقائيًا.</p>
+<div class="shift-card"><span data-icon="shield"></span><h2>الجهاز الشخصي</h2><p id="pending-message" class="subtle"></p><p id="device-reference" class="device-reference" dir="ltr"></p><button class="primary" id="check-approval">التحقق من موافقة الإدارة</button></div>
+<form class="form" id="attach-device" hidden><label>معرّف الجهاز الذي راجعته الإدارة<input name="deviceId" pattern="[0-9a-f]{32}" maxlength="32" dir="ltr" required></label><p class="form-note">عند انقطاع التسجيل، اطلب من الإدارة تحديد سجل الجهاز. يبقى إثبات امتلاك المفتاح والموافقة إلزاميين.</p><button class="outline-button" type="submit">متابعة السجل المراجع</button></form>
+<button class="text-link" data-go="auth">العودة إلى الحساب / التحقق بالدخول بعد انقطاع التفعيل</button></section></template>
+<template id="home"><section class="view signature-home">
+<div class="home-identity"><div><p class="home-date" data-today></p><h1 data-name></h1><div class="home-person"><span class="identity-stroke"></span><span data-role></span><span class="identity-separator">/</span><span data-branch></span></div></div><button class="home-avatar" data-go="profile" aria-label="الملف الشخصي"><span data-initials></span><span class="avatar-corner" data-icon="arrow"></span></button></div>
+<article class="signature-shift"><div class="shift-head"><div class="shift-heading"><span class="shift-square"></span><h2>وردية اليوم</h2></div><span class="shift-state" data-attendance-state></span></div>
+<div class="shift-body"><div class="shift-schedule"><div class="schedule-point"><span class="schedule-dot"></span><div class="schedule-label">بداية الوردية</div><div class="schedule-clock"><bdi data-shift-start>—</bdi></div></div><div class="schedule-point"><span class="schedule-dot hollow"></span><div class="schedule-label">نهاية الوردية</div><div class="schedule-clock"><bdi data-shift-end>—</bdi></div></div></div><div class="shift-date"><span data-month></span><strong data-day></strong><span data-weekday></span><div class="date-rule"></div><span class="date-demo" data-shift-state></span></div></div>
+<div class="shift-location"><span data-icon="pin"></span><span>Omar Fahim Salon <small data-branch></small></span></div>
+<button class="signature-attendance" data-go="attendance"><span class="attendance-fingerprint" data-icon="finger"></span><span class="attendance-copy"><strong>الحضور والانصراف</strong><small>اضغط مطولًا لإرسال طلب آمن</small></span><span class="attendance-arrow" data-icon="arrow"></span></button></article>
+<p class="state-explanation">الحالة من آخر قراءة مؤكدة للخادم. يتحقق الخادم مجددًا قبل تنفيذ أي عملية.</p><p class="subtle" id="last-confirmation"></p>
+<button class="text-link" data-go="shifts"><span data-icon="calendar"></span>عرض الورديات</button>
+<div class="home-requests"><div class="home-section-heading"><h2>طلب جديد</h2><button data-go="requests">طلباتي <span data-icon="arrow"></span></button></div><div class="request-rail"><button disabled><span class="request-symbol" data-icon="wallet"></span><strong>طلب سلفة · غير متاح</strong></button><button disabled><span class="request-symbol" data-icon="calendar"></span><strong>طلب إجازة · غير متاح</strong></button></div></div>
+</section></template>
+<template id="attendance"><section class="view attendance-view"><div class="eyebrow">الحضور والانصراف</div><h1>حضورك، بتأكيد آمن</h1><p class="subtle">اضغط مطولًا. يُطلب موقع حديث لهذه العملية فقط.</p>
+<div class="simulation"><span data-icon="shield"></span>إثبات الجهاز والموقع إلزاميان · لا تسجيل دون اتصال</div>
+<div class="orb-wrap mechanical-control" data-stage="idle" data-pressed="false"><div class="orb-track" aria-hidden="true"></div><svg class="progress-ring" viewBox="0 0 260 260" aria-hidden="true"><circle cx="130" cy="130" r="120"/></svg><button id="hold" class="orb" aria-describedby="attendance-status" aria-label="اضغط مطولًا أو استمر بالضغط على مفتاح المسافة لإرسال الحضور"><span data-icon="finger"></span><strong id="orb-title">اضغط مطولًا</strong><small id="orb-caption">لإرسال طلب الحضور</small></button></div>
+<div id="attendance-status" role="status" aria-live="polite" aria-atomic="true" class="attendance-status ignition-status">لم تُرسل عملية بعد.</div>
+<label class="demo-mode-label action-mode">العملية <select id="attendance-mode"><option value="CHECK_IN">حضور</option><option value="CHECK_OUT">انصراف للتأكيد السابق</option></select></label>
+<p class="form-note" id="attendance-context"></p><button class="outline-button" id="recover-attendance">تحديث الحالة من الخادم</button><div class="quick-grid"><button class="outline-button" id="retry-attendance" hidden>إعادة إرسال نفس العملية</button><button class="outline-button" id="new-attendance" hidden>موقع حديث لعملية جديدة</button></div>
+<button class="text-link" id="reauthenticate" data-go="auth" hidden>تسجيل الدخول لاستكمال نفس العملية</button>
+<p class="form-note">إذا انقطع الاتصال بعد الإرسال، أبقِ الصفحة مفتوحة وأعد نفس العملية. لا يُحفظ موقعك بعد إغلاق الصفحة.</p><button class="text-link" data-go="home">الرئيسية</button></section></template>
+<template id="profile"><section class="view"><div class="eyebrow">حسابك</div><h1>الملف الشخصي</h1><div class="profile-identity"><div class="avatar" data-initials></div><h2 data-name></h2><p class="subtle" data-role></p><span class="badge" data-branch></span></div><div class="settings"><div><span data-icon="sun"></span><span>المظهر<small id="theme-name"></small></span><button class="theme-toggle outline-button">تبديل</button></div><div><span data-icon="shield"></span><span>الجهاز الشخصي<small>مربوط بجلسة دخول مثبتة بالمفتاح</small></span></div><div><span data-icon="info"></span><span>حالة الحضور<small>قراءة الحالة من الخادم مع تأكيدات العمليات</small></span></div></div><button class="outline-button" id="reload-profile">تحديث الملف والورديات</button><button class="text-link" id="logout">تسجيل الخروج</button></section></template>
+<template id="shifts"><section class="view"><div class="eyebrow">تنظيم يومك</div><h1>وردياتي</h1><p class="subtle">من بيانات الإدارة · توقيت القاهرة</p><div id="shift-list"></div><button class="text-link" data-go="home">الرئيسية</button></section></template>
+<template id="requests"><section class="view"><div class="eyebrow">مساحتك</div><h1>طلباتي</h1><div class="shift-card"><span data-icon="requests"></span><h2>غير متاح في هذه المرحلة</h2><p class="subtle">الإجازات والسلف والطلبات غير مفعّلة هنا. لا توجد طلبات توضيحية أو نتائج محاكاة في هذا التطبيق.</p></div></section></template>
+<script type="module" src="app.mjs"></script>
+</body></html>
