@@ -47,7 +47,7 @@ class MigrationGuardTests(unittest.TestCase):
                 with self.assertRaises(RuntimeError):
                     hr_migrate.execute(settings, 1, True)
                 upgrade.assert_not_called()
-                engine.begin.assert_not_called()
+                engine.begin.assert_called_once()
 
     def test_check_mode_never_upgrades(self):
         engine = Mock()

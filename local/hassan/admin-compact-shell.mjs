@@ -33,7 +33,7 @@ export function omarCompactShell({workspace,app,mode}){
  load(id){if(id!=='\0'+logoId)return null;return `import React from 'react';
  import white from ${JSON.stringify(fileURLToPath(new URL('./assets/cashier-header-logo-white-tight.svg',import.meta.url)))};
  import ink from ${JSON.stringify(fileURLToPath(new URL('./assets/mini-print-logo.svg',import.meta.url)))};
- export default function OmarAdminSidebarLogo({isDarkMode}){return React.createElement('img',{src:isDarkMode?white:ink,alt:'Omar Fahim Barber shop',className:'omar-admin-sidebar-logo'});}`;},
+ export default function OmarAdminSidebarLogo({isDarkMode}){return React.createElement('img',{src:isDarkMode?white:ink,alt:'Hassan Ragab Salon',className:'omar-admin-sidebar-logo'});}`;},
  transform(source,id){const file=path.relative(workspace,id.split('?')[0]).split(path.sep).join('/');if(file==='admin/index.tsx')return{code:source+'\nimport '+JSON.stringify(compactStylesheet)+';\n',map:null};const code=compactShellSource(source,file);return code===null?null:{code,map:null};}
  };
 }

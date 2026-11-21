@@ -12,7 +12,7 @@ export const loginLayoutHooks=[
  ['<div className="w-full max-w-md z-10">','<div data-omar-login-content className="w-full max-w-md z-10">'],
  ['<div className="flex flex-col items-center mb-12">','<div data-omar-login-brand className="flex flex-col items-center mb-12">'],
  ['<div className="relative w-48 h-48 flex items-center justify-center group">','<div data-omar-login-logo-frame className="relative w-48 h-48 flex items-center justify-center group">'],
- ['<Logo />','<img data-omar-login-white-logo src={omarLoginWhiteLogo} alt="Omar Fahim Barber Shop" />'],
+ ['<Logo />','<img data-omar-login-white-logo src={omarLoginWhiteLogo} alt="Hassan Ragab Salon" />'],
  [loginTitle,'          {/* Omar login: management tagline omitted. */}'],
  ['<div className="bg-[#1E1E1E]/80 backdrop-blur-xl','<div data-omar-login-card className="bg-[#1E1E1E]/80 backdrop-blur-xl'],
  ['<p className="mt-10 text-center','<p data-omar-login-notice className="mt-10 text-center'],

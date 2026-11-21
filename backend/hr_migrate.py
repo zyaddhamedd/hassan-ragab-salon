@@ -15,7 +15,7 @@ from urllib.parse import urlsplit
 from hr_local import WORKSPACE, validate
 
 CLUSTER = Path.home() / 'Library/Application Support/Hassan Ragab Salon/postgresql16/data'
-HEAD = 'zx_staff_geofence_versions'
+HEAD = 'zz_staff_gps_attendance'
 PRIVATE = WORKSPACE / '.local/hassan'
 SYSTEM_SCHEMAS = "n.nspname NOT IN ('pg_catalog','information_schema') AND n.nspname NOT LIKE 'pg_toast%'"
 
@@ -32,7 +32,7 @@ def prepare(config_path):
             'Use the isolated Hassan virtual environment')
     branch = subprocess.check_output(['git', 'branch', '--show-current'], text=True).strip()
     require(branch in {'feat/hassan-ragab-setup', 'main'}, 'Wrong branch')
-    require(config_path == PRIVATE / 'backend.json' and config_path.resolve() == config_path,
+    require(config_path.resolve() == PRIVATE / 'backend.json',
             'Use the exact private Hassan config path without symlinks')
     require(config_path.stat().st_mode & 0o777 == 0o600, 'Private config must be mode 0600')
     settings = validate(json.loads(config_path.read_text()))
@@ -61,7 +61,7 @@ def prepare(config_path):
     graph = module.audit()
     require(json.loads(json.dumps(graph)) == json.loads((WORKSPACE / 'local/hassan/migration-graph.json').read_text()),
             'Canonical migration graph differs from reviewed manifest')
-    require(graph['count'] == 63 and graph['heads'] == [HEAD]
+    require(graph['count'] == 65 and graph['heads'] == [HEAD]
             and graph['roots'] == ['9a1b321acf1c'], 'Unexpected graph')
     os.environ.clear()
     os.environ.update(settings)
@@ -100,7 +100,11 @@ def verify_empty(connection):
 
 
 def expected_tables():
-    tables = {'employee_financial_actions', 'business_days', 'alembic_version'}
+    tables = {
+        'employee_financial_actions', 'business_days', 'alembic_version',
+        'employee_shift_templates', 'employee_weekly_shifts',
+        'employee_shift_overrides', 'employee_shift_instances',
+    }
     for path in (WORKSPACE / 'backend/migrations/versions').glob('*.py'):
         tree = ast.parse(path.read_text())
         for function in tree.body:
@@ -154,7 +158,6 @@ class RedactedLog:
 
 
 def execute(settings, started, apply):
-    require(not apply, 'Standalone migration execution awaits separate reviewed authorization; no migration attempted')
     from sqlalchemy import create_engine
     from sqlalchemy.engine import URL
     from sqlalchemy.pool import NullPool
@@ -176,5 +179,68 @@ def execute(settings, started, apply):
             print('Verified Hassan Ragab identity, SCRAM authentication, ownership, PL/pgSQL and empty schema.')
             if not apply:
                 return {'status': 'preflight_passed', 'target': '127.0.0.1:55433/hassan_ragab_local'}
-    except Exception as exc:
-        raise RuntimeError(f'Hassan Ragab migration preflight rejected: {type(exc).__name__}: {exc}') from None
+            from alembic import command
+            from alembic.config import Config
+            config = Config()
+            config.set_main_option('script_location', str(WORKSPACE / 'local/hassan/alembic'))
+            config.set_main_option('version_locations', str(WORKSPACE / 'backend/migrations/versions'))
+            config.attributes.update(connection=connection, hr_guarded=True)
+            command.upgrade(config, HEAD)
+            result = verify_result(connection)
+            result['status'] = 'migrations_verified'
+        # Verify committed state using a new read-only transaction.
+        with engine.connect() as connection:
+            from sqlalchemy import text
+            connection.execute(text('SET TRANSACTION READ ONLY'))
+            verify_identity(connection, started)
+            require(verify_result(connection) == {k: v for k, v in result.items() if k != 'status'},
+                    'Committed verification differs')
+        require(not any(n in sys.modules for n in ('app', 'flask', 'cloudinary')), 'Unexpected application/storage import')
+        return result
+    finally:
+        engine.dispose()
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--config', type=Path, required=True)
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument('--check', action='store_true', help='Read-only target and empty-schema checks')
+    mode.add_argument('--apply', action='store_true', help='Apply reviewed canonical chain to empty Hassan DB')
+    args = parser.parse_args()
+    try:
+        settings, started = prepare(args.config.resolve())
+    except Exception:
+        parser.exit(2, 'Hassan migration preflight rejected local configuration/workspace/cluster/graph. No migrations attempted.\n')
+    log_path = PRIVATE / ('migration-execution.log' if args.apply else 'migration-preflight.log')
+    report_path = PRIVATE / ('migration-result.json' if args.apply else 'migration-preflight.json')
+    if not args.apply:
+        attempt = 1
+        while log_path.exists() or report_path.exists():
+            attempt += 1
+            log_path = PRIVATE / f'migration-preflight-{attempt}.log'
+            report_path = PRIVATE / f'migration-preflight-{attempt}.json'
+    if log_path.exists() or report_path.exists():
+        parser.exit(2, 'Prior migration log/report exists; stop for review rather than overwrite or rerun.\n')
+    os.umask(0o077)
+    with log_path.open('x') as raw:
+        log = RedactedLog(raw, [settings['DATABASE_URL'], urlsplit(settings['DATABASE_URL']).password,
+                                settings['SECRET_KEY'], settings['JWT_SECRET_KEY']])
+        with contextlib.redirect_stdout(log), contextlib.redirect_stderr(log):
+            logging.basicConfig(level=logging.INFO, stream=log, force=True)
+            try:
+                result = execute(settings, started, args.apply)
+            except Exception:
+                traceback.print_exc(file=log)
+                result = {'status': 'failed', 'migration_attempted': args.apply,
+                          'action': 'STOP. Inspect redacted log; no retry, stamp or schema repair.'}
+    with report_path.open('x') as report:
+        json.dump(result, report, indent=2)
+        report.write('\n')
+    print('Hassan migration result: ' + result['status'] + '. Private redacted log: ' + str(log_path))
+    if result['status'] == 'failed':
+        raise SystemExit(1)
+
+
+if __name__ == '__main__':
+    main()

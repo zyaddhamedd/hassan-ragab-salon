@@ -5,6 +5,7 @@ class Config:
     # Not enabled by ambient environment; Omar runtime must opt in explicitly.
     STAFF_IDENTITY_ENABLED = False
     STAFF_IDENTITY_OMAR_RUNTIME = False
+    STAFF_IDENTITY_HR_RUNTIME = False
     STAFF_TRUSTED_ORIGINS = ()  # Explicit HTTPS Staff origin required before enablement.
     # Enable only AFTER the additive metadata migration. No private-file runtime dependency.
     INVENTORY_RECOVERY_ENABLED = os.environ.get('INVENTORY_RECOVERY_ENABLED', 'false').lower() == 'true'

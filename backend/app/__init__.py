@@ -5,8 +5,8 @@ from app.extensions import db, migrate, jwt
 from flask_cors import CORS
 
 def create_app(*, bootstrap=False):
-    if Config.STAFF_IDENTITY_OMAR_RUNTIME is not True:
-        raise RuntimeError('Use the dedicated standalone Omar entry point; ambient Flask startup is disabled.')
+    if not (getattr(Config, 'STAFF_IDENTITY_HR_RUNTIME', False) or getattr(Config, 'STAFF_IDENTITY_OMAR_RUNTIME', False)):
+        raise RuntimeError('Use the dedicated standalone Hassan Ragab entry point; ambient Flask startup is disabled.')
     app = Flask(__name__)
     
     # Load config

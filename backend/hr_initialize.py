@@ -119,7 +119,7 @@ def verify_initialized(connection, credentials):
     user = User(**dict(row))
     require(user.check_password(credentials['password'])
             and not user.check_password(credentials['password'] + '-incorrect'), 'Password verification mismatch')
-    return dict(head=HEAD, application_tables=59, users=1, super_admins=1,
+    return dict(head=HEAD, application_tables=len(tables) - 1, users=1, super_admins=1,
                 operating_branches=1, internal_warehouses=1,
                 branch_name=BRANCH_NAME, branch_city=BRANCH_CITY,
                 password_hash_verified=True, warehouse_unchanged=True,
@@ -176,7 +176,7 @@ def main():
     mode.add_argument('--verify', action='store_true')
     args = parser.parse_args()
     try:
-        settings, started = prepare(args.config.absolute())
+        settings, started = prepare(args.config.resolve())
         chosen = 'apply' if args.apply else 'verify' if args.verify else 'check'
         result = execute(settings, started, chosen)
         if chosen == 'apply':

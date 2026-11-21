@@ -17,7 +17,7 @@ test('literal transforms are deterministic and idempotent across all source file
 });
 
 test('unknown/new storage keys, changed patterns, URLs and removed files fail closed', () => {
-  const reviewed=JSON.parse(fs.readFileSync(path.join(workspace,'local/omar/frontend-source-inventory.json'),'utf8'));
+  const reviewed=JSON.parse(fs.readFileSync(path.join(workspace,'local/hassan/frontend-source-inventory.json'),'utf8'));
   const file='mini/src/api/client.ts';
   const source=fs.readFileSync(path.join(workspace,file),'utf8');
   assert.doesNotThrow(()=>assertIsolationSource(source,file,reviewed));
@@ -54,12 +54,12 @@ test('fixed API targets, ports, proxies and empty env isolation ignore inherited
       assert.equal(config.envDir, workspace+'/.local/hassan/frontend-env');
       assert.equal(config.envPrefix, 'OMAR_PUBLIC_');
       for (const prefix of ['^/api/(?:admin|mini)(?:/|$)','/uploads']) {
-        assert.equal(config.server.proxy[prefix].target, 'http://127.0.0.1:5104');
-        assert.equal(config.preview.proxy[prefix].target, 'http://127.0.0.1:5104');
+        assert.equal(config.server.proxy[prefix].target, 'http://127.0.0.1:5204');
+        assert.equal(config.preview.proxy[prefix].target, 'http://127.0.0.1:5204');
       }
       const policy=config.server.headers['Content-Security-Policy'];
       assert.equal(policy, config.preview.headers['Content-Security-Policy']);
-      assert.ok(policy.includes("connect-src 'self' http://127.0.0.1:5104 ws://127.0.0.1:"+contract[app].port));
+      assert.ok(policy.includes("connect-src 'self' http://127.0.0.1:5204 ws://127.0.0.1:"+contract[app].port));
       assert.ok(!policy.includes('forbidden.example'));
     }
   } finally { if(old===undefined) delete process.env.VITE_API_URL;else process.env.VITE_API_URL=old; }
@@ -84,25 +84,25 @@ test('wrong mode cannot invoke the legacy environment behavior', async () => {
   await assert.rejects(omarConfig('other',{mode:'omar'}));
 });
 
-test('all browser credentials, device IDs and session keys receive Omar namespace', () => {
+test('all browser credentials, device IDs and session keys receive Hassan namespace', () => {
   for (const key of storageKeys) {
-    for(const quote of ["'",'"','`']) assert.equal(namespaceSource(quote+key+quote),quote+'omar:'+key+quote);
+    for(const quote of ["'",'"','`']) assert.equal(namespaceSource(quote+key+quote),quote+'hr:'+key+quote);
   }
-  assert.equal(namespaceSource('`mini_booking_handoff:${branchId}`'),'`omar:mini_booking_handoff:${branchId}`');
+  assert.equal(namespaceSource('`mini_booking_handoff:${branchId}`'),'`hr:mini_booking_handoff:${branchId}`');
 });
 
 test('device proof implementation changes only its private IndexedDB namespace', async () => {
   const source=fs.readFileSync(path.join(workspace,'mini/src/security/deviceProof.ts'),'utf8');
-  assert.equal(namespaceSource(source), source.replace("'mini-device-proof'","'omar:mini-device-proof'"));
+  assert.equal(namespaceSource(source), source.replace("'mini-device-proof'","'hr:mini-device-proof'"));
 });
 
 test('origin guard fails before mounting on another client origin', async () => {
   for(const app of ['admin','mini']) {
     const config=await omarConfig(app,{mode:'omar'});
     const plugin=config.plugins[0];
-    const code=plugin.load(plugin.resolveId('virtual:omar-origin'));
+    const code=plugin.load(plugin.resolveId('virtual:hassan-origin'));
     vm.runInNewContext(code,{window:{location:{origin:contract[app].origin}}});
-    assert.throws(()=>vm.runInNewContext(code,{window:{location:{origin:'http://localhost:3000'}}}));
+    assert.throws(()=>vm.runInNewContext(code,{window:{location:'http://localhost:3000'}}));
   }
 });
 
@@ -117,15 +117,15 @@ test('shared receipts receive local QR destination even when imported by Admin',
   assert.equal(transformed,namespaceSource(source));
 });
 
-test('built bundles contain only Omar effective targets and namespaced authentication', () => {
+test('built bundles contain only Hassan effective targets and namespaced authentication', () => {
   for (const app of ['admin','mini']) {
     const directory=path.join(workspace,'.local/hassan/frontend-build',app);
     const assets=path.join(directory,'assets');
     const js=fs.readdirSync(assets).filter(p=>p.endsWith('.js')).map(p=>fs.readFileSync(path.join(assets,p),'utf8')).join('\n');
     for(const forbidden of ['localhost:5001','127.0.0.1:5004','linktr.ee/secretmens.club0','secretmen-crm.com','railway.app']) assert.ok(!js.includes(forbidden),app+': '+forbidden);
-    assert.ok(js.includes(app==='admin'?'omar:admin_token':'omar:mini_token'));
+    assert.ok(js.includes(app==='admin'?'hr:admin_token':'hr:mini_token'));
     assert.ok(js.includes(contract[app].origin));
-    if(app==='mini') assert.ok(js.includes('omar:mini-device-proof'));
+    if(app==='mini') assert.ok(js.includes('hr:mini-device-proof'));
     const html=fs.readFileSync(path.join(directory,'index.html'),'utf8');
     assert.ok(html.includes('Content-Security-Policy'));
   }

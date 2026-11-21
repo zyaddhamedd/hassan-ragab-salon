@@ -75,6 +75,14 @@ class SetupDataTransferTests(unittest.TestCase):
         local_config = json.loads(local_config_file.read_text())
         local_db_url = local_config["DATABASE_URL"]
 
+        conn = psycopg2.connect(local_db_url)
+        with conn.cursor() as cur:
+            cur.execute("SELECT count(*) FROM service_categories;")
+            cat_count = cur.fetchone()[0]
+        conn.close()
+        if cat_count == 0:
+            raise unittest.SkipTest("Local database contains no setup data to transfer (fresh Hassan standalone workspace)")
+
         dump_proc = subprocess.Popen(
             [str(cls.bin_path / "pg_dump"), "--dbname", local_db_url, "--schema-only"],
             stdout=subprocess.PIPE

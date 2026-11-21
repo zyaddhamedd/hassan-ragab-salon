@@ -79,7 +79,7 @@ def protect_staff_from_legacy_user_mutations():
     # Legacy password edits do not revoke Staff sessions. Keep Staff changes on
     # the dedicated audited path, even while the Staff feature is temporarily off.
     from flask import current_app
-    if (current_app.config.get('STAFF_IDENTITY_OMAR_RUNTIME') is not True or
+    if (not (current_app.config.get('STAFF_IDENTITY_HR_RUNTIME') or current_app.config.get('STAFF_IDENTITY_OMAR_RUNTIME')) or
             request.endpoint not in {'admin.update_user', 'admin.delete_user'}):
         return None
 

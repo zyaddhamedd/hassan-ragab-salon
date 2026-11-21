@@ -16,7 +16,7 @@ UNINITIALIZED_PASSWORD = '!staff-password-not-initialized'
 
 def require_staff_identity_enabled():
     if (current_app.config.get('STAFF_IDENTITY_ENABLED') is not True or
-            current_app.config.get('STAFF_IDENTITY_OMAR_RUNTIME') is not True):
+            not (current_app.config.get('STAFF_IDENTITY_HR_RUNTIME') or current_app.config.get('STAFF_IDENTITY_OMAR_RUNTIME'))):
         raise NotFound()
 
 
