@@ -24,6 +24,12 @@ interface BusinessDayData {
     instapay_in: number;
     visa_collected?: number;
     instapay_collected?: number;
+    visa_1_in?: number;
+    visa_1_collected?: number;
+    visa_2_in?: number;
+    visa_2_collected?: number;
+    actual_visa_1?: number;
+    actual_visa_2?: number;
     cash_out: number;
     theoretical_balance: number;
     actual_balance: number | null;
@@ -41,6 +47,12 @@ interface ClosingReportData {
     instapay_in: number;
     visa_collected?: number;
     instapay_collected?: number;
+    visa_1_in?: number;
+    visa_1_collected?: number;
+    visa_2_in?: number;
+    visa_2_collected?: number;
+    actual_visa_1?: number;
+    actual_visa_2?: number;
     daily_income: number;
     total_expenses: number;
     advance_total: number;
@@ -60,13 +72,13 @@ const AdminTreasuryPage: React.FC<AdminTreasuryPageProps> = ({ isDarkMode, selec
     const [days, setDays] = useState<BusinessDayData[]>([]);
     const [isExporting, setIsExporting] = useState(false);
     const [toast, setToast] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
-    
+
     // Get today's date in YYYY-MM-DD format
     const getTodayDate = () => {
         const today = new Date();
         return today.toISOString().split('T')[0];
     };
-    
+
     const [startDate, setStartDate] = useState(getTodayDate());
     const [endDate, setEndDate] = useState(getTodayDate());
     const [selectedBusinessDay, setSelectedBusinessDay] = useState<BusinessDayData | null>(null);
@@ -343,8 +355,8 @@ const AdminTreasuryPage: React.FC<AdminTreasuryPageProps> = ({ isDarkMode, selec
                                 }
 
                                 return (
-                                    <tr 
-                                        key={day.id} 
+                                    <tr
+                                        key={day.id}
                                         onClick={() => handleRowClick(day)}
                                         className={`transition-colors cursor-pointer ${isDarkMode ? 'hover:bg-white/10' : 'hover:bg-gray-100'}`}
                                     >
@@ -391,12 +403,12 @@ const AdminTreasuryPage: React.FC<AdminTreasuryPageProps> = ({ isDarkMode, selec
 
             {/* Closing Report Modal */}
             {selectedBusinessDay && (
-                <div 
+                <div
                     className="admin-overlay-shell admin-overlay-shell--scroll z-50 bg-black/60 backdrop-blur-sm"
                     onClick={handleCloseReportModal}
                     dir="rtl"
                 >
-                    <div 
+                    <div
                         className={`admin-overlay-panel my-auto w-full max-w-3xl rounded-[2rem] border shadow-2xl ${isDarkMode ? 'bg-gray-900 border-white/10' : 'bg-white border-gray-200'}`}
                         onClick={(e) => e.stopPropagation()}
                     >
@@ -409,7 +421,7 @@ const AdminTreasuryPage: React.FC<AdminTreasuryPageProps> = ({ isDarkMode, selec
                                         يومية #{selectedBusinessDay?.id} • {selectedBusinessDay?.branch_name} • {new Date(selectedBusinessDay?.opened_at || '').toLocaleDateString('ar-EG')}
                                     </p>
                                 </div>
-                                <button 
+                                <button
                                     onClick={handleCloseReportModal}
                                     className={`rounded-full p-2 text-xl font-bold transition-colors ${isDarkMode ? 'text-red-300 hover:bg-white/5 hover:text-white' : 'text-red-600 hover:bg-red-100 hover:text-red-800'}`}
                                 >
@@ -427,92 +439,104 @@ const AdminTreasuryPage: React.FC<AdminTreasuryPageProps> = ({ isDarkMode, selec
                         ) : closingReport ? (
                             <div className="admin-overlay-body p-5 sm:p-6">
                                 <div className="space-y-4 sm:space-y-6">
-                                {/* Daily Income Section */}
-                                <div className={`rounded-2xl p-4 sm:p-5 ${isDarkMode ? 'bg-[#0b0b0b]/60 border border-red-900/10' : 'bg-red-50'}`}>
-                                    <h3 className="font-bold text-red-400 mb-3 flex items-center gap-2">📥 دخل اليوم</h3>
-                                    <div className="space-y-2 text-sm">
-                                        <div className="flex justify-between">
-                                            <span>النقد</span>
-                                            <span className="font-mono font-bold text-red-300">{closingReport.cash_in?.toFixed(2)}</span>
-                                        </div>
-                                        <div className="flex justify-between">
-                                            <span>فيزا (محصل)</span>
-                                            <span className="font-mono font-bold text-red-300">{(closingReport.visa_collected ?? closingReport.visa_in ?? 0).toFixed(2)}</span>
-                                        </div>
-                                        <div className="flex justify-between">
-                                            <span>إنستاباي (محصل)</span>
-                                            <span className="font-mono font-bold text-red-300">{(closingReport.instapay_collected ?? closingReport.instapay_in ?? 0).toFixed(2)}</span>
-                                        </div>
-                                        <div className={`flex justify-between pt-2 border-t ${isDarkMode ? 'border-white/10' : 'border-gray-200'}`}>
-                                            <span className="font-bold">إجمالي الدخل</span>
-                                            <span className="font-mono font-bold text-lg text-red-400">{closingReport.daily_income?.toFixed(2)}</span>
+                                    {/* Daily Income Section */}
+                                    <div className={`rounded-2xl p-4 sm:p-5 ${isDarkMode ? 'bg-[#0b0b0b]/60 border border-red-900/10' : 'bg-red-50'}`}>
+                                        <h3 className="font-bold text-red-400 mb-3 flex items-center gap-2">📥 دخل اليوم</h3>
+                                        <div className="space-y-2 text-sm">
+                                            <div className="flex justify-between">
+                                                <span>النقد</span>
+                                                <span className="font-mono font-bold text-red-300">{closingReport.cash_in?.toFixed(2)}</span>
+                                            </div>
+                                            <div className="flex justify-between">
+                                                <span>إجمالي فيزا (محصل)</span>
+                                                <span className="font-mono font-bold text-red-300">{(closingReport.visa_collected ?? closingReport.visa_in ?? 0).toFixed(2)}</span>
+                                            </div>
+                                            {((closingReport.visa_1_collected ?? closingReport.visa_1_in ?? 0) > 0 || (closingReport.visa_2_collected ?? closingReport.visa_2_in ?? 0) > 0) && (
+                                                <div className="mr-3 space-y-1 text-xs opacity-75">
+                                                    <div className="flex justify-between">
+                                                        <span>- فيزا 1:</span>
+                                                        <span className="font-mono">{(closingReport.visa_1_collected ?? closingReport.visa_1_in ?? 0).toFixed(2)}</span>
+                                                    </div>
+                                                    <div className="flex justify-between">
+                                                        <span>- فيزا 2:</span>
+                                                        <span className="font-mono">{(closingReport.visa_2_collected ?? closingReport.visa_2_in ?? 0).toFixed(2)}</span>
+                                                    </div>
+                                                </div>
+                                            )}
+                                            <div className="flex justify-between">
+                                                <span>إنستاباي (محصل)</span>
+                                                <span className="font-mono font-bold text-red-300">{(closingReport.instapay_collected ?? closingReport.instapay_in ?? 0).toFixed(2)}</span>
+                                            </div>
+                                            <div className={`flex justify-between pt-2 border-t ${isDarkMode ? 'border-white/10' : 'border-gray-200'}`}>
+                                                <span className="font-bold">إجمالي الدخل</span>
+                                                <span className="font-mono font-bold text-lg text-red-400">{closingReport.daily_income?.toFixed(2)}</span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                {/* Expenses Section */}
-                                <div className={`rounded-2xl p-4 sm:p-5 ${isDarkMode ? 'bg-[#0b0b0b]/60 border border-red-900/10' : 'bg-red-50'}`}>
-                                    <h3 className="font-bold text-red-400 mb-3 flex items-center gap-2">📤 المصروفات</h3>
-                                    <div className="space-y-2 text-sm">
-                                        {closingReport.advance_total > 0 && (
-                                            <div className="flex justify-between">
-                                                <span>السلفيات</span>
-                                                <span className="font-mono">{closingReport.advance_total?.toFixed(2)}</span>
+                                    {/* Expenses Section */}
+                                    <div className={`rounded-2xl p-4 sm:p-5 ${isDarkMode ? 'bg-[#0b0b0b]/60 border border-red-900/10' : 'bg-red-50'}`}>
+                                        <h3 className="font-bold text-red-400 mb-3 flex items-center gap-2">📤 المصروفات</h3>
+                                        <div className="space-y-2 text-sm">
+                                            {closingReport.advance_total > 0 && (
+                                                <div className="flex justify-between">
+                                                    <span>السلفيات</span>
+                                                    <span className="font-mono">{closingReport.advance_total?.toFixed(2)}</span>
+                                                </div>
+                                            )}
+                                            {closingReport.overtime_total > 0 && (
+                                                <div className="flex justify-between">
+                                                    <span>الإضافي</span>
+                                                    <span className="font-mono">{closingReport.overtime_total?.toFixed(2)}</span>
+                                                </div>
+                                            )}
+                                            {closingReport.commission_total > 0 && (
+                                                <div className="flex justify-between">
+                                                    <span>العمولة</span>
+                                                    <span className="font-mono">{closingReport.commission_total?.toFixed(2)}</span>
+                                                </div>
+                                            )}
+                                            {closingReport.manual_expenses_total > 0 && (
+                                                <div className="flex justify-between">
+                                                    <span>مصروفات أخرى</span>
+                                                    <span className="font-mono">{closingReport.manual_expenses_total?.toFixed(2)}</span>
+                                                </div>
+                                            )}
+                                            <div className={`flex justify-between pt-2 border-t ${isDarkMode ? 'border-white/10' : 'border-gray-200'}`}>
+                                                <span className="font-bold">الإجمالي</span>
+                                                <span className="font-mono font-bold text-red-400">{closingReport.total_expenses?.toFixed(2)}</span>
                                             </div>
-                                        )}
-                                        {closingReport.overtime_total > 0 && (
-                                            <div className="flex justify-between">
-                                                <span>الإضافي</span>
-                                                <span className="font-mono">{closingReport.overtime_total?.toFixed(2)}</span>
-                                            </div>
-                                        )}
-                                        {closingReport.commission_total > 0 && (
-                                            <div className="flex justify-between">
-                                                <span>العمولة</span>
-                                                <span className="font-mono">{closingReport.commission_total?.toFixed(2)}</span>
-                                            </div>
-                                        )}
-                                        {closingReport.manual_expenses_total > 0 && (
-                                            <div className="flex justify-between">
-                                                <span>مصروفات أخرى</span>
-                                                <span className="font-mono">{closingReport.manual_expenses_total?.toFixed(2)}</span>
-                                            </div>
-                                        )}
-                                        <div className={`flex justify-between pt-2 border-t ${isDarkMode ? 'border-white/10' : 'border-gray-200'}`}>
-                                            <span className="font-bold">الإجمالي</span>
-                                            <span className="font-mono font-bold text-red-400">{closingReport.total_expenses?.toFixed(2)}</span>
                                         </div>
                                     </div>
-                                </div>
 
-                                {/* Net Daily Section */}
-                                <div className={`rounded-2xl p-4 sm:p-5 ${isDarkMode ? 'bg-[#0b0b0b]/60 border border-red-900/10' : 'bg-red-50'}`}>
-                                    <h3 className="font-bold text-red-400 mb-3 flex items-center gap-2">💰 صافي الدخل</h3>
-                                    <div className="space-y-2 text-sm">
-                                        <div className="flex justify-between">
-                                            <span>الدخل اليومي</span>
-                                            <span className="font-mono font-bold">{closingReport.daily_income?.toFixed(2)}</span>
-                                        </div>
-                                        <div className="flex justify-between">
-                                            <span>المصروفات</span>
-                                            <span className="font-mono font-bold">- {closingReport.total_expenses?.toFixed(2)}</span>
-                                        </div>
-                                        <div className={`flex justify-between pt-2 border-t ${isDarkMode ? 'border-white/10' : 'border-gray-200'}`}>
-                                            <span className="font-bold">الصافي</span>
-                                            <span className="font-mono font-bold text-lg text-red-400">{(closingReport.daily_income - closingReport.total_expenses)?.toFixed(2)}</span>
+                                    {/* Net Daily Section */}
+                                    <div className={`rounded-2xl p-4 sm:p-5 ${isDarkMode ? 'bg-[#0b0b0b]/60 border border-red-900/10' : 'bg-red-50'}`}>
+                                        <h3 className="font-bold text-red-400 mb-3 flex items-center gap-2">💰 صافي الدخل</h3>
+                                        <div className="space-y-2 text-sm">
+                                            <div className="flex justify-between">
+                                                <span>الدخل اليومي</span>
+                                                <span className="font-mono font-bold">{closingReport.daily_income?.toFixed(2)}</span>
+                                            </div>
+                                            <div className="flex justify-between">
+                                                <span>المصروفات</span>
+                                                <span className="font-mono font-bold">- {closingReport.total_expenses?.toFixed(2)}</span>
+                                            </div>
+                                            <div className={`flex justify-between pt-2 border-t ${isDarkMode ? 'border-white/10' : 'border-gray-200'}`}>
+                                                <span className="font-bold">الصافي</span>
+                                                <span className="font-mono font-bold text-lg text-red-400">{(closingReport.daily_income - closingReport.total_expenses)?.toFixed(2)}</span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                {/* Register Balance Section removed per user request */}
+                                    {/* Register Balance Section removed per user request */}
 
-                                {/* Close Button */}
-                                <button 
-                                    onClick={handleCloseReportModal}
-                                    className={`w-full rounded-xl px-4 py-3 font-bold transition-colors ${isDarkMode ? 'bg-red-700 hover:bg-red-600 text-white' : 'bg-red-600 hover:bg-red-700 text-white'}`}
-                                >
-                                    إغلاق
-                                </button>
+                                    {/* Close Button */}
+                                    <button
+                                        onClick={handleCloseReportModal}
+                                        className={`w-full rounded-xl px-4 py-3 font-bold transition-colors ${isDarkMode ? 'bg-red-700 hover:bg-red-600 text-white' : 'bg-red-600 hover:bg-red-700 text-white'}`}
+                                    >
+                                        إغلاق
+                                    </button>
                                 </div>
                             </div>
                         ) : (

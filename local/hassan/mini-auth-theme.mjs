@@ -72,9 +72,9 @@ export function buildAuthCSS(workspace){
  rule(scope+' button[class~="bg-[#E53935]"][class~="text-white"]','color: var(--omar-mini-on-accent);');
  rule(scope+' button[type="submit"] [class~="border-white/20"]','border-color: color-mix(in srgb, var(--omar-mini-on-accent) 20%, transparent);');
  rule(scope+' button[type="submit"] [class~="border-t-white"]','border-top-color: var(--omar-mini-on-accent);');
- rule(scope+' .focus-gold:focus','border-color: var(--omar-mini-accent); box-shadow: 0 0 10px rgba(216,184,135,0.3);');
- rule(scope+' .neon-red-shadow','box-shadow: 0 0 20px rgba(216,184,135,0.4);');
- rule(scope+' .neon-gold-text','text-shadow: 0 0 8px rgba(216,184,135,0.5);');
+ rule(scope+' .focus-gold:focus','border-color: var(--omar-mini-accent); box-shadow: 0 0 10px rgba(168,144,106,0.3);');
+ rule(scope+' .neon-red-shadow','box-shadow: 0 0 20px rgba(168,144,106,0.4);');
+ rule(scope+' .neon-gold-text','text-shadow: 0 0 8px rgba(168,144,106,0.5);');
  lines.push('}');return lines.join('\n')+'\n';
 }
 export function omarAuthTheme({workspace,app,mode}){

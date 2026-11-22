@@ -35,6 +35,8 @@ ARABIC_WEEKDAY_NAMES = {
 TREASURY_PAYMENT_METHODS = (
     PaymentMethod.CASH,
     PaymentMethod.VISA,
+    PaymentMethod.VISA_1,
+    PaymentMethod.VISA_2,
     PaymentMethod.INSTAPAY,
 )
 
@@ -128,8 +130,14 @@ def fetch_admin_business_day_rows(
             "opening_balance": float(_decimal_from_nullable(business_day.opening_balance)),
             "cash_in": float(cash_value),
             "visa_in": float(visa_revenue_value),
+            "visa_1_in": float(combined["visa_1_in"]),
+            "visa_2_in": float(combined["visa_2_in"]),
+            "visa_unassigned_in": float(combined["visa_unassigned_in"]),
             "instapay_in": float(instapay_revenue_value),
             "visa_collected": float(visa_collected_value),
+            "visa_1_collected": float(combined["visa_1_collected"]),
+            "visa_2_collected": float(combined["visa_2_collected"]),
+            "visa_unassigned_collected": float(combined["visa_unassigned_collected"]),
             "instapay_collected": float(instapay_collected_value),
             "invoice_cash_in": float(invoice_collections["cash_in"]),
             "invoice_visa_in": float(invoice_collections["visa_in"]),
@@ -212,6 +220,45 @@ def build_business_day_collection_snapshots(business_day_ids: Sequence[int]) -> 
             combined_totals[_revenue_field_name(payment_method)] = invoice_value + deposit_value
             combined_totals[_collected_field_name(payment_method)] = invoice_collected_value + deposit_value
 
+        total_visa_in_inv = (
+            invoice_totals["visa_unassigned_in"] +
+            invoice_totals["visa_1_in"] +
+            invoice_totals["visa_2_in"]
+        )
+        total_visa_collected_inv = (
+            invoice_collected_totals["visa_unassigned_collected"] +
+            invoice_collected_totals["visa_1_collected"] +
+            invoice_collected_totals["visa_2_collected"]
+        )
+        invoice_totals["visa_in"] = total_visa_in_inv
+        invoice_collected_totals["visa_collected"] = total_visa_collected_inv
+
+        total_visa_in_dep = (
+            deposit_totals["visa_unassigned_in"] +
+            deposit_totals["visa_1_in"] +
+            deposit_totals["visa_2_in"]
+        )
+        total_visa_collected_dep = (
+            deposit_totals["visa_unassigned_collected"] +
+            deposit_totals["visa_1_collected"] +
+            deposit_totals["visa_2_collected"]
+        )
+        deposit_totals["visa_in"] = total_visa_in_dep
+        deposit_totals["visa_collected"] = total_visa_collected_dep
+
+        total_visa_in_comb = (
+            combined_totals["visa_unassigned_in"] +
+            combined_totals["visa_1_in"] +
+            combined_totals["visa_2_in"]
+        )
+        total_visa_collected_comb = (
+            combined_totals["visa_unassigned_collected"] +
+            combined_totals["visa_1_collected"] +
+            combined_totals["visa_2_collected"]
+        )
+        combined_totals["visa_in"] = total_visa_in_comb
+        combined_totals["visa_collected"] = total_visa_collected_comb
+
         invoice_total = (
             invoice_totals["cash_in"] +
             invoice_totals["visa_in"] +
@@ -232,6 +279,9 @@ def build_business_day_collection_snapshots(business_day_ids: Sequence[int]) -> 
             "invoice_collections": {
                 **invoice_totals,
                 "visa_collected": invoice_collected_totals["visa_collected"],
+                "visa_1_collected": invoice_collected_totals["visa_1_collected"],
+                "visa_2_collected": invoice_collected_totals["visa_2_collected"],
+                "visa_unassigned_collected": invoice_collected_totals["visa_unassigned_collected"],
                 "instapay_collected": invoice_collected_totals["instapay_collected"],
             },
             "appointment_deposit_collections": deposit_totals,
@@ -383,8 +433,14 @@ def _empty_method_totals() -> dict[str, Decimal]:
     return {
         "cash_in": Decimal("0.00"),
         "visa_in": Decimal("0.00"),
+        "visa_1_in": Decimal("0.00"),
+        "visa_2_in": Decimal("0.00"),
+        "visa_unassigned_in": Decimal("0.00"),
         "instapay_in": Decimal("0.00"),
         "visa_collected": Decimal("0.00"),
+        "visa_1_collected": Decimal("0.00"),
+        "visa_2_collected": Decimal("0.00"),
+        "visa_unassigned_collected": Decimal("0.00"),
         "instapay_collected": Decimal("0.00"),
     }
 
@@ -403,7 +459,9 @@ def _empty_business_day_snapshot() -> dict:
 def _revenue_field_name(payment_method: PaymentMethod) -> str:
     return {
         PaymentMethod.CASH: "cash_in",
-        PaymentMethod.VISA: "visa_in",
+        PaymentMethod.VISA: "visa_unassigned_in",
+        PaymentMethod.VISA_1: "visa_1_in",
+        PaymentMethod.VISA_2: "visa_2_in",
         PaymentMethod.INSTAPAY: "instapay_in",
     }[payment_method]
 
@@ -411,7 +469,9 @@ def _revenue_field_name(payment_method: PaymentMethod) -> str:
 def _collected_field_name(payment_method: PaymentMethod) -> str:
     return {
         PaymentMethod.CASH: "cash_in",
-        PaymentMethod.VISA: "visa_collected",
+        PaymentMethod.VISA: "visa_unassigned_collected",
+        PaymentMethod.VISA_1: "visa_1_collected",
+        PaymentMethod.VISA_2: "visa_2_collected",
         PaymentMethod.INSTAPAY: "instapay_collected",
     }[payment_method]
 

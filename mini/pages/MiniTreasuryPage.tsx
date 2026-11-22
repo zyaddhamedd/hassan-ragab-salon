@@ -13,8 +13,14 @@ interface SummaryData {
     opened_at?: string;
     cash_in?: number;
     visa_in?: number;
+    visa_1_in?: number;
+    visa_2_in?: number;
+    visa_unassigned_in?: number;
     instapay_in?: number;
     visa_collected?: number;
+    visa_1_collected?: number;
+    visa_2_collected?: number;
+    visa_unassigned_collected?: number;
     instapay_collected?: number;
     invoice_cash_in?: number;
     invoice_visa_in?: number;
@@ -122,7 +128,8 @@ const MiniTreasuryPage: React.FC<MiniTreasuryPageProps> = ({ onBusinessDayClosed
     // Modal state
     const [isCloseModalOpen, setIsCloseModalOpen] = useState(false);
     const [actualCashStr, setActualCashStr] = useState('');
-    const [actualVisaStr, setActualVisaStr] = useState('');
+    const [actualVisa1Str, setActualVisa1Str] = useState('');
+    const [actualVisa2Str, setActualVisa2Str] = useState('');
     const [actualInstapayStr, setActualInstapayStr] = useState('');
     const [isClosing, setIsClosing] = useState(false);
     const [closeReport, setCloseReport] = useState<any>(null);
@@ -199,7 +206,9 @@ const MiniTreasuryPage: React.FC<MiniTreasuryPageProps> = ({ onBusinessDayClosed
 
     const submitCloseDay = async () => {
         const cash = Number(actualCashStr);
-        const visa = Number(actualVisaStr || '0');
+        const visa1 = Number(actualVisa1Str || '0');
+        const visa2 = Number(actualVisa2Str || '0');
+        const visa = visa1 + visa2;
         const instapay = Number(actualInstapayStr || '0');
 
         if (!actualCashStr || isNaN(cash)) {
@@ -214,6 +223,8 @@ const MiniTreasuryPage: React.FC<MiniTreasuryPageProps> = ({ onBusinessDayClosed
                 actual_balance: cash,       // canonical close field (unchanged)
                 actual_cash: cash,
                 actual_visa: visa,
+                actual_visa_1: visa1,
+                actual_visa_2: visa2,
                 actual_instapay: instapay,
             });
             const autoCheckedOutCount = Number(res.auto_checked_out_count ?? 0);
@@ -457,7 +468,15 @@ const MiniTreasuryPage: React.FC<MiniTreasuryPageProps> = ({ onBusinessDayClosed
           <td class="value">${f(data.cash_in)} ج.م</td>
         </tr>
         <tr>
-          <td class="label">فيزا (محصل)</td>
+          <td class="label">فيزا 1 (محصل)</td>
+          <td class="value">${f(data.visa_1_collected ?? data.visa_1_in)} ج.م</td>
+        </tr>
+        <tr>
+          <td class="label">فيزا 2 (محصل)</td>
+          <td class="value">${f(data.visa_2_collected ?? data.visa_2_in)} ج.م</td>
+        </tr>
+        <tr>
+          <td class="label">إجمالي فيزا (محصل)</td>
           <td class="value">${f(data.visa_collected ?? data.visa_in)} ج.م</td>
         </tr>
         <tr>
@@ -509,7 +528,15 @@ const MiniTreasuryPage: React.FC<MiniTreasuryPageProps> = ({ onBusinessDayClosed
           <td class="value">${f(data.actual_cash)} ج.م</td>
         </tr>
         <tr>
-          <td class="label">فيزا</td>
+          <td class="label">فيزا 1</td>
+          <td class="value">${f(data.actual_visa_1)} ج.م</td>
+        </tr>
+        <tr>
+          <td class="label">فيزا 2</td>
+          <td class="value">${f(data.actual_visa_2)} ج.م</td>
+        </tr>
+        <tr>
+          <td class="label">إجمالي فيزا</td>
           <td class="value">${f(data.actual_visa)} ج.م</td>
         </tr>
         <tr>
@@ -620,7 +647,9 @@ const MiniTreasuryPage: React.FC<MiniTreasuryPageProps> = ({ onBusinessDayClosed
                     <div className="bg-[#1E1E1E] border border-white/5 rounded-2xl p-6">
                         <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">مطابقة وسائل الدفع</p>
                         <MethodRow label="كاش" color="text-emerald-400" expected={closeReport.cash_in ?? 0} actual={closeReport.actual_cash ?? 0} diff={diffCash} />
-                        <MethodRow label="فيزا" color="text-blue-400" expected={closeReport.visa_collected ?? closeReport.visa_in ?? 0} actual={closeReport.actual_visa ?? 0} diff={diffVisa} />
+                        <MethodRow label="فيزا 1" color="text-blue-400" expected={closeReport.visa_1_collected ?? closeReport.visa_1_in ?? 0} actual={closeReport.actual_visa_1 ?? 0} diff={closeReport.diff_visa_1 ?? 0} />
+                        <MethodRow label="فيزا 2" color="text-cyan-400" expected={closeReport.visa_2_collected ?? closeReport.visa_2_in ?? 0} actual={closeReport.actual_visa_2 ?? 0} diff={closeReport.diff_visa_2 ?? 0} />
+                        <MethodRow label="إجمالي فيزا" color="text-indigo-400" expected={closeReport.visa_collected ?? closeReport.visa_in ?? 0} actual={closeReport.actual_visa ?? 0} diff={diffVisa} />
                         <MethodRow label="إنستاباي" color="text-violet-400" expected={closeReport.instapay_collected ?? closeReport.instapay_in ?? 0} actual={closeReport.actual_instapay ?? 0} diff={diffInstapay} />
                     </div>
 
@@ -865,14 +894,25 @@ const MiniTreasuryPage: React.FC<MiniTreasuryPageProps> = ({ onBusinessDayClosed
                                 />
                             </div>
 
-                            {/* Visa row */}
+                            {/* Visa 1 row */}
                             <div className="bg-blue-500/5 border border-blue-500/10 rounded-xl p-4">
                                 <ReconcileRow
-                                    label="فيزا 💳"
+                                    label="فيزا 1 💳"
                                     color="text-blue-400"
-                                    expected={summary.visa_collected ?? summary.visa_in ?? 0}
-                                    actualStr={actualVisaStr}
-                                    onActualChange={setActualVisaStr}
+                                    expected={summary.visa_1_collected ?? summary.visa_1_in ?? 0}
+                                    actualStr={actualVisa1Str}
+                                    onActualChange={setActualVisa1Str}
+                                />
+                            </div>
+
+                            {/* Visa 2 row */}
+                            <div className="bg-cyan-500/5 border border-cyan-500/10 rounded-xl p-4">
+                                <ReconcileRow
+                                    label="فيزا 2 💳"
+                                    color="text-cyan-400"
+                                    expected={summary.visa_2_collected ?? summary.visa_2_in ?? 0}
+                                    actualStr={actualVisa2Str}
+                                    onActualChange={setActualVisa2Str}
                                 />
                             </div>
 
@@ -892,7 +932,9 @@ const MiniTreasuryPage: React.FC<MiniTreasuryPageProps> = ({ onBusinessDayClosed
                                 <div className="pt-4 border-t border-white/10 space-y-2">
                                     {(() => {
                                         const cash = Number(actualCashStr || '0');
-                                        const visa = Number(actualVisaStr || '0');
+                                        const visa1 = Number(actualVisa1Str || '0');
+                                        const visa2 = Number(actualVisa2Str || '0');
+                                        const visa = visa1 + visa2;
                                         const instapay = Number(actualInstapayStr || '0');
                                         const totalActual = cash + visa + instapay;
                                         const totalExpected =

@@ -565,11 +565,12 @@ const AppointmentsScreen: React.FC<AppointmentsScreenProps> = React.memo(({ appo
                       </span>
                       <span className="text-[10px] text-white/40">مطلوب</span>
                     </div>
-                    <div className="grid grid-cols-3 gap-3">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                       {[
                         { value: 'CASH', label: 'كاش' },
-                        { value: 'VISA', label: 'Visa' },
-                        { value: 'INSTAPAY', label: 'Instapay' },
+                        { value: 'VISA_1', label: 'فيزا 1' },
+                        { value: 'VISA_2', label: 'فيزا 2' },
+                        { value: 'INSTAPAY', label: 'إنستاباي' },
                       ].map(method => {
                         const isSelected = newBooking.depositPaymentMethod === method.value;
                         return (

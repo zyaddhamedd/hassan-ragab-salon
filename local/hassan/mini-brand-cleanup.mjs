@@ -33,9 +33,9 @@ export function cleanupSource(source,file){
 export function omarMiniBrandCleanup({workspace,app,mode}){
  if(app!=='mini'||!['hassan', 'omar'].includes(mode))return null;
  const assets={
-  'virtual:omar-mini-print-logo':'mini-print-logo.svg',
+  'virtual:omar-mini-print-logo':'hassan-ragab-logo.png',
   'virtual:omar-mini-unavailable-qr':'receipt-qr-unavailable.svg',
-  'virtual:omar-mini-white-logo':'cashier-header-logo-white-tight.svg',
+  'virtual:omar-mini-white-logo':'hassan-ragab-logo.png',
  };
  return {name:'omar-mini-brand-cleanup',enforce:'pre',
  buildStart(){if(this.meta.watchMode!==true)this.emitFile({type:'asset',fileName:'assets/hr-favicon.svg',source:fs.readFileSync(path.join(directory,'assets/mini-favicon.svg'))});},

@@ -67,7 +67,7 @@ export interface Appointment {
   deposit?: number;
 }
 
-export type AppointmentDepositPaymentMethod = 'CASH' | 'VISA' | 'INSTAPAY';
+export type AppointmentDepositPaymentMethod = 'CASH' | 'VISA' | 'VISA_1' | 'VISA_2' | 'INSTAPAY';
 
 export interface AppointmentDepositTransactionReceipt {
   id: number;

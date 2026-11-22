@@ -71,7 +71,7 @@
   html[data-omar-mini-theme="foundation"] [data-omar-mini-auth] button[class~="bg-[#E53935]"][class~="text-white"] { color: var(--omar-mini-on-accent); }
   html[data-omar-mini-theme="foundation"] [data-omar-mini-auth] button[type="submit"] [class~="border-white/20"] { border-color: color-mix(in srgb, var(--omar-mini-on-accent) 20%, transparent); }
   html[data-omar-mini-theme="foundation"] [data-omar-mini-auth] button[type="submit"] [class~="border-t-white"] { border-top-color: var(--omar-mini-on-accent); }
-  html[data-omar-mini-theme="foundation"] [data-omar-mini-auth] .focus-gold:focus { border-color: var(--omar-mini-accent); box-shadow: 0 0 10px rgba(216,184,135,0.3); }
-  html[data-omar-mini-theme="foundation"] [data-omar-mini-auth] .neon-red-shadow { box-shadow: 0 0 20px rgba(216,184,135,0.4); }
-  html[data-omar-mini-theme="foundation"] [data-omar-mini-auth] .neon-gold-text { text-shadow: 0 0 8px rgba(216,184,135,0.5); }
+  html[data-omar-mini-theme="foundation"] [data-omar-mini-auth] .focus-gold:focus { border-color: var(--omar-mini-accent); box-shadow: 0 0 10px rgba(168,144,106,0.3); }
+  html[data-omar-mini-theme="foundation"] [data-omar-mini-auth] .neon-red-shadow { box-shadow: 0 0 20px rgba(168,144,106,0.4); }
+  html[data-omar-mini-theme="foundation"] [data-omar-mini-auth] .neon-gold-text { text-shadow: 0 0 8px rgba(168,144,106,0.5); }
 }

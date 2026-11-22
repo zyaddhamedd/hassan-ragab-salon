@@ -152,11 +152,10 @@ const Receipt: React.FC<ReceiptProps> = React.memo(({
             {/* Toast Notification */}
             {toastMessage && (
                <div className="fixed left-6 bottom-6 z-[120] animate-fade-in-up">
-                  <div className={`flex items-center gap-2.5 rounded-xl border px-4 py-3.5 text-xs font-semibold shadow-2xl backdrop-blur-md ${
-                     toastType === 'error'
+                  <div className={`flex items-center gap-2.5 rounded-xl border px-4 py-3.5 text-xs font-semibold shadow-2xl backdrop-blur-md ${toastType === 'error'
                         ? 'border-red-500/10 bg-[#161618] text-red-300'
                         : 'border-emerald-500/10 bg-[#161618] text-emerald-300'
-                  }`}>
+                     }`}>
                      <CheckCircle2 size={14} className={toastType === 'error' ? 'text-red-400' : 'text-emerald-400'} />
                      <span>{toastMessage}</span>
                   </div>
@@ -267,9 +266,12 @@ export const ReceiptContent: React.FC<ContentProps> = React.memo(({
    const getDisplayedPaymentAmount = (payment: { amount: number; entered_amount?: number }) =>
       payment.entered_amount ?? payment.amount;
    const getPaymentLabel = (m: string) => {
-      if (m?.toUpperCase() === 'CASH') return 'نقدي';
-      if (m?.toUpperCase() === 'VISA') return 'Visa';
-      if (m?.toUpperCase() === 'INSTAPAY') return 'InstaPay';
+      const upper = m?.toUpperCase();
+      if (upper === 'CASH') return 'نقدي';
+      if (upper === 'VISA_1') return 'فيزا 1';
+      if (upper === 'VISA_2') return 'فيزا 2';
+      if (upper === 'VISA') return 'Visa';
+      if (upper === 'INSTAPAY') return 'InstaPay';
       return m;
    };
 
@@ -287,120 +289,120 @@ export const ReceiptContent: React.FC<ContentProps> = React.memo(({
       : Math.max(0, effectiveSubtotal - effectiveDiscount);
 
    return (
-   <>
-      {/* Logo */}
-      <div className="flex flex-col items-center mb-3">
-         <img src={logo} alt="logo" className="w-24 mb-1" />
-         <div className="text-[11px] font-black">
-            فاتورة رقم #{invoiceId || '---'}
+      <>
+         {/* Logo */}
+         <div className="flex flex-col items-center mb-3">
+            <img src={logo} alt="logo" className="w-24 mb-1" />
+            <div className="text-[11px] font-black">
+               فاتورة رقم #{invoiceId || '---'}
+            </div>
          </div>
-      </div>
 
-      {/* Client Info */}
-      <div className="border-t border-b py-2 text-[11px] space-y-1">
-         <div className="flex justify-between">
-            <span>العميل</span>
-            <span className="font-bold">{payerName || 'ضيف'}</span>
-         </div>
-         {payerPhone && (
+         {/* Client Info */}
+         <div className="border-t border-b py-2 text-[11px] space-y-1">
             <div className="flex justify-between">
-               <span>رقم</span>
-               <span>{payerPhone}</span>
+               <span>العميل</span>
+               <span className="font-bold">{payerName || 'ضيف'}</span>
             </div>
-         )}
-         <div className="flex justify-between">
-            <span>الدفع</span>
-            <div className="flex items-center gap-1 font-bold">
-               <span>{paymentDisplay}</span>
+            {payerPhone && (
+               <div className="flex justify-between">
+                  <span>رقم</span>
+                  <span>{payerPhone}</span>
+               </div>
+            )}
+            <div className="flex justify-between">
+               <span>الدفع</span>
+               <div className="flex items-center gap-1 font-bold">
+                  <span>{paymentDisplay}</span>
+               </div>
             </div>
          </div>
-      </div>
 
-      {/* Services */}
-      <div className="mt-3 space-y-2">
-         {groups.map((group, gIdx) => (
-            <div key={gIdx}>
-               {group.services.map((service, sIdx) => (
-                  <div key={sIdx} className="flex justify-between border-b border-dashed pb-1 mb-1">
-                     <span className="text-[11px]">{service.name}</span>
-                     <span className="font-bold">{service.price} ج</span>
-                  </div>
-               ))}
-            </div>
-         ))}
-      </div>
-
-      {/* Totals */}
-      <div className="mt-3 pt-2 border-t space-y-1 text-[12px]">
-         <div className="flex justify-between">
-            <span>الإجمالي</span>
-            <span>{effectiveSubtotal} ج</span>
-         </div>
-
-         {promo ? (
-            <div className="flex justify-between text-[#E53935] font-bold">
-               <span>كود الخصم ({promo.code})</span>
-               <span>-{effectiveDiscount} ج</span>
-            </div>
-         ) : effectiveDiscount > 0 ? (
-            <div className="flex justify-between text-emerald-600">
-               <span>خصم</span>
-               <span>-{effectiveDiscount} ج</span>
-            </div>
-         ) : null}
-
-         <div className="flex justify-between text-[14px] font-black border-t pt-1 mt-1">
-            <span>إجمالي الفاتورة</span>
-            <span>{effectiveNet} ج</span>
-         </div>
-
-         {depositApplied > 0 && <div className="text-[12px] space-y-1">
-            <div className="flex justify-between"><span>عربون مدفوع سابقًا</span><span>{depositApplied} ج</span></div>
-            <div className="flex justify-between"><span>التحصيل الجديد</span><span>{Math.max(0, effectiveNet - depositApplied)} ج</span></div>
-            <div className="flex justify-between"><span>المتبقي غير المدفوع</span><span>0 ج</span></div>
-         </div>}
-         {effectiveNet === 0 && effectiveSubtotal > 0 && (
-            <div className="mt-2 py-1 px-2 bg-black text-white text-center rounded-lg font-black text-[9px] tracking-widest uppercase">
-               FULLY DISCOUNTED / مجاني
-            </div>
-         )}
-      </div>
-
-      {safePayments.length > 0 && (
-         <div className="mt-2 pt-2 border-t border-dashed space-y-1 text-[11px]">
-            {safePayments.map((p, i) => (
-               <div key={i} className="flex justify-between">
-                  <span>مدفوع ({getPaymentLabel(p.method)})</span>
-                  <span className="font-bold">{getDisplayedPaymentAmount(p)} ج</span>
+         {/* Services */}
+         <div className="mt-3 space-y-2">
+            {groups.map((group, gIdx) => (
+               <div key={gIdx}>
+                  {group.services.map((service, sIdx) => (
+                     <div key={sIdx} className="flex justify-between border-b border-dashed pb-1 mb-1">
+                        <span className="text-[11px]">{service.name}</span>
+                        <span className="font-bold">{service.price} ج</span>
+                     </div>
+                  ))}
                </div>
             ))}
-            {changeAmount > 0 && (
-               <div className="flex justify-between text-[#E53935]">
-                  <span>الباقي للعميل</span>
-                  <span className="font-bold">{changeAmount} ج</span>
+         </div>
+
+         {/* Totals */}
+         <div className="mt-3 pt-2 border-t space-y-1 text-[12px]">
+            <div className="flex justify-between">
+               <span>الإجمالي</span>
+               <span>{effectiveSubtotal} ج</span>
+            </div>
+
+            {promo ? (
+               <div className="flex justify-between text-[#E53935] font-bold">
+                  <span>كود الخصم ({promo.code})</span>
+                  <span>-{effectiveDiscount} ج</span>
+               </div>
+            ) : effectiveDiscount > 0 ? (
+               <div className="flex justify-between text-emerald-600">
+                  <span>خصم</span>
+                  <span>-{effectiveDiscount} ج</span>
+               </div>
+            ) : null}
+
+            <div className="flex justify-between text-[14px] font-black border-t pt-1 mt-1">
+               <span>إجمالي الفاتورة</span>
+               <span>{effectiveNet} ج</span>
+            </div>
+
+            {depositApplied > 0 && <div className="text-[12px] space-y-1">
+               <div className="flex justify-between"><span>عربون مدفوع سابقًا</span><span>{depositApplied} ج</span></div>
+               <div className="flex justify-between"><span>التحصيل الجديد</span><span>{Math.max(0, effectiveNet - depositApplied)} ج</span></div>
+               <div className="flex justify-between"><span>المتبقي غير المدفوع</span><span>0 ج</span></div>
+            </div>}
+            {effectiveNet === 0 && effectiveSubtotal > 0 && (
+               <div className="mt-2 py-1 px-2 bg-black text-white text-center rounded-lg font-black text-[9px] tracking-widest uppercase">
+                  FULLY DISCOUNTED / مجاني
                </div>
             )}
          </div>
-      )}
 
-      {/* QR Code */}
-      <div className="receipt-qr mt-4 flex flex-col items-center gap-2">
-         <div className="w-20 h-20 bg-[#fafafa] rounded-xl flex items-center justify-center p-1">
-            <img
-               src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent('https://example.invalid/omar-qr-unconfigured')}`}
-               alt="QR"
-               className="w-full h-full object-contain"
-            />
+         {safePayments.length > 0 && (
+            <div className="mt-2 pt-2 border-t border-dashed space-y-1 text-[11px]">
+               {safePayments.map((p, i) => (
+                  <div key={i} className="flex justify-between">
+                     <span>مدفوع ({getPaymentLabel(p.method)})</span>
+                     <span className="font-bold">{getDisplayedPaymentAmount(p)} ج</span>
+                  </div>
+               ))}
+               {changeAmount > 0 && (
+                  <div className="flex justify-between text-[#E53935]">
+                     <span>الباقي للعميل</span>
+                     <span className="font-bold">{changeAmount} ج</span>
+                  </div>
+               )}
+            </div>
+         )}
+
+         {/* QR Code */}
+         <div className="receipt-qr mt-4 flex flex-col items-center gap-2">
+            <div className="w-20 h-20 bg-[#fafafa] rounded-xl flex items-center justify-center p-1">
+               <img
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent('https://example.invalid/omar-qr-unconfigured')}`}
+                  alt="QR"
+                  className="w-full h-full object-contain"
+               />
+            </div>
          </div>
-      </div>
 
-      {/* Footer */}
-      <div className="text-center mt-3 text-[10px]">
-         <div>{dateStr} - {timeStr}</div>
-         <div className="mt-1 font-bold">{branchName || ''}</div>
-         <div className="mt-1">شكراً لزيارتكم 🤍</div>
-      </div>
-   </>
+         {/* Footer */}
+         <div className="text-center mt-3 text-[10px]">
+            <div>{dateStr} - {timeStr}</div>
+            <div className="mt-1 font-bold">{branchName || ''}</div>
+            <div className="mt-1">شكراً لزيارتكم 🤍</div>
+         </div>
+      </>
    );
 });
 

@@ -1,16 +1,16 @@
 /* Revenue Intelligence V2. Omar Dark only; no axis-domain or data changes. */
 @media screen {
- html[data-omar-admin-theme="foundation"] [data-omar-admin-dashboard="dark"] [data-omar-revenue-v2="dark"] { background:#1E2C33; padding:24px; border:1px solid #3A4C56; border-radius:20px; box-shadow:0 1px 0 rgb(255 255 255 / .025) inset,0 6px 18px rgb(0 0 0 / .14); overflow:visible; }
+ html[data-omar-admin-theme="foundation"] [data-omar-admin-dashboard="dark"] [data-omar-revenue-v2="dark"] { background:#151518; padding:24px; border:1px solid #2B2B33; border-radius:20px; box-shadow:0 1px 0 rgb(255 255 255 / .025) inset,0 6px 18px rgb(0 0 0 / .14); overflow:visible; }
  html[data-omar-admin-theme="foundation"] [data-omar-revenue-v2="dark"] > .absolute { display:none; }
  html[data-omar-admin-theme="foundation"] [data-omar-revenue-v2="dark"] [data-omar-revenue-header] { margin-bottom:18px; gap:16px; }
  html[data-omar-admin-theme="foundation"] [data-omar-revenue-v2="dark"] h3 { font-size:20px; line-height:1.5; font-weight:700; color:#FFFFFF; }
  html[data-omar-admin-theme="foundation"] [data-omar-revenue-v2="dark"] [data-omar-revenue-header] p { color:#BDCBD2; opacity:1; font-size:11px; font-weight:400; letter-spacing:0; }
  html[data-omar-admin-theme="foundation"] [data-omar-revenue-v2="dark"] .animate-ping { display:none; }
- html[data-omar-admin-theme="foundation"] [data-omar-revenue-v2="dark"] [data-omar-revenue-controls] { background:#162127; border-color:#3A4C56; border-radius:10px; padding:4px; }
+ html[data-omar-admin-theme="foundation"] [data-omar-revenue-v2="dark"] [data-omar-revenue-controls] { background:#0B0B0D; border-color:#2B2B33; border-radius:10px; padding:4px; }
  html[data-omar-admin-theme="foundation"] [data-omar-revenue-v2="dark"] [data-omar-revenue-controls] button { color:#BDCBD2; padding:7px 15px; box-shadow:none; backdrop-filter:none; font-size:11px; border-radius:7px; }
- html[data-omar-admin-theme="foundation"] [data-omar-revenue-v2="dark"] [data-omar-revenue-controls] button:hover { background:#273740; color:#FFFFFF; }
- html[data-omar-admin-theme="foundation"] [data-omar-revenue-v2="dark"] [data-omar-revenue-controls] button[aria-pressed="true"] { background:#35434A; color:#FFFFFF; }
- html[data-omar-admin-theme="foundation"] [data-omar-revenue-v2="dark"] [data-omar-revenue-controls] button:focus-visible { outline:2px solid #D8B887; outline-offset:2px; }
+ html[data-omar-admin-theme="foundation"] [data-omar-revenue-v2="dark"] [data-omar-revenue-controls] button:hover { background:#1A1A1F; color:#FFFFFF; }
+ html[data-omar-admin-theme="foundation"] [data-omar-revenue-v2="dark"] [data-omar-revenue-controls] button[aria-pressed="true"] { background:#24242C; color:#FFFFFF; }
+ html[data-omar-admin-theme="foundation"] [data-omar-revenue-v2="dark"] [data-omar-revenue-controls] button:focus-visible { outline:2px solid #A8906A; outline-offset:2px; }
  html[data-omar-admin-theme="foundation"] [data-omar-revenue-v2="dark"] [data-omar-revenue-legend] { display:flex; align-items:center; gap:22px; flex-wrap:wrap; margin-bottom:20px; font-size:11px; color:#CFD9DE; }
  html[data-omar-admin-theme="foundation"] [data-omar-revenue-v2="dark"] [data-omar-revenue-legend] span { display:inline-flex; align-items:center; gap:8px; line-height:18px; }
  html[data-omar-admin-theme="foundation"] [data-omar-revenue-v2="dark"] [data-omar-revenue-legend] i { display:inline-block; flex-shrink:0; width:18px; height:3px; border-radius:2px; background:#EF3434; }
@@ -22,7 +22,7 @@
  html[data-omar-admin-theme="foundation"] [data-omar-revenue-v2="dark"] [filter="url(#glowRevenue)"],
  html[data-omar-admin-theme="foundation"] [data-omar-revenue-v2="dark"] [filter="url(#glowProfit)"] { display:none; }
  html[data-omar-admin-theme="foundation"] [data-omar-revenue-v2="dark"] .recharts-area-area { fill-opacity:.06; }
- html[data-omar-admin-theme="foundation"] [data-omar-revenue-v2="dark"] .recharts-active-dot circle { r:4px; stroke:#1E2C33; stroke-width:2px; filter:none; }
+ html[data-omar-admin-theme="foundation"] [data-omar-revenue-v2="dark"] .recharts-active-dot circle { r:4px; stroke:#151518; stroke-width:2px; filter:none; }
  html[data-omar-admin-theme="foundation"] [data-omar-revenue-v2="dark"] .recharts-tooltip-cursor { stroke:#B8C5CC; stroke-opacity:.55; stroke-width:1px; stroke-dasharray:4 4; }
  html[data-omar-admin-theme="foundation"] [data-omar-revenue-v2="dark"] [data-omar-revenue-tooltip="dark"] { background:#18262E; border-color:#52636D; border-radius:12px; padding:15px; color:#FFFFFF; backdrop-filter:none; box-shadow:0 8px 24px rgb(0 0 0 / .25); transition:none; max-width:calc(100vw - 48px); }
  html[data-omar-admin-theme="foundation"] [data-omar-revenue-v2="dark"] [data-omar-revenue-tooltip="dark"] [class~="opacity-50"],

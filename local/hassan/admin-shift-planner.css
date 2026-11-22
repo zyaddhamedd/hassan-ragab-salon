@@ -1,6 +1,6 @@
 @media screen {
  [data-omar-shift-workspace]{--osp-page:#f7f7f8;--osp-surface:#fff;--osp-input:#f4f4f5;--osp-line:#d2d7d9;--osp-ink:#17232a;--osp-muted:#53646d;--osp-accent:#805c29;--osp-on:#fff;--osp-error:#ad2028;}
- [data-omar-shift-workspace="dark"]{--osp-page:#162127;--osp-surface:#1e2c33;--osp-input:#1a282f;--osp-line:#3a4c56;--osp-ink:#fff;--osp-muted:#c5d0d3;--osp-accent:#d8b887;--osp-on:#17232a;--osp-error:#ff8989;}
+ [data-omar-shift-workspace="dark"]{--osp-page:#0B0B0D;--osp-surface:#151518;--osp-input:#121215;--osp-line:#2B2B33;--osp-ink:#fff;--osp-muted:#c5d0d3;--osp-accent:#A8906A;--osp-on:#17232a;--osp-error:#ff8989;}
  [data-omar-shift-workspace] .osp-tabs{display:flex;gap:6px;padding:12px 24px;background:var(--osp-page);color:var(--osp-muted);border-bottom:1px solid var(--osp-line);}
  [data-omar-shift-workspace] .osp-tabs button{padding:10px 20px;border-radius:10px;border:0;background:transparent;font-weight:700;min-height:44px;}
  [data-omar-shift-workspace] .osp-tabs [aria-selected="true"]{background:var(--osp-surface);color:var(--osp-accent);}

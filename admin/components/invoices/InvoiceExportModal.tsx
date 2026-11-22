@@ -101,7 +101,9 @@ const STATUS_OPTIONS: Array<{ value: InvoiceExportStatusFilter; label: string }>
 
 const PAYMENT_METHOD_OPTIONS: Array<{ value: InvoiceExportPaymentMethodFilter; label: string }> = [
   { value: 'CASH', label: 'كاش' },
-  { value: 'VISA', label: 'فيزا' },
+  { value: 'VISA', label: 'فيزا (الكل)' },
+  { value: 'VISA_1', label: 'فيزا 1' },
+  { value: 'VISA_2', label: 'فيزا 2' },
   { value: 'INSTAPAY', label: 'إنستا باي' }
 ];
 
@@ -984,7 +986,7 @@ const InvoiceExportModal: React.FC<InvoiceExportModalProps> = ({
                                   : isDarkMode
                                     ? 'border-white/6 bg-white/[0.02]'
                                     : 'border-black/5 bg-gray-50/70'
-                                }`}
+                                  }`}
                               >
                                 <div>
                                   <div className={`text-sm font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{column.label}</div>
@@ -999,7 +1001,7 @@ const InvoiceExportModal: React.FC<InvoiceExportModalProps> = ({
                                   : isDarkMode
                                     ? 'border-white/12 text-transparent'
                                     : 'border-black/10 text-transparent'
-                                }`}>
+                                  }`}>
                                   ✓
                                 </span>
                               </button>

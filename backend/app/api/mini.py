@@ -2091,18 +2091,36 @@ def get_business_day_summary():
             "opened_at":           business_day.opened_at.isoformat(),
             "cash_in":             float(cash_in),
             "visa_in":             float(visa_in),
+            "visa_1_in":           float(combined_collections.get("visa_1_in", 0)),
+            "visa_2_in":           float(combined_collections.get("visa_2_in", 0)),
+            "visa_unassigned_in":  float(combined_collections.get("visa_unassigned_in", 0)),
             "instapay_in":         float(instapay_in),
             "visa_collected":      float(visa_collected),
+            "visa_1_collected":    float(combined_collections.get("visa_1_collected", 0)),
+            "visa_2_collected":    float(combined_collections.get("visa_2_collected", 0)),
+            "visa_unassigned_collected": float(combined_collections.get("visa_unassigned_collected", 0)),
             "instapay_collected":  float(instapay_collected),
             "invoice_cash_in":     float(invoice_collections["cash_in"]),
             "invoice_visa_in":     float(invoice_collections["visa_in"]),
+            "invoice_visa_1_in":   float(invoice_collections.get("visa_1_in", 0)),
+            "invoice_visa_2_in":   float(invoice_collections.get("visa_2_in", 0)),
+            "invoice_visa_unassigned_in": float(invoice_collections.get("visa_unassigned_in", 0)),
             "invoice_instapay_in": float(invoice_collections["instapay_in"]),
             "invoice_visa_collected": float(invoice_collections["visa_collected"]),
+            "invoice_visa_1_collected": float(invoice_collections.get("visa_1_collected", 0)),
+            "invoice_visa_2_collected": float(invoice_collections.get("visa_2_collected", 0)),
+            "invoice_visa_unassigned_collected": float(invoice_collections.get("visa_unassigned_collected", 0)),
             "invoice_instapay_collected": float(invoice_collections["instapay_collected"]),
             "appointment_deposit_cash_in": float(deposit_collections["cash_in"]),
             "appointment_deposit_visa_in": float(deposit_collections["visa_in"]),
+            "appointment_deposit_visa_1_in": float(deposit_collections.get("visa_1_in", 0)),
+            "appointment_deposit_visa_2_in": float(deposit_collections.get("visa_2_in", 0)),
+            "appointment_deposit_visa_unassigned_in": float(deposit_collections.get("visa_unassigned_in", 0)),
             "appointment_deposit_instapay_in": float(deposit_collections["instapay_in"]),
             "appointment_deposit_visa_collected": float(deposit_collections["visa_collected"]),
+            "appointment_deposit_visa_1_collected": float(deposit_collections.get("visa_1_collected", 0)),
+            "appointment_deposit_visa_2_collected": float(deposit_collections.get("visa_2_collected", 0)),
+            "appointment_deposit_visa_unassigned_collected": float(deposit_collections.get("visa_unassigned_collected", 0)),
             "appointment_deposit_instapay_collected": float(deposit_collections["instapay_collected"]),
             "cash_out":            float(cash_out),
             "theoretical_balance": float(theoretical_bal),
@@ -2174,15 +2192,33 @@ def close_business_day():
 
         # Per-method actual counts (optional — default to 0 for backward compat)
         def _parse_actual(key):
-            raw = data.get(key, 0)
+            raw = data.get(key)
+            if raw is None:
+                return None
             try:
                 return Decimal(str(raw))
             except InvalidOperation:
                 return Decimal('0.00')
 
-        actual_cash     = _parse_actual('actual_cash')
-        actual_visa     = _parse_actual('actual_visa')
-        actual_instapay = _parse_actual('actual_instapay')
+        actual_cash     = _parse_actual('actual_cash') if _parse_actual('actual_cash') is not None else Decimal('0.00')
+        actual_visa_1   = _parse_actual('actual_visa_1')
+        actual_visa_2   = _parse_actual('actual_visa_2')
+        actual_instapay = _parse_actual('actual_instapay') if _parse_actual('actual_instapay') is not None else Decimal('0.00')
+        raw_actual_visa = _parse_actual('actual_visa')
+
+        if actual_visa_1 is not None or actual_visa_2 is not None:
+            v1 = actual_visa_1 if actual_visa_1 is not None else Decimal('0.00')
+            v2 = actual_visa_2 if actual_visa_2 is not None else Decimal('0.00')
+            actual_visa = v1 + v2
+            business_day.actual_visa_1 = v1
+            business_day.actual_visa_2 = v2
+        else:
+            # Explicit legacy fallback: preserve unassigned actual_visa without silent mapping to terminal 1 or 2
+            actual_visa = raw_actual_visa if raw_actual_visa is not None else Decimal('0.00')
+            business_day.actual_visa_1 = None
+            business_day.actual_visa_2 = None
+
+        business_day.actual_instapay = actual_instapay
 
         # If actual_cash was explicitly provided, use it as the canonical
         # actual_balance so the two values can never diverge.
@@ -2300,14 +2336,27 @@ def close_business_day():
         diff_instapay = actual_instapay - instapay_collected
         total_diff    = diff_cash + diff_visa + diff_instapay
 
+        visa_1_collected = combined_collections.get("visa_1_collected", Decimal("0.00"))
+        visa_2_collected = combined_collections.get("visa_2_collected", Decimal("0.00"))
+        visa_unassigned_collected = combined_collections.get("visa_unassigned_collected", Decimal("0.00"))
+
+        diff_visa_1 = (actual_visa_1 - visa_1_collected) if actual_visa_1 is not None else None
+        diff_visa_2 = (actual_visa_2 - visa_2_collected) if actual_visa_2 is not None else None
+
         return jsonify({
             "business_day_id":     business_day.id,
             "status":              business_day.status.value,
             # ── Income breakdown ──
             "cash_in":             float(cash_in),
             "visa_in":             float(visa_in),
+            "visa_1_in":           float(combined_collections.get("visa_1_in", 0)),
+            "visa_2_in":           float(combined_collections.get("visa_2_in", 0)),
+            "visa_unassigned_in":  float(combined_collections.get("visa_unassigned_in", 0)),
             "instapay_in":         float(instapay_in),
             "visa_collected":      float(visa_collected),
+            "visa_1_collected":    float(visa_1_collected),
+            "visa_2_collected":    float(visa_2_collected),
+            "visa_unassigned_collected": float(visa_unassigned_collected),
             "instapay_collected":  float(instapay_collected),
             "invoice_cash_in":     float(invoice_collections["cash_in"]),
             "invoice_visa_in":     float(invoice_collections["visa_in"]),
@@ -2332,11 +2381,15 @@ def close_business_day():
             # ── Actual (entered by cashier) ──
             "actual_cash":         float(actual_cash),
             "actual_visa":         float(actual_visa),
+            "actual_visa_1":       float(actual_visa_1) if actual_visa_1 is not None else None,
+            "actual_visa_2":       float(actual_visa_2) if actual_visa_2 is not None else None,
             "actual_instapay":     float(actual_instapay),
             "net_daily":           float(net_daily),
             # ── Per-method diffs ──
             "diff_cash":           float(diff_cash),
             "diff_visa":           float(diff_visa),
+            "diff_visa_1":         float(diff_visa_1) if diff_visa_1 is not None else None,
+            "diff_visa_2":         float(diff_visa_2) if diff_visa_2 is not None else None,
             "diff_instapay":       float(diff_instapay),
             "total_diff":          float(total_diff),
             # ── Register balance reconciliation (unchanged) ──
@@ -3563,7 +3616,7 @@ def create_appointment():
             try:
                 deposit_payment_method = PaymentMethod(deposit_payment_method_raw)
             except ValueError:
-                return jsonify({"error": "Invalid deposit_payment_method. Must be CASH, VISA, or INSTAPAY"}), 400
+                return jsonify({"error": "Invalid deposit_payment_method. Must be CASH, VISA, VISA_1, VISA_2, or INSTAPAY"}), 400
 
             if not g.cashier_id:
                 return jsonify({"error": "A cashier context is required to collect a deposit."}), 403

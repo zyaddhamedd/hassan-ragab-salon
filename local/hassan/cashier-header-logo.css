@@ -14,10 +14,11 @@ html[data-omar-mini-theme="foundation"] [data-omar-mini-pos="cashier"] [data-oma
     display: block;
     position: absolute;
     right: 0;
-    top: calc(50% - 125px * 844 / 1435 / 2);
-    width: 125px;
-    height: auto;
-    max-width: none;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 38px;
+    width: auto;
+    max-width: 130px;
     object-fit: contain;
   }
 }

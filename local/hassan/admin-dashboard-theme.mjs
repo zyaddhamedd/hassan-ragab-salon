@@ -28,7 +28,7 @@ export function dashboardThemeSource(source,file){
 const token=n=>'var(--omar-admin-'+(n==='accent'?'dashboard-accent':n)+')';
 const red='#EF3434';
 // Dashboard-local brand/surface tokens; functional semantics stay vivid.
-export const dashboardHierarchy={card:'#304B58',chart:'#11242D',secondary:'#E1EBEF',muted:'#C9DCE5',profit:'#16C784',accent:'#D8B887'};
+export const dashboardHierarchy={card:'#1A1A1F',chart:'#121215',secondary:'#F6F6F7',muted:'#7E7E8B',profit:'#16C784',accent:'#A8906A'};
 const hierarchy=n=>'var(--omar-admin-dashboard-'+n+')';
 export function dashboardColor(base,kind){
  const lower=base.toLowerCase();
@@ -42,7 +42,7 @@ export function dashboardColor(base,kind){
  const m=base.match(/^(emerald|green|red|yellow|amber|blue|cyan)-(\d+)$/);if(m){if(m[1]==='red'&&m[2]==='500'&&['bg','from','via','to'].includes(kind))return red;return palettes[m[1]][m[2]]||null;}
  return null;
 }
-function recolorEffect(effect){return effect.replace(/rgba\((\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)\)/g,(all,r,g,b,a)=>{const rgb={'229,57,53':'216,184,135','239,68,68':'239,52,52','16,185,129':'22,199,132','255,255,255':'255,255,255'}[[r,g,b].join(',')];return rgb?'rgba('+rgb+','+a+')':all;});}
+function recolorEffect(effect){return effect.replace(/rgba\((\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)\)/g,(all,r,g,b,a)=>{const rgb={'229,57,53':'168,144,106','239,68,68':'239,52,52','16,185,129':'22,199,132','255,255,255':'255,255,255'}[[r,g,b].join(',')];return rgb?'rgba('+rgb+','+a+')':all;});}
 export function dashboardPaint(cls){
  const effect=operationalPaint(cls);if(effect?.originalEffect){const value=recolorEffect(effect.originalEffect);if(value===effect.originalEffect)return null;const p=Object.keys(effect.declarations)[0];return{variant:effect.variant,declarations:{[p]:value},originalEffect:effect.originalEffect};}
  const m=cls.match(/^(?:(group-hover|hover|focus|group-focus-within|focus-within):)?(bg|text|border-t|border|from|via|to|shadow|ring)-(.+)$/);if(!m)return null;const[,variant='',kind,value]=m;
@@ -66,7 +66,7 @@ export function buildDashboardCSS(workspace){
  }
  // Attribute paints target only the reviewed existing SVG colors, never chart data/geometry.
  const revenue=scope+' [data-omar-admin-dashboard-region="revenue"]';
- for(const[source,target]of [['#ef4444','#EF3434'],['#10b981',hierarchy('profit')],['#ffffff03','#3A4C5603'],['#ffffff08','#B4BEC308']]){
+ for(const[source,target]of [['#ef4444','#EF3434'],['#10b981',hierarchy('profit')],['#ffffff03','#2B2B3303'],['#ffffff08','#B3B3BD08']]){
   lines.push('  '+revenue+' [stroke="'+source+'"] { stroke: '+target+'; }');lines.push('  '+revenue+' [fill="'+source+'"] { fill: '+target+'; }');lines.push('  '+revenue+' stop[stop-color="'+source+'"] { stop-color: '+target+'; }');
  }
  lines.push('  '+revenue+' text[fill="#525252"] { fill: '+hierarchy('secondary')+'; }');

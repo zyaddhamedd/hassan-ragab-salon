@@ -262,7 +262,7 @@ export interface EmployeeLedgerPageResponse extends PaginatedHistoryResponse<Ope
   summary: EmployeeLedgerSummaryResponse;
 }
 
-export interface EmployeeTransferPageResponse extends PaginatedHistoryResponse<TransferRecord> {}
+export interface EmployeeTransferPageResponse extends PaginatedHistoryResponse<TransferRecord> { }
 
 export interface EmployeeAdvancePageResponse extends PaginatedHistoryResponse<AdvanceRecord> {
   summary: {
@@ -371,7 +371,7 @@ export interface Invoice {
   last_gross_before_emptying?: number | null;
   type: 'عادية' | 'بخصم' | 'معلقة';
   amount: number;
-  deposit_settlement?: {appointment_id: number | null; applied_amount: number; new_collection_amount: number; remaining_unpaid: number | null};
+  deposit_settlement?: { appointment_id: number | null; applied_amount: number; new_collection_amount: number; remaining_unpaid: number | null };
   discountAmount?: number;
   promo?: PromoInvoiceData | null;
   promo_code?: string | null;
@@ -492,7 +492,7 @@ export type InvoiceExportColumnKey =
 
 export type InvoiceExportTypeFilter = 'جميع الفواتير' | 'عادية' | 'بخصم' | 'معلقة';
 export type InvoiceExportStatusFilter = 'PAID' | 'DRAFT' | 'DRAFT_COMMITTED' | 'CANCELED';
-export type InvoiceExportPaymentMethodFilter = 'CASH' | 'VISA' | 'INSTAPAY';
+export type InvoiceExportPaymentMethodFilter = 'CASH' | 'VISA' | 'VISA_1' | 'VISA_2' | 'INSTAPAY';
 export type InvoiceExportColumnCategory = 'invoice' | 'people' | 'financial';
 
 export interface InvoiceExportFiltersPayload {
@@ -892,7 +892,7 @@ export interface AdminSupplyRequest {
   items?: AdminSupplyRequestItem[];
 }
 
-export interface AdminSupplyRequestListResponse extends PaginatedHistoryResponse<AdminSupplyRequest> {}
+export interface AdminSupplyRequestListResponse extends PaginatedHistoryResponse<AdminSupplyRequest> { }
 
 export type AdminReturnRequestStatus = 'PENDING' | 'RETURNED_TO_MAIN' | 'RETURNED_TO_SUPPLIER' | 'REJECTED';
 

@@ -186,7 +186,7 @@ class ShiftService:
             amount = Decimal(str(inv.total_amount))
             if inv.payment_method == PaymentMethod.CASH:
                 income['cash'] += amount
-            elif inv.payment_method == PaymentMethod.VISA:
+            elif inv.payment_method in (PaymentMethod.VISA, PaymentMethod.VISA_1, PaymentMethod.VISA_2):
                 income['visa'] += amount
             elif inv.payment_method == PaymentMethod.INSTAPAY:
                 income['instapay'] += amount

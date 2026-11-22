@@ -3646,10 +3646,31 @@ def get_invoices():
         if pm_str:
             try:
                 # Map Arabic values if passed, or use enum directly
-                PM_REVERSE_MAP = {"كاش": "CASH", "فيزا": "VISA", "إنستا باي": "INSTAPAY"}
+                PM_REVERSE_MAP = {
+                    "كاش": "CASH",
+                    "فيزا": "VISA",
+                    "فيزا 1": "VISA_1",
+                    "فيزا 2": "VISA_2",
+                    "إنستا باي": "INSTAPAY",
+                    "إنستاباي": "INSTAPAY",
+                }
                 pm_enum_str = PM_REVERSE_MAP.get(pm_str, pm_str).upper()
-                pm_enum = PaymentMethod(pm_enum_str)
-                query = query.filter(Invoice.payment_method == pm_enum)
+                if pm_enum_str in {"VISA_ALL", "ALL_VISA", "VISA"}:
+                    visa_methods = [PaymentMethod.VISA, PaymentMethod.VISA_1, PaymentMethod.VISA_2]
+                    query = query.filter(
+                        or_(
+                            Invoice.payment_method.in_(visa_methods),
+                            Invoice.invoice_payments.any(InvoicePayment.method.in_(visa_methods))
+                        )
+                    )
+                else:
+                    pm_enum = PaymentMethod(pm_enum_str)
+                    query = query.filter(
+                        or_(
+                            Invoice.payment_method == pm_enum,
+                            Invoice.invoice_payments.any(InvoicePayment.method == pm_enum)
+                        )
+                    )
             except ValueError:
                 pass
 
@@ -5153,10 +5174,10 @@ def get_recent_notifications():
                 else:
                     m = inv.invoice_payments[0].method
                     raw = m.value if hasattr(m, 'value') else str(m)
-                    payment_label = {"CASH": "كاش", "VISA": "فيزا", "INSTAPAY": "انستا"}.get(raw, raw)
+                    payment_label = {"CASH": "كاش", "VISA": "فيزا", "VISA_1": "فيزا 1", "VISA_2": "فيزا 2", "INSTAPAY": "انستا"}.get(raw, raw)
             elif inv.payment_method:
                 raw = inv.payment_method.value if hasattr(inv.payment_method, 'value') else str(inv.payment_method)
-                payment_label = {"CASH": "كاش", "VISA": "فيزا", "INSTAPAY": "انستا"}.get(raw, raw)
+                payment_label = {"CASH": "كاش", "VISA": "فيزا", "VISA_1": "فيزا 1", "VISA_2": "فيزا 2", "INSTAPAY": "انستا"}.get(raw, raw)
             else:
                 payment_label = "غير معروف"
 

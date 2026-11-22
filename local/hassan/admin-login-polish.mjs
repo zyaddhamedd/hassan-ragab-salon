@@ -5,8 +5,8 @@ import {namespaceSource} from './frontend-config.mjs';
 import {brandSource} from './branding.mjs';
 import {finalUIThemeSource} from './admin-final-ui-theme.mjs';
 export const loginStylesheet=fileURLToPath(new URL('./admin-login-polish.css',import.meta.url));
-const white=fileURLToPath(new URL('./assets/cashier-header-logo-white-tight.svg',import.meta.url));
-const ink=fileURLToPath(new URL('./assets/mini-print-logo.svg',import.meta.url));
+const white=fileURLToPath(new URL('./assets/hassan-ragab-logo.png',import.meta.url));
+const ink=fileURLToPath(new URL('./assets/hassan-ragab-logo.png',import.meta.url));
 export const loginHooks=[
  ['<div className="relative z-10 w-full max-w-md flex flex-col items-center">','<div data-omar-login-composition className="relative z-10 w-full max-w-md flex flex-col items-center">'],
  ['<div className="relative mb-2 sm:mb-3 flex items-center justify-center animate-fade-in shrink-0">','<div data-omar-login-brand className="relative mb-2 sm:mb-3 flex items-center justify-center animate-fade-in shrink-0">'],

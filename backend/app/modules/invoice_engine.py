@@ -568,7 +568,7 @@ class InvoiceEngine:
                     try:
                         pm = PaymentMethod(method_str)
                     except ValueError:
-                        raise ValueError(f"Invalid payment method: '{p.get('method')}'. Must be CASH, VISA, or INSTAPAY.")
+                        raise ValueError(f"Invalid payment method: '{p.get('method')}'. Must be CASH, VISA, VISA_1, VISA_2, or INSTAPAY.")
 
                     try:
                         amt = Decimal(str(p.get('amount', 0)))
@@ -603,7 +603,7 @@ class InvoiceEngine:
 
                 if raw_change > Decimal('0.00'):
                     remaining_trim = raw_change
-                    method_priority = [PaymentMethod.CASH, PaymentMethod.VISA, PaymentMethod.INSTAPAY]
+                    method_priority = [PaymentMethod.CASH, PaymentMethod.VISA_1, PaymentMethod.VISA_2, PaymentMethod.VISA, PaymentMethod.INSTAPAY]
 
                     for priority_method in method_priority:
                         for p in resolved_payments:

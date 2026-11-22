@@ -26,9 +26,9 @@ spec.loader.exec_module(migration_audit)
 class ReadinessTests(unittest.TestCase):
     def test_complete_active_graph(self):
         result = migration_audit.audit()
-        self.assertEqual(result['count'], 65)
+        self.assertEqual(result['count'], 66)
         self.assertEqual(result['roots'], ['9a1b321acf1c'])
-        self.assertEqual(result['heads'], ['zz_staff_gps_attendance'])
+        self.assertEqual(result['heads'], ['aaa_dual_visa_terminals'])
         self.assertEqual(len(result['merges']), 4)
         positions = {r: i for i, r in enumerate(result['topological_order'])}
         for revision, node in result['revisions'].items():

@@ -196,6 +196,8 @@ function normalizePaymentMethod(method: string): string | null {
   if (!method) return null;
   const upper = method.toUpperCase().trim();
   if (upper === 'CASH') return 'نقدي';
+  if (upper === 'VISA_1') return 'فيزا 1';
+  if (upper === 'VISA_2') return 'فيزا 2';
   if (upper === 'VISA') return 'Visa';
   if (upper === 'INSTAPAY') return 'InstaPay';
   // Return the method as-is if not a known type

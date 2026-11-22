@@ -41,9 +41,12 @@ const ReceiptPrintLayout: React.FC<ReceiptPrintLayoutProps> = React.memo(({
    const getDisplayedPaymentAmount = (payment: { amount: number; entered_amount?: number }) =>
       payment.entered_amount ?? payment.amount;
    const getPaymentLabel = (m: string) => {
-      if (m?.toUpperCase() === 'CASH') return 'نقدي';
-      if (m?.toUpperCase() === 'VISA') return 'Visa';
-      if (m?.toUpperCase() === 'INSTAPAY') return 'InstaPay';
+      const upper = m?.toUpperCase();
+      if (upper === 'CASH') return 'نقدي';
+      if (upper === 'VISA_1') return 'فيزا 1';
+      if (upper === 'VISA_2') return 'فيزا 2';
+      if (upper === 'VISA') return 'Visa';
+      if (upper === 'INSTAPAY') return 'InstaPay';
       return m;
    };
 
@@ -422,7 +425,7 @@ const ReceiptPrintLayout: React.FC<ReceiptPrintLayoutProps> = React.memo(({
                <span>TOTAL AMOUNT</span>
                <span>{effectiveNet} ج</span>
             </div>
-            
+
             {depositApplied > 0 && <>
                <div className="rp-summary-item"><span>عربون مدفوع سابقًا</span><span>{depositApplied} ج</span></div>
                <div className="rp-summary-item"><span>التحصيل الجديد</span><span>{Math.max(0, effectiveNet - depositApplied)} ج</span></div>

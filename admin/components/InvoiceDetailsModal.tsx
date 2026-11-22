@@ -184,9 +184,12 @@ const InvoiceDetailsModal: React.FC<InvoiceDetailsModalProps> = ({
   const productItems = (currentInvoice.items || []).filter(item => item.item_type === 'PRODUCT_ITEM');
 
   const getPaymentLabel = (method: string) => {
-    if (method === 'نقدي') return 'كاش';
-    if (method === 'بطاقة مدى' || method === 'فيزا') return 'فيزا';
-    if (method === 'InstaPay') return 'إنستا باي';
+    const m = (method || '').toUpperCase();
+    if (m === 'نقدي' || m === 'CASH') return 'كاش';
+    if (m === 'VISA_1') return 'فيزا 1';
+    if (m === 'VISA_2') return 'فيزا 2';
+    if (m === 'بطاقة مدى' || m === 'فيزا' || m === 'VISA') return 'فيزا';
+    if (m === 'INSTAPAY' || method === 'InstaPay' || method === 'إنستا باي') return 'إنستا باي';
     return method || 'نقدي';
   };
 
@@ -439,7 +442,11 @@ const InvoiceDetailsModal: React.FC<InvoiceDetailsModalProps> = ({
                         تم التحصيل الكامل
                       </span>
                       <span>•</span>
-                      <span>طريقة الدفع: <strong className="text-gray-200">{getPaymentLabel(currentInvoice.method)}</strong></span>
+                      {currentInvoice.payments && currentInvoice.payments.length > 1 ? (
+                        <span>طرق الدفع: <strong className="text-gray-200">{currentInvoice.payments.map(p => `${getPaymentLabel(p.method)}: ${p.amount} ج`).join(' + ')}</strong></span>
+                      ) : (
+                        <span>طريقة الدفع: <strong className="text-gray-200">{getPaymentLabel(currentInvoice.payments?.[0]?.method || currentInvoice.method)}</strong></span>
+                      )}
                       {depositApplied > 0 && (
                         <>
                           <span>•</span>
@@ -579,12 +586,31 @@ const InvoiceDetailsModal: React.FC<InvoiceDetailsModalProps> = ({
             {/* Payment Method */}
             <div className="space-y-0.5">
               <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider block">طريقة الدفع</span>
-              <div className="flex items-center gap-1.5">
-                <CreditCard size={13} className="text-emerald-400 shrink-0" />
-                <span className={`text-xs font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                  {getPaymentLabel(currentInvoice.method)}
-                </span>
-              </div>
+              {currentInvoice.payments && currentInvoice.payments.length > 1 ? (
+                <div className="space-y-1">
+                  <div className="flex items-center gap-1.5">
+                    <CreditCard size={13} className="text-emerald-400 shrink-0" />
+                    <span className={`text-xs font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                      دفع متعدد ({currentInvoice.payments.length})
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap gap-1 text-[11px]">
+                    {currentInvoice.payments.map((p, idx) => (
+                      <span key={idx} className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-white/5 border border-white/10 font-mono text-gray-300">
+                        <span>{getPaymentLabel(p.method)}:</span>
+                        <span className="font-bold text-white">{p.amount} ج.م</span>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center gap-1.5">
+                  <CreditCard size={13} className="text-emerald-400 shrink-0" />
+                  <span className={`text-xs font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                    {getPaymentLabel(currentInvoice.payments?.[0]?.method || currentInvoice.method)}
+                  </span>
+                </div>
+              )}
             </div>
 
             {/* Branch & Time */}

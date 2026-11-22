@@ -8,7 +8,7 @@ import {loginHooks,loginRemovedBlocks,loginPolishSource,loginStylesheet,omarLogi
 const workspace=process.cwd(),file='admin/components/LoginScreen.tsx',raw=fs.readFileSync(file,'utf8'),before=finalUIThemeSource(brandSource(namespaceSource(raw),file),file),after=loginPolishSource(before,file,workspace);
 test('One official proportional logo; duplicate brand and terminal slogan removed',()=>{
  assert.equal((after.match(/<img data-omar-login-logo/g)||[]).length,1);
- assert.ok(after.includes('cashier-header-logo-white-tight.svg'));assert.ok(after.includes('mini-print-logo.svg'));
+ assert.ok(after.includes('hassan-ragab-logo.png'));
  assert.ok(!after.includes('<OmarWordmark'));assert.ok(!after.includes('<Logo '));assert.ok(!after.includes('EXECUTIVE TERMINAL'));
 });
 test('Login inputs, submit/loading/error markup, authentication and focus order unchanged',()=>{

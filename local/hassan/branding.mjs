@@ -38,6 +38,7 @@ export function hassanBranding(workspace,app){
     name:'omar-visible-branding',enforce:'pre',
     resolveId(id,importer){
       if(id==='virtual:hassan-wordmark')return '\0omar-wordmark';
+      if(id==='virtual:hassan-logo')return path.join(directory,'assets/hassan-ragab-logo.png');
       if(importer&&path.resolve(path.dirname(importer.split('?')[0]),id)==path.join(workspace,'mini/src/assets/llooggo.svg'))return path.join(directory,'wordmark-ink.svg');
     },
     load(id){if(id==='\0omar-wordmark')return fs.readFileSync(path.join(directory,'wordmark.mjs'),'utf8');},
@@ -54,11 +55,11 @@ export function hassanBranding(workspace,app){
     transformIndexHtml:{order:'pre',handler(html){
       const title=app==='admin'?'HASSAN RAGAB SALON — Admin':'HASSAN RAGAB SALON — Mini';
       return {html:html.replace(/<title>[^<]*<\/title>/,'<title>'+title+'</title>'),tags:[{tag:'style',injectTo:'head',children:`
-        .hr-wordmark-ink,.text-black,.print-template,.print-only{--hr-brand-color:#D4AF37}
+        .hr-wordmark-ink,.text-black,.print-template,.print-only{--hr-brand-color:#A8906A}
         .admin-side-nav-brand>div:first-child{width:64px!important;height:48px;border:0;border-radius:0;background:transparent}
         .admin-side-nav-brand .hr-logo-slot{width:100%;height:48px}
         .admin-side-nav[data-expanded="true"] .admin-side-nav-brand>div:first-child{width:112px!important}
-        .admin-side-nav-brand .bg-white{--hr-brand-color:#D4AF37}
+        .admin-side-nav-brand .bg-white{--hr-brand-color:#A8906A}
       `}]};
     }},
   };

@@ -109,6 +109,22 @@ class BusinessDay(db.Model):
         nullable=True
     )
 
+    # ── Terminal Reconciliation Columns (Phase 2B) ───────────────────────────
+    actual_visa_1 = db.Column(
+        db.Numeric(12, 2),
+        nullable=True
+    )
+
+    actual_visa_2 = db.Column(
+        db.Numeric(12, 2),
+        nullable=True
+    )
+
+    actual_instapay = db.Column(
+        db.Numeric(12, 2),
+        nullable=True
+    )
+
     # ── Immutable Close-Time Ledger Snapshot ─────────────────────────────────
     # Total CASH revenue collected during this business day.
     # Populated at close time; never recomputed afterward.
@@ -192,6 +208,9 @@ class BusinessDay(db.Model):
             'theoretical_balance': float(self.theoretical_balance) if self.theoretical_balance is not None else None,
             'closing_balance':     float(self.closing_balance) if self.closing_balance is not None else None,
             'variance':            float(self.variance) if self.variance is not None else None,
+            'actual_visa_1':       float(self.actual_visa_1) if self.actual_visa_1 is not None else None,
+            'actual_visa_2':       float(self.actual_visa_2) if self.actual_visa_2 is not None else None,
+            'actual_instapay':     float(self.actual_instapay) if self.actual_instapay is not None else None,
             'previous_day_id':     self.previous_day_id,
             'created_at':          self.created_at.isoformat() if self.created_at else None,
         }

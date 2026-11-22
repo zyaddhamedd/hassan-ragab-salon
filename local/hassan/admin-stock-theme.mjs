@@ -114,9 +114,9 @@ export const stockDigest=s=>createHash('sha256').update(s).digest('hex');
 export function stockThemeSource(source,file){const hooks=stockHooks[file];if(!hooks)return null;const raw=fs.readFileSync(path.join(workspace,file),'utf8');if(stockDigest(raw)!==reviewedStock[file]||![raw,namespaceSource(raw),brandSource(namespaceSource(raw),file)].includes(source))throw Error('Omar stock source drift: '+file);let code=source;for(const[b,a,n]of hooks){if(code.includes(a)||code.split(b).length!==n+1)throw Error('Omar stock hook drift: '+file);code=code.replaceAll(b,a);}return code;}
 export const stockClasses=s=>[...new Set([...inventoryClasses(s),...(s.match(/(?<![\w:-])(?:(?:[\w-]+):)*(?:bg|text|border(?:-[lrtbxy])?|from|via|to|shadow|ring|outline)-(?:\[[^\]\s]+\]|(?:teal|indigo|lime|red|emerald|blue|amber|yellow|violet|slate)-\d+)(?:\/(?:\d+|\[[\d.]+\]))?/g)||[])])];
 const stockHex={
- '#0a0b0e':'#162127','#0c0c0f':'#162127','#0c0d10':'#1E2C33','#0c0d12':'#1E2C33','#0d0d10':'#1A282F','#0d0e12':'#1E2C33','#0d0f12':'#1E2C33','#0e0e11':'#1E2C33','#0e0f13':'#1E2C33','#101010':'#1A282F','#101114':'#1A282F','#111216':'#1A282F','#121316':'#273740','#141519':'#273740','#14161a':'#35434A','#151515':'#273740','#161618':'#273740','#202020':'#35434A',
- '#111214':'#17232A','#8e939e':'#B8C5CC','#90c6ff':'#3291FF','#f2e4ab':'#D8B887','#f6e8ac':'#D8B887','#d9c983':'#E4C99F',
- '#c82e2b':'#EF3434','#f44336':'#E4C99F','#f04a45':'#E4C99F','#f43f36':'#E4C99F','#ff4343':'#E4C99F','#ff7b77':'#EF3434','#ff847f':'#EF3434','#ff8a80':'#EF3434','#ff9d99':'#EF3434','#ffb1ad':'#EF3434','#ffb1ae':'#EF3434','#ffb8b4':'#EF3434',
+ '#0a0b0e':'#0B0B0D','#0c0c0f':'#0B0B0D','#0c0d10':'#151518','#0c0d12':'#151518','#0d0d10':'#121215','#0d0e12':'#151518','#0d0f12':'#151518','#0e0e11':'#151518','#0e0f13':'#151518','#101010':'#121215','#101114':'#121215','#111216':'#121215','#121316':'#1A1A1F','#141519':'#1A1A1F','#14161a':'#24242C','#151515':'#1A1A1F','#161618':'#1A1A1F','#202020':'#24242C',
+ '#111214':'#0B0B0D','#8e939e':'#B8C5CC','#90c6ff':'#3291FF','#f2e4ab':'#A8906A','#f6e8ac':'#A8906A','#d9c983':'#BFA882',
+ '#c82e2b':'#EF3434','#f44336':'#BFA882','#f04a45':'#BFA882','#f43f36':'#BFA882','#ff4343':'#BFA882','#ff7b77':'#EF3434','#ff847f':'#EF3434','#ff8a80':'#EF3434','#ff9d99':'#EF3434','#ffb1ad':'#EF3434','#ffb1ae':'#EF3434','#ffb8b4':'#EF3434',
 };
 const hues={red:['#EF3434','#211319','#6E2931'],rose:['#EF3434','#211319','#6E2931'],emerald:['#16C784','#0F2E25','#196B4E'],green:['#16C784','#0F2E25','#196B4E'],blue:['#3291FF','#0C2338','#1D5586'],amber:['#F5A623','#30230F','#795A24'],yellow:['#F5A623','#30230F','#795A24'],violet:['#A78BFA','#251B3A','#5A4384'],purple:['#A78BFA','#251B3A','#5A4384'],teal:['#2DD4BF','#0B2C2D','#196267'],indigo:['#818CF8','#1D2340','#414D83'],lime:['#A3E635','#24311A','#536F2C']};
 export function stockPaint(cls){const alpha=cls.match(/\/(\d+)$/);if(alpha&&Number(alpha[1])%5!==0)return null;
@@ -127,8 +127,8 @@ export function stockPaint(cls){const alpha=cls.match(/\/(\d+)$/);if(alpha&&Numb
  // Semantic gradient steps keep the established helper's distinct source forms.
  const hex=cls.match(/#[0-9a-fA-F]{6}\b/)?.[0],mapped=hex&&stockHex[hex.toLowerCase()];
  if(cls.includes('outline-')){const source=cls.replace('outline-','border-'),paint=workforcePaint(source);if(paint)return{...paint,declarations:{'outline-color':Object.values(paint.declarations)[0]}};}
- if(mapped){const p=workforcePaint(cls.replace(hex,'#E6D690'));if(p)return{...p,declarations:Object.fromEntries(Object.entries(p.declarations).map(([k,v])=>[k,v.replaceAll('#D8B887',mapped)]))};}
- if(cls==='bg-white')return{variant:'',declarations:{'background-color':'#273740'}};
+ if(mapped){const p=workforcePaint(cls.replace(hex,'#E6D690'));if(p)return{...p,declarations:Object.fromEntries(Object.entries(p.declarations).map(([k,v])=>[k,v.replaceAll('#A8906A',mapped)]))};}
+ if(cls==='bg-white')return{variant:'',declarations:{'background-color':'#1A1A1F'}};
  return workforcePaint(cls);
 }
 export function buildStockCSS(root){
@@ -138,8 +138,8 @@ export function buildStockCSS(root){
  const classes=new Set();for(const f of stockFiles){const s=fs.readFileSync(path.join(root,f),'utf8');if(stockDigest(s)!==reviewedStock[f])throw Error('Omar stock paint drift: '+f);stockClasses(s).forEach(c=>classes.add(c));}
  const lines=['/* Omar Admin active Inventory/Supply only. Original shapes, alpha and behavior retained. */','@media screen {'];const order={'':0,'focus-within':1,hover:2,focus:3,'focus-visible':4,disabled:5,active:6,'disabled:hover':7,'group-focus-within':8,'group-hover':9};
  for(const[cls,{variant,declarations}]of[...classes].map(c=>[c,stockPaint(c)]).filter(([,p])=>p).sort((a,b)=>order[a[1].variant]-order[b[1].variant]||a[0].localeCompare(b[0],'en'))){const attr='[class~="'+cls+'"]',suffix=(variant&&!variant.startsWith('group-')?':'+variant:'')+(cls.startsWith('placeholder')?'::placeholder':'');const selectors=variant.startsWith('group-')?[scope+' .group:'+variant.slice(6)+' '+attr+guard]:[scope+attr+guard+suffix,scope+' '+attr+guard+suffix];lines.push('  '+selectors.join(',\n  ')+' { '+Object.entries(declarations).map(([p,v])=>p+': '+v+';').join(' ')+' }');}
- for(const c of ['bg-[#E53935]','bg-[#E6D690]','bg-emerald-500','bg-emerald-500/90','bg-green-500','bg-blue-500','bg-amber-500'])lines.push('  '+scope+' [class~="'+c+'"][class~="text-white"]'+guard+' { color: #17232A; }');
- lines.push('  '+scope+' nav[aria-label="أقسام مركز الإمداد"] button[aria-current="page"]'+guard+' { border-color: #D8B887; }');
+ for(const c of ['bg-[#E53935]','bg-[#E6D690]','bg-emerald-500','bg-emerald-500/90','bg-green-500','bg-blue-500','bg-amber-500'])lines.push('  '+scope+' [class~="'+c+'"][class~="text-white"]'+guard+' { color: #0B0B0D; }');
+ lines.push('  '+scope+' nav[aria-label="أقسام مركز الإمداد"] button[aria-current="page"]'+guard+' { border-color: #A8906A; }');
  // Only enabled product-workspace field placeholders: 40% -> 75% white.
  // Preserve disabled controls, image placeholder captions and all other alpha.
  lines.push('  '+scope+' :is(input,textarea)[class~="placeholder:text-white/40"]'+guard+':not(:disabled):not([aria-disabled="true"])::placeholder { color: rgba(255,255,255,0.75); }');

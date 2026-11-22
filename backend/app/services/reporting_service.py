@@ -184,7 +184,7 @@ def build_report_filters(source) -> ReportFilters:
     product_category = str(source.get("product_category") or "").strip() or None
     payment_method = str(source.get("payment_method") or "").strip().upper() or None
     if payment_method and payment_method not in {method.value for method in PaymentMethod}:
-        raise ValueError("payment_method must be CASH, VISA, or INSTAPAY.")
+        raise ValueError("payment_method must be CASH, VISA, VISA_1, VISA_2, or INSTAPAY.")
     sales_item_type = str(source.get("sales_item_type") or "").strip().upper() or None
     if sales_item_type and sales_item_type not in {"SERVICE_ITEM", "PRODUCT_ITEM"}:
         raise ValueError("sales_item_type must be SERVICE_ITEM or PRODUCT_ITEM.")
@@ -1499,15 +1499,27 @@ def _sales_conditions(allowed_branch_ids: Sequence[int], filters: ReportFilters,
     if filters.payment_method:
         payment_method = PaymentMethod(filters.payment_method)
         has_any_payment_row = or_(exists().where(InvoicePayment.invoice_id == Invoice.id), has_application(Invoice.id))
-        has_selected_payment_row = exists().where(and_(
-            InvoicePayment.invoice_id == Invoice.id,
-            InvoicePayment.method == payment_method,
-            InvoicePayment.amount > 0,
-        ))
-        conditions.append(or_(
-            has_selected_payment_row,
-            and_(~has_any_payment_row, Invoice.payment_method == payment_method),
-        ))
+        if payment_method == PaymentMethod.VISA:
+            visa_methods = [PaymentMethod.VISA, PaymentMethod.VISA_1, PaymentMethod.VISA_2]
+            has_selected_payment_row = exists().where(and_(
+                InvoicePayment.invoice_id == Invoice.id,
+                InvoicePayment.method.in_(visa_methods),
+                InvoicePayment.amount > 0,
+            ))
+            conditions.append(or_(
+                has_selected_payment_row,
+                and_(~has_any_payment_row, Invoice.payment_method.in_(visa_methods)),
+            ))
+        else:
+            has_selected_payment_row = exists().where(and_(
+                InvoicePayment.invoice_id == Invoice.id,
+                InvoicePayment.method == payment_method,
+                InvoicePayment.amount > 0,
+            ))
+            conditions.append(or_(
+                has_selected_payment_row,
+                and_(~has_any_payment_row, Invoice.payment_method == payment_method),
+            ))
     return conditions
 
 
@@ -2333,7 +2345,10 @@ def _finance_collections_summary(allowed_branch_ids: Sequence[int], filters: Rep
         "deposit_applications": _money(applied_total),
         "invoice_reconciliation_difference": _money(Decimal(str(invoice_total)) + applied_total - Decimal(str(net_sales))),
         "raw_tender": {
-            "visa": _money(raw[PaymentMethod.VISA.value]),
+            "visa": _money(raw[PaymentMethod.VISA.value] + raw[PaymentMethod.VISA_1.value] + raw[PaymentMethod.VISA_2.value]),
+            "visa_1": _money(raw[PaymentMethod.VISA_1.value]),
+            "visa_2": _money(raw[PaymentMethod.VISA_2.value]),
+            "visa_unassigned": _money(raw[PaymentMethod.VISA.value]),
             "instapay": _money(raw[PaymentMethod.INSTAPAY.value]),
             "change_due": change_due,
             "reconciliation_difference": _money(modern_entered_total - modern_allocated_total - Decimal(str(modern_change_due))),
@@ -2596,7 +2611,7 @@ def _finance_exceptions(allowed_branch_ids: Sequence[int], filters: ReportFilter
         .filter(
             *_finance_invoice_conditions(allowed_branch_ids, filters),
             ~has_payment,
-            Invoice.payment_method.in_([PaymentMethod.VISA, PaymentMethod.INSTAPAY]),
+            Invoice.payment_method.in_([PaymentMethod.VISA, PaymentMethod.VISA_1, PaymentMethod.VISA_2, PaymentMethod.INSTAPAY]),
             Invoice.discount_amount > 0,
         ).one()
     )

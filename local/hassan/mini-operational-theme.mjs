@@ -83,28 +83,28 @@ export function paintColor(raw,alpha,kind){
   return color;
 }
 function recolorEffects(value,screen){
-  const rgb={ '230,214,144':'216,184,135','229,57,53':'223,146,144',
+  const rgb={ '230,214,144':'168,144,106','229,57,53':'223,146,144',
     '16,185,129':'121,182,155','239,68,68':'223,146,144','255,255,255':'243,244,242' };
   if(screen==='attendance'){
     // Preserve every effect dimension and alpha; remove the broad semantic tint
     // by changing only its RGB channels to the existing neutral card token.
-    rgb['16,185,129']=rgb['239,68,68']='39,55,64';
+    rgb['16,185,129']=rgb['239,68,68']='26,26,31';
   }
   return value.replace(/rgba\((\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)\)/g,(all,r,g,b,a)=>
     rgb[[r,g,b].join(',')]?'rgba('+rgb[[r,g,b].join(',')]+','+a+')':all)
-    .replace(/#e6d690\b/gi,'#D8B887').replace(/#10b981\b/gi,screen==='attendance'?'#273740':'#79B69B').replace(/#ef4444\b/gi,screen==='attendance'?'#273740':'#DF9290');
+    .replace(/#e6d690\b/gi,'#A8906A').replace(/#10b981\b/gi,screen==='attendance'?'#1A1A1F':'#22C55E').replace(/#ef4444\b/gi,screen==='attendance'?'#1A1A1F':'#EF4444');
 }
 // Local to Attendance: never change the shared approved cashier palette.
-export const attendanceContrast={card:'#2B3C45',present:'#69AD91',absent:'#C78287',secondary:'#B8C5CB'};
-export const attendanceActionColors={present:{from:'#15803D',to:'#166534'},absent:{from:'#C81E1E',to:'#991B1B'}};
+export const attendanceContrast={card:'#1A1A1F',present:'#22C55E',absent:'#EF4444',secondary:'#B3B3BD'};
+export const attendanceActionColors={present:{from:'#15803D',to:'#166534'},absent:{from:'#DC2626',to:'#991B1B'}};
 function attendanceColor(base,alpha,kind){
   const value=base.toLowerCase();let color;
   if(['#08120e','#1a0d0d'].includes(value))color=attendanceContrast.card;
   else if(['#050807','#0f0808'].includes(value))color=token('page');
   else if(['#0a1a12','#1a0a0a'].includes(value))color=attendanceContrast.card;
-  else if(value==='#1e1e1e'&&kind==='bg')color=attendanceContrast.card;
-  else if(value==='#bdbdbd'&&kind==='text')color='#FFFFFF';
-  else if(value==='#e6d690'&&kind==='text'&&alpha==='50')color='#FFFFFF';
+  else if(value==='#1e1e1e'&&kind==='bg')color=token('input');
+  else if(value==='#bdbdbd'&&kind==='text')color=token('secondary');
+  else if(value==='#e6d690'&&kind==='text'&&alpha==='50')color=token('secondary');
   else if(value==='white'&&kind==='bg'&&alpha==='[0.03]')color=token('page');
   else if(/^(red|emerald)-(500|600|700|800|900)$/.test(value)){
     const absent=value.startsWith('red-'),semantic=absent?attendanceContrast.absent:attendanceContrast.present;

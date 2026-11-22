@@ -42,6 +42,8 @@ STATUS_LABELS = {
 PAYMENT_METHOD_LABELS = {
     PaymentMethod.CASH: "كاش",
     PaymentMethod.VISA: "فيزا",
+    PaymentMethod.VISA_1: "فيزا 1",
+    PaymentMethod.VISA_2: "فيزا 2",
     PaymentMethod.INSTAPAY: "إنستا باي",
 }
 
@@ -481,7 +483,21 @@ def _build_invoice_export_query(
         query = query.filter(Invoice.business_day_id == filters.business_day_id)
 
     if filters.payment_method is not None:
-        query = query.filter(Invoice.payment_method == filters.payment_method)
+        if filters.payment_method == PaymentMethod.VISA:
+            visa_methods = [PaymentMethod.VISA, PaymentMethod.VISA_1, PaymentMethod.VISA_2]
+            query = query.filter(
+                or_(
+                    Invoice.payment_method.in_(visa_methods),
+                    Invoice.invoice_payments.any(InvoicePayment.method.in_(visa_methods))
+                )
+            )
+        else:
+            query = query.filter(
+                or_(
+                    Invoice.payment_method == filters.payment_method,
+                    Invoice.invoice_payments.any(InvoicePayment.method == filters.payment_method)
+                )
+            )
 
     if filters.search:
         search_filters = [
@@ -579,7 +595,7 @@ def _load_invoice_payment_breakdown(invoice_ids: Sequence[int]) -> Dict[int, Dic
         amount_decimal = Decimal(str(amount or "0.00"))
         if method == PaymentMethod.CASH:
             bucket["cash_paid"] += amount_decimal
-        elif method == PaymentMethod.VISA:
+        elif method in (PaymentMethod.VISA, PaymentMethod.VISA_1, PaymentMethod.VISA_2):
             bucket["visa_paid"] += amount_decimal
         elif method == PaymentMethod.INSTAPAY:
             bucket["instapay_paid"] += amount_decimal
@@ -618,7 +634,7 @@ def _build_invoice_export_value_map(
         if row.status == InvoiceStatus.PAID and row.payment_method is not None and not row.deposit_applied:
             if row.payment_method == PaymentMethod.CASH:
                 cash_paid = final_total
-            elif row.payment_method == PaymentMethod.VISA:
+            elif row.payment_method in (PaymentMethod.VISA, PaymentMethod.VISA_1, PaymentMethod.VISA_2):
                 visa_paid = final_total
             elif row.payment_method == PaymentMethod.INSTAPAY:
                 instapay_paid = final_total
@@ -744,7 +760,12 @@ def _normalize_payment_method(raw_value) -> Optional[PaymentMethod]:
     value = {
         "كاش": "CASH",
         "فيزا": "VISA",
+        "فيزا 1": "VISA_1",
+        "فيزا 2": "VISA_2",
+        "VISA_ALL": "VISA",
+        "ALL_VISA": "VISA",
         "إنستا باي": "INSTAPAY",
+        "إنستاباي": "INSTAPAY",
     }.get(value, value)
 
     try:

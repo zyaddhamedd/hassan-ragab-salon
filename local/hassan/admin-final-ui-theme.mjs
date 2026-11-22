@@ -15,14 +15,14 @@ export const reviewedFinalUI=/* REVIEWED */ {
   "admin/components/LoginScreen.tsx": "ed2ddf44827f87c2caa624b190f5cd7cd0157367ffba0a0505ed58b3988874bb"
 };
 export function finalUIThemeSource(source,file){const hooks=finalUIHooks[file];if(!hooks)return null;const raw=fs.readFileSync(path.join(workspace,file),'utf8');if(finalUIDigest(raw)!==reviewedFinalUI[file]||![raw,namespaceSource(raw),brandSource(namespaceSource(raw),file)].includes(source))throw Error('Omar final UI source drift: '+file);let code=source;for(const[b,a,n]of hooks){if(code.includes(a)||code.split(b).length!==n+1)throw Error('Omar final UI hook drift: '+file);code=code.replaceAll(b,a);}return code;}
-const extra={'#000000':'#162127','#050505':'#162127','#1c1c1c':'#273740','#7a7a7a':'#B8C5CC','#555':'#B8C5CC','#c5a059':'#D8B887','#ff4040':'#E4C99F','#ff8c88':'#EF3434'};
-export function finalUIPaint(cls){if(cls==='bg-red-600'||cls==='hover:bg-red-600')return{variant:cls.startsWith('hover:')?'hover':'',declarations:{'background-color':'#DC2424'}};const hex=cls.match(/#[0-9a-fA-F]{3,8}\b/)?.[0],rgb=hex&&extra[hex.toLowerCase()];if(!rgb)return stockPaint(cls);const p=stockPaint(cls.replace(hex,'#E6D690'));return p?{...p,declarations:Object.fromEntries(Object.entries(p.declarations).map(([k,v])=>[k,v.replaceAll('#D8B887',rgb)]))}:null;}
+const extra={'#000000':'#0B0B0D','#050505':'#0B0B0D','#1c1c1c':'#1A1A1F','#7a7a7a':'#B8C5CC','#555':'#B8C5CC','#c5a059':'#A8906A','#ff4040':'#BFA882','#ff8c88':'#EF3434'};
+export function finalUIPaint(cls){if(cls==='bg-red-600'||cls==='hover:bg-red-600')return{variant:cls.startsWith('hover:')?'hover':'',declarations:{'background-color':'#DC2424'}};const hex=cls.match(/#[0-9a-fA-F]{3,8}\b/)?.[0],rgb=hex&&extra[hex.toLowerCase()];if(!rgb)return stockPaint(cls);const p=stockPaint(cls.replace(hex,'#E6D690'));return p?{...p,declarations:Object.fromEntries(Object.entries(p.declarations).map(([k,v])=>[k,v.replaceAll('#A8906A',rgb)]))}:null;}
 export function buildFinalUICSS(root){const scope='html[data-omar-admin-theme="foundation"] [data-omar-admin-final-ui="dark"]',guard=':not(:where(.omar-wordmark,.omar-wordmark *,.omar-logo-slot,.omar-logo-slot *,[data-omar-admin-document-protected],[data-omar-admin-document-protected] *,.print-template,.print-template *,.print-only,.print-only *)):not(:has([data-omar-admin-document-protected]))';const classes=new Set();for(const f of finalUIFiles){const source=fs.readFileSync(path.join(root,f),'utf8');if(finalUIDigest(source)!==reviewedFinalUI[f])throw Error('Omar final UI paint drift: '+f);stockClasses(source).forEach(c=>classes.add(c));}
  const lines=['/* Omar Admin remaining active UI Dark paint only; original structure and effects retained. */','@media screen {'],order={'':0,'focus-within':1,hover:2,focus:3,'focus-visible':4,disabled:5,active:6,'disabled:hover':7,'group-focus-within':8,'group-hover':9};
  for(const[cls,{variant,declarations}]of[...classes].map(c=>[c,finalUIPaint(c)]).filter(([,p])=>p).sort((a,b)=>order[a[1].variant]-order[b[1].variant]||a[0].localeCompare(b[0],'en'))){const attr='[class~="'+cls+'"]',suffix=(variant&&!variant.startsWith('group-')?':'+variant:'')+(cls.startsWith('placeholder')?'::placeholder':'');const selectors=variant.startsWith('group-')?[scope+' .group:'+variant.slice(6)+' '+attr+guard]:[scope+attr+guard+suffix,scope+' '+attr+guard+suffix];lines.push('  '+selectors.join(',\n  ')+' { '+Object.entries(declarations).map(([p,v])=>p+': '+v+';').join(' ')+' }');}
- for(const c of ['bg-[#E53935]','bg-[#E6D690]','bg-emerald-500','bg-green-500'])lines.push('  '+scope+' [class~="'+c+'"][class~="text-white"]'+guard+' { color: #17232A; }');
+ for(const c of ['bg-[#E53935]','bg-[#E6D690]','bg-emerald-500','bg-green-500'])lines.push('  '+scope+' [class~="'+c+'"][class~="text-white"]'+guard+' { color: #0B0B0D; }');
  // Existing amber repair action: readable dark foreground on its opaque hover fill.
- lines.push('  '+scope+' [class~="hover:bg-amber-500"][class~="hover:text-white"]'+guard+':hover { color: #17232A; }');
+ lines.push('  '+scope+' [class~="hover:bg-amber-500"][class~="hover:text-white"]'+guard+':hover { color: #0B0B0D; }');
  // Existing red review-required/pending status must not turn into brand champagne.
  lines.push('  '+scope+' [data-omar-admin-final-security-tone][class~="bg-[#E53935]"]'+guard+' { background-color: #EF3434; }');
  lines.push('  '+scope+' [data-omar-admin-final-security-tone][class~="text-[#E53935]"]'+guard+' { color: #EF3434; }');
@@ -30,7 +30,21 @@ export function buildFinalUICSS(root){const scope='html[data-omar-admin-theme="f
  // Source placeholder is only 10% white on an opaque dark input: readable text only.
  lines.push('  '+scope+'[data-omar-admin-final-area="login"] input[class~="placeholder:text-white/10"]'+guard+':not(:disabled):not([aria-disabled="true"])::placeholder { color: rgba(255,255,255,0.75); }');
  // Override existing scrollbar paint only within owned UI; preserve width/radius.
- lines.push('  '+scope+' .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #3A4C56; }');
- lines.push('  '+scope+' .custom-scrollbar::-webkit-scrollbar-thumb:hover { background-color: #D8B887; }');
+ lines.push('  '+scope+' .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #2B2B33; }');
+ lines.push('  '+scope+' .custom-scrollbar::-webkit-scrollbar-thumb:hover { background-color: #A8906A; }');
+ // Hassan Ragab Settings UI: Remove decorative blue/green styling from account cards, buttons, icons, and containers.
+ // Genuine success (ShieldCheck, security-tone, w-20 success badge) and red destructive warnings are preserved.
+ lines.push('  '+scope+' [class~="bg-blue-500/10"]:not([data-omar-admin-final-security-tone])'+guard+' { background-color: #1A1A1F; border: 1px solid #2B2B33; }');
+ lines.push('  '+scope+' [class~="text-blue-400"]:not([data-omar-admin-final-security-tone])'+guard+' { color: #A8906A; }');
+ lines.push('  '+scope+' [class~="text-blue-600"]:not([data-omar-admin-final-security-tone])'+guard+' { color: #A8906A; }');
+ lines.push('  '+scope+' [class~="bg-blue-500/20"]:not([data-omar-admin-final-security-tone])'+guard+' { background-color: #24242C; border: 1px solid #2B2B33; }');
+ lines.push('  '+scope+' [class~="bg-emerald-500/10"]:not([data-omar-admin-final-security-tone]):not([class~="w-20"])'+guard+' { background-color: #1A1A1F; border: 1px solid #2B2B33; }');
+ lines.push('  '+scope+' [class~="text-emerald-400"]:not([data-omar-admin-final-security-tone]):not([class~="w-20"] *):not(:has(svg[class*="ShieldCheck"]))'+guard+' { color: #A8906A; }');
+ lines.push('  '+scope+' [class~="text-emerald-300"]:not([data-omar-admin-final-security-tone])'+guard+' { color: #B3B3BD; }');
+ lines.push('  '+scope+' [class~="border-emerald-500/20"]:not([data-omar-admin-final-security-tone])'+guard+' { border-color: #2B2B33; }');
+ lines.push('  '+scope+' [class~="border-emerald-500/10"]:not([data-omar-admin-final-security-tone])'+guard+' { border-color: #2B2B33; }');
+ lines.push('  '+scope+' [class~="bg-emerald-500/15"]:not([data-omar-admin-final-security-tone])'+guard+' { background-color: #24242C; border: 1px solid #2B2B33; }');
+ lines.push('  '+scope+' [class~="bg-emerald-500/5"]:not([data-omar-admin-final-security-tone])'+guard+' { background-color: #151518; }');
+ lines.push('  '+scope+' [class~="hover:bg-emerald-500/15"]:hover'+guard+' { background-color: color-mix(in srgb, #A8906A 15%, transparent); border-color: #A8906A; }');
  lines.push('}');return lines.join('\n')+'\n';}
 export function omarFinalUITheme({workspace,app,mode}){if(app!=='admin'||!['hassan', 'omar'].includes(mode))return null;return{name:'omar-admin-final-ui-theme',enforce:'pre',buildStart(){if(fs.readFileSync(finalUIStylesheet,'utf8')!==buildFinalUICSS(workspace))throw Error('Omar final UI stylesheet drift');},transform(source,id){const f=path.relative(workspace,id.split('?')[0]).split(path.sep).join('/');if(f==='admin/index.tsx')return{code:source+'\nimport '+JSON.stringify(finalUIStylesheet)+';\n',map:null};const code=finalUIThemeSource(source,f);return code===null?null:{code,map:null};}};}

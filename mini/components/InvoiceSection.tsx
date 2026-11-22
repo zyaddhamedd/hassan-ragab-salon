@@ -95,37 +95,41 @@ const InvoiceSection: React.FC<InvoiceSectionProps> = React.memo(({
 
   // Local raw string state for each payment field so the user can type freely
   const [cashInput, setCashInput]         = React.useState('');
-  const [visaInput, setVisaInput]         = React.useState('');
+  const [visa1Input, setVisa1Input]       = React.useState('');
+  const [visa2Input, setVisa2Input]       = React.useState('');
   const [instaInput, setInstaInput]       = React.useState('');
   const tenderEdited = React.useRef(false);
   const hasAutomaticCash = React.useRef(false);
   React.useEffect(() => {
-    onPendingInputChange?.(!!(cashInput.trim() || visaInput.trim() || instaInput.trim() || discountInput.trim() || promoInput.trim()));
-  }, [cashInput, visaInput, instaInput, discountInput, promoInput, onPendingInputChange]);
+    onPendingInputChange?.(!!(cashInput.trim() || visa1Input.trim() || visa2Input.trim() || instaInput.trim() || discountInput.trim() || promoInput.trim()));
+  }, [cashInput, visa1Input, visa2Input, instaInput, discountInput, promoInput, onPendingInputChange]);
 
 
   // Compute derived totals (numbers, not strings)
   const cashAmt   = parseFloat(cashInput)  || 0;
-  const visaAmt   = parseFloat(visaInput)  || 0;
+  const visa1Amt  = parseFloat(visa1Input) || 0;
+  const visa2Amt  = parseFloat(visa2Input) || 0;
   const instaAmt  = parseFloat(instaInput) || 0;
-  const totalPaid = cashAmt + visaAmt + instaAmt;
+  const totalPaid = cashAmt + visa1Amt + visa2Amt + instaAmt;
   const change    = totalPaid > finalTotal ? +(totalPaid - finalTotal).toFixed(2) : 0;
 
   // Keep parent state in sync whenever inputs change
   React.useEffect(() => {
     const updated: { method: string; amount: number }[] = [];
     if (cashAmt  > 0) updated.push({ method: 'CASH',     amount: cashAmt  });
-    if (visaAmt  > 0) updated.push({ method: 'VISA',     amount: visaAmt  });
+    if (visa1Amt > 0) updated.push({ method: 'VISA_1',   amount: visa1Amt });
+    if (visa2Amt > 0) updated.push({ method: 'VISA_2',   amount: visa2Amt });
     if (instaAmt > 0) updated.push({ method: 'INSTAPAY', amount: instaAmt });
     setPayments(updated);
-  }, [cashInput, visaInput, instaInput]);
+  }, [cashInput, visa1Input, visa2Input, instaInput]);
 
   // Reset inputs automatically when switching to a new invoice or clearing
   React.useEffect(() => {
     tenderEdited.current = false;
     hasAutomaticCash.current = false;
     setCashInput('');
-    setVisaInput('');
+    setVisa1Input('');
+    setVisa2Input('');
     setInstaInput('');
     setIsPromoOpen(false);
     setPromoInput('');
@@ -495,11 +499,12 @@ const InvoiceSection: React.FC<InvoiceSectionProps> = React.memo(({
 
           {depositApplied > 0 && finalTotal === 0 && totalPaid > 0 && <p role="alert" className="text-xs text-amber-300 mb-2">الفاتورة مغطاة بالعربون؛ امسح مبالغ الدفع الجديدة.</p>}
           {/* 2. Structured Payment Inputs (Grid) */}
-          <div className="grid grid-cols-3 gap-3 mb-4">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
             {([
-              { id: 'cash',     method: 'CASH',     icon: <Wallet size={12} />,      label: 'كاش',   value: cashInput,   setter: setCashInput  },
-              { id: 'visa',     method: 'VISA',     icon: <CreditCard size={12} />,  label: 'فيزا',  value: visaInput,   setter: setVisaInput  },
-              { id: 'insta',    method: 'INSTAPAY', icon: <Landmark size={12} />,    label: 'إنستا', value: instaInput,  setter: setInstaInput },
+              { id: 'cash',  method: 'CASH',   icon: <Wallet size={12} />,     label: 'كاش',   value: cashInput,  setter: setCashInput  },
+              { id: 'visa1', method: 'VISA_1', icon: <CreditCard size={12} />, label: 'فيزا 1', value: visa1Input, setter: setVisa1Input },
+              { id: 'visa2', method: 'VISA_2', icon: <CreditCard size={12} />, label: 'فيزا 2', value: visa2Input, setter: setVisa2Input },
+              { id: 'insta', method: 'INSTAPAY', icon: <Landmark size={12} />,  label: 'إنستا', value: instaInput, setter: setInstaInput },
             ] as const).map((pm) => {
               const hasValue = parseFloat(pm.value) > 0;
               return (

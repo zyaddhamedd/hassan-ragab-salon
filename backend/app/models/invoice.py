@@ -14,6 +14,8 @@ class PaymentMethod(enum.Enum):
     CASH = "CASH"
     VISA = "VISA"
     INSTAPAY = "INSTAPAY"
+    VISA_1 = "VISA_1"
+    VISA_2 = "VISA_2"
 
 
 class Invoice(db.Model):

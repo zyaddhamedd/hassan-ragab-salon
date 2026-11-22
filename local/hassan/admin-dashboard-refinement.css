@@ -4,33 +4,33 @@
  html[data-omar-admin-theme="foundation"] [data-omar-admin-dashboard="dark"] [data-omar-admin-dashboard-decoration] { display:none; }
  html[data-omar-admin-theme="foundation"] [data-omar-admin-dashboard="dark"] [data-omar-kpi-grid] { gap:20px; }
  html[data-omar-admin-theme="foundation"] [data-omar-admin-dashboard="dark"] [data-omar-kpi="dark"] {
-  --omar-kpi-accent:#D8B887;
-  background:#24353E; border:1px solid #3A4C56; border-radius:18px;
+  --omar-kpi-accent:#A8906A;
+  background:#1A1A1F; border:1px solid #2B2B33; border-radius:18px;
   padding:22px; min-height:196px; overflow:hidden; isolation:isolate;
   box-shadow:0 1px 0 rgb(255 255 255 / .025) inset,0 6px 18px rgb(0 0 0 / .14); container-type:inline-size;
   transition:border-color 180ms ease,box-shadow 180ms ease,transform 180ms ease;
  }
- html[data-omar-admin-theme="foundation"] [data-omar-admin-dashboard="dark"] [data-omar-kpi="dark"]:hover { border-color:#62727A; box-shadow:0 1px 0 rgb(255 255 255 / .04) inset,0 10px 24px rgb(0 0 0 / .18); }
- html[data-omar-admin-theme="foundation"] [data-omar-admin-dashboard="dark"] [data-omar-kpi="dark"][data-omar-kpi-color="#4CAF50"] { --omar-kpi-accent:#16C784; }
- html[data-omar-admin-theme="foundation"] [data-omar-admin-dashboard="dark"] [data-omar-kpi="dark"][data-omar-kpi-color="#2196F3"] { --omar-kpi-accent:#3291FF; }
+ html[data-omar-admin-theme="foundation"] [data-omar-admin-dashboard="dark"] [data-omar-kpi="dark"]:hover { border-color:#A8906A; box-shadow:0 1px 0 rgb(255 255 255 / .04) inset,0 10px 24px rgb(0 0 0 / .22); }
+ html[data-omar-admin-theme="foundation"] [data-omar-admin-dashboard="dark"] [data-omar-kpi="dark"][data-omar-kpi-color="#4CAF50"] { --omar-kpi-accent:#22C55E; }
+ html[data-omar-admin-theme="foundation"] [data-omar-admin-dashboard="dark"] [data-omar-kpi="dark"][data-omar-kpi-color="#2196F3"] { --omar-kpi-accent:#A8906A; }
  html[data-omar-admin-theme="foundation"] [data-omar-admin-dashboard="dark"] [data-omar-kpi="dark"][data-omar-kpi-color="#FFC107"] { --omar-kpi-accent:#F5A623; }
 
- html[data-omar-admin-theme="foundation"] [data-omar-admin-dashboard="dark"] [data-omar-kpi="dark"][data-omar-kpi-color="#E53935"] { --omar-kpi-accent:#EF3434; }
+ html[data-omar-admin-theme="foundation"] [data-omar-admin-dashboard="dark"] [data-omar-kpi="dark"][data-omar-kpi-color="#E53935"] { --omar-kpi-accent:#EF4444; }
  html[data-omar-admin-theme="foundation"] [data-omar-admin-dashboard="dark"] [data-omar-kpi="dark"]::before { content:""; position:absolute; top:0; inset-inline-start:22px; width:26px; height:2px; border-radius:0 0 2px 2px; background:var(--omar-kpi-accent); opacity:.8; pointer-events:none; }
  /* Existing oversized auras/sweeps/energy bars are decoration, not metric data. */
  html[data-omar-admin-theme="foundation"] [data-omar-admin-dashboard="dark"] [data-omar-kpi="dark"] > .absolute { display:none; }
  html[data-omar-admin-theme="foundation"] [data-omar-admin-dashboard="dark"] [data-omar-kpi="dark"] [data-omar-kpi-heading] { align-items:center; margin-bottom:22px; gap:12px; }
- html[data-omar-admin-theme="foundation"] [data-omar-admin-dashboard="dark"] [data-omar-kpi="dark"] h3 { font-size:12px; font-weight:600; letter-spacing:0; line-height:1.6; color:#CDD8DE; }
- html[data-omar-admin-theme="foundation"] [data-omar-admin-dashboard="dark"] [data-omar-kpi="dark"] [data-omar-kpi-icon] { padding:10px; border-radius:12px; display:flex; align-items:center; justify-content:center; width:38px; height:38px; flex-shrink:0; background:color-mix(in srgb,var(--omar-kpi-accent) 9%,transparent); box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--omar-kpi-accent) 17%,transparent); --tw-scale-x:1; --tw-scale-y:1; --tw-rotate:0deg; }
+ html[data-omar-admin-theme="foundation"] [data-omar-admin-dashboard="dark"] [data-omar-kpi="dark"] h3 { font-size:12px; font-weight:600; letter-spacing:0; line-height:1.6; color:#B3B3BD; }
+ html[data-omar-admin-theme="foundation"] [data-omar-admin-dashboard="dark"] [data-omar-kpi="dark"] [data-omar-kpi-icon] { padding:10px; border-radius:12px; display:flex; align-items:center; justify-content:center; width:38px; height:38px; flex-shrink:0; background:#151518; border:1px solid #2B2B33; box-shadow:0 2px 8px rgb(0 0 0 / .2); --tw-scale-x:1; --tw-scale-y:1; --tw-rotate:0deg; }
  html[data-omar-admin-theme="foundation"] [data-omar-admin-dashboard="dark"] [data-omar-kpi="dark"] [data-omar-kpi-icon] svg { color:var(--omar-kpi-accent); filter:none; animation:none; }
  html[data-omar-admin-theme="foundation"] [data-omar-admin-dashboard="dark"] [data-omar-kpi="dark"] [data-omar-kpi-icon] + .absolute,
  html[data-omar-admin-theme="foundation"] [data-omar-admin-dashboard="dark"] [data-omar-kpi="dark"] [data-omar-kpi-heading] > .relative > .absolute { display:none; }
  html[data-omar-admin-theme="foundation"] [data-omar-admin-dashboard="dark"] [data-omar-kpi="dark"] [data-omar-kpi-value] { gap:7px; flex-wrap:wrap; align-items:baseline; margin-bottom:14px; }
- html[data-omar-admin-theme="foundation"] [data-omar-admin-dashboard="dark"] [data-omar-kpi="dark"] [data-omar-kpi-value] > span:first-child { font-size:clamp(24px,18cqi,48px); line-height:1.15; font-weight:750; letter-spacing:-1.25px; --tw-scale-x:1; --tw-scale-y:1; color:#FFFFFF; filter:none; overflow-wrap:anywhere; max-width:100%; }
+ html[data-omar-admin-theme="foundation"] [data-omar-admin-dashboard="dark"] [data-omar-kpi="dark"] [data-omar-kpi-value] > span:first-child { font-size:clamp(24px,18cqi,48px); line-height:1.15; font-weight:750; letter-spacing:-1.25px; --tw-scale-x:1; --tw-scale-y:1; color:#F6F6F7; filter:none; overflow-wrap:anywhere; max-width:100%; }
  html[data-omar-admin-theme="foundation"] [data-omar-admin-dashboard="dark"] [data-omar-kpi="dark"]:hover [data-omar-kpi-value] > span:first-child { color:#FFFFFF; filter:none; }
- html[data-omar-admin-theme="foundation"] [data-omar-admin-dashboard="dark"] [data-omar-kpi="dark"] [data-omar-kpi-value] > span + span { color:#BECBD2; font-size:11px; opacity:1; }
+ html[data-omar-admin-theme="foundation"] [data-omar-admin-dashboard="dark"] [data-omar-kpi="dark"] [data-omar-kpi-value] > span + span { color:#7E7E8B; font-size:11px; opacity:1; }
  /* Panel surface only: chart/tooltip children and all data properties untouched. */
- html[data-omar-admin-theme="foundation"] [data-omar-admin-dashboard="dark"] [data-omar-admin-dashboard-region="revenue"] { background:#1E2C33; border-color:#3A4C56; border-radius:20px; box-shadow:0 4px 14px rgb(0 0 0 / .12); }
+ html[data-omar-admin-theme="foundation"] [data-omar-admin-dashboard="dark"] [data-omar-admin-dashboard-region="revenue"] { background:#151518; border-color:#2B2B33; border-radius:20px; box-shadow:0 4px 14px rgb(0 0 0 / .12); }
 }
 @media screen and (max-width:639px) {
  html[data-omar-admin-theme="foundation"] [data-omar-admin-dashboard="dark"] [data-omar-kpi="dark"] { min-height:184px; padding:20px; }

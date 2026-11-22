@@ -1,20 +1,20 @@
 /* Omar Promo Dark / screen paint only. Artifact subtree is protected. */
 @media screen {
-html[data-omar-admin-theme="foundation"] [data-omar-promo-theme="dark"].admin-page-shell { background-color:#162127; color:#FFFFFF; }
-html[data-omar-admin-theme="foundation"] [data-omar-promo-theme="dark"] [class~="bg-[#161616]"]:not(:where(.oc-artifact,.oc-artifact *)) { background-color: #273740; }
-html[data-omar-admin-theme="foundation"] [data-omar-promo-theme="dark"] [class~="bg-[#202020]"]:not(:where(.oc-artifact,.oc-artifact *)) { background-color: #1A282F; }
-html[data-omar-admin-theme="foundation"] [data-omar-promo-theme="dark"] [class~="bg-[#E53935]"]:not(:where(.oc-artifact,.oc-artifact *)) { background-color: #D8B887; }
-html[data-omar-admin-theme="foundation"] [data-omar-promo-theme="dark"] [class~="text-[#E53935]"]:not(:where(.oc-artifact,.oc-artifact *)) { color: #D8B887; }
+html[data-omar-admin-theme="foundation"] [data-omar-promo-theme="dark"].admin-page-shell { background-color:#0B0B0D; color:#FFFFFF; }
+html[data-omar-admin-theme="foundation"] [data-omar-promo-theme="dark"] [class~="bg-[#161616]"]:not(:where(.oc-artifact,.oc-artifact *)) { background-color: #1A1A1F; }
+html[data-omar-admin-theme="foundation"] [data-omar-promo-theme="dark"] [class~="bg-[#202020]"]:not(:where(.oc-artifact,.oc-artifact *)) { background-color: #121215; }
+html[data-omar-admin-theme="foundation"] [data-omar-promo-theme="dark"] [class~="bg-[#E53935]"]:not(:where(.oc-artifact,.oc-artifact *)) { background-color: #A8906A; }
+html[data-omar-admin-theme="foundation"] [data-omar-promo-theme="dark"] [class~="text-[#E53935]"]:not(:where(.oc-artifact,.oc-artifact *)) { color: #A8906A; }
 html[data-omar-admin-theme="foundation"] [data-omar-promo-theme="dark"] [class~="text-white"]:not(:where(.oc-artifact,.oc-artifact *)) { color: #FFFFFF; }
 html[data-omar-admin-theme="foundation"] [data-omar-promo-theme="dark"] [class~="text-red-500"]:not(:where(.oc-artifact,.oc-artifact *)) { color: #EF3434; }
 html[data-omar-admin-theme="foundation"] [data-omar-promo-theme="dark"] [class~="text-green-600"]:not(:where(.oc-artifact,.oc-artifact *)) { color: #16C784; }
 html[data-omar-admin-theme="foundation"] [data-omar-promo-theme="dark"] [class~="bg-red-500/10"]:not(:where(.oc-artifact,.oc-artifact *)) { background-color: rgb(239 52 52 / .1); }
 html[data-omar-admin-theme="foundation"] [data-omar-promo-theme="dark"] [class~="bg-green-500/10"]:not(:where(.oc-artifact,.oc-artifact *)) { background-color: rgb(22 199 132 / .1); }
 html[data-omar-admin-theme="foundation"] [data-omar-promo-theme="dark"] [class~="border-white/5"]:not(:where(.oc-artifact,.oc-artifact *)) { border-color: rgb(58 76 86 / .5); }
-html[data-omar-admin-theme="foundation"] [data-omar-promo-theme="dark"] [class~="border-white/10"]:not(:where(.oc-artifact,.oc-artifact *)) { border-color: #3A4C56; }
+html[data-omar-admin-theme="foundation"] [data-omar-promo-theme="dark"] [class~="border-white/10"]:not(:where(.oc-artifact,.oc-artifact *)) { border-color: #2B2B33; }
 html[data-omar-admin-theme="foundation"] [data-omar-promo-theme="dark"] [class~="border-gray-500/20"]:not(:where(.oc-artifact,.oc-artifact *)) { border-color: rgb(150 165 174 / .2); }
-html[data-omar-admin-theme="foundation"] [data-omar-promo-theme="dark"] [class~="accent-[#E53935]"]:not(:where(.oc-artifact,.oc-artifact *)) { accent-color: #D8B887; }
-html[data-omar-admin-theme="foundation"] [data-omar-promo-theme="dark"] [class~="bg-[#E53935]"][class~="text-white"]:not(:where(.oc-artifact,.oc-artifact *)) { color:#17232A; }
+html[data-omar-admin-theme="foundation"] [data-omar-promo-theme="dark"] [class~="accent-[#E53935]"]:not(:where(.oc-artifact,.oc-artifact *)) { accent-color: #A8906A; }
+html[data-omar-admin-theme="foundation"] [data-omar-promo-theme="dark"] [class~="bg-[#E53935]"][class~="text-white"]:not(:where(.oc-artifact,.oc-artifact *)) { color:#0B0B0D; }
 html[data-omar-admin-theme="foundation"] [data-omar-promo-theme="dark"] :is(input,select):not(:where(.oc-artifact,.oc-artifact *)) { color:#FFFFFF; }
 html[data-omar-admin-theme="foundation"] [data-omar-promo-theme="dark"] input:not(:where(.oc-artifact,.oc-artifact *))::placeholder { color:#B8C5CC; }
 html[data-omar-admin-theme="foundation"] [data-omar-promo-theme="dark"] [class~="opacity-60"]:not(:where(.oc-artifact,.oc-artifact *)) { color:#FFFFFF; }

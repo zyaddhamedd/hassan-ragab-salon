@@ -68,7 +68,7 @@ export function inventoryPaint(cls){
  const effect=operationalPaint(cls);
  if(effect?.originalEffect){
   // Primary red effects become champagne; keep every source alpha/stop/offset.
-  const declarations=Object.fromEntries(Object.entries(effect.declarations).map(([k,v])=>[k,v.replaceAll('223,146,144','216,184,135')]));
+  const declarations=Object.fromEntries(Object.entries(effect.declarations).map(([k,v])=>[k,v.replaceAll('223,146,144','168,144,106')]));
   return {variant:state,declarations,originalEffect:effect.originalEffect};
  }
  const match=value.match(/^(\[[^\]]+\]|[^/]+)(?:\/(\d+|\[[\d.]+\]))?$/);if(!match)return null;

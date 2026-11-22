@@ -3,9 +3,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 
-export const cashierLogoFile = 'local/hassan/wordmark-ink.svg';
-export const cashierTightLogoFile = 'local/hassan/assets/cashier-header-logo-white-tight.svg';
-export const cashierWhiteLogoFile = 'local/hassan/assets/cashier-header-logo-white.svg';
+export const cashierLogoFile = 'local/hassan/assets/hassan-ragab-logo.png';
+export const cashierTightLogoFile = 'local/hassan/assets/hassan-ragab-logo.png';
+export const cashierWhiteLogoFile = 'local/hassan/assets/hassan-ragab-logo.png';
 export const cashierLogoCSS = fileURLToPath(new URL('./cashier-header-logo.css', import.meta.url));
 export const originalCashierBrand = `<div className="flex flex-col shrink-0">
                 <h1 className="text-lg font-black text-white leading-tight">{isGroupMode ? 'فاتورة مجمعة' : 'نقطة البيع'}</h1>

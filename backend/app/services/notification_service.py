@@ -22,11 +22,11 @@ class NotificationService:
                 payment_method_arabic = "متعدد"
             elif hasattr(invoice, 'invoice_payments') and len(invoice.invoice_payments) == 1:
                 method = invoice.invoice_payments[0].method.value if hasattr(invoice.invoice_payments[0].method, 'value') else str(invoice.invoice_payments[0].method)
-                mapping = {"CASH": "كاش", "VISA": "فيزا", "INSTAPAY": "انستا"}
+                mapping = {"CASH": "كاش", "VISA": "فيزا", "VISA_1": "فيزا 1", "VISA_2": "فيزا 2", "INSTAPAY": "انستا"}
                 payment_method_arabic = mapping.get(method, "غير معروف")
             elif invoice.payment_method:
                 method = invoice.payment_method.value if hasattr(invoice.payment_method, 'value') else str(invoice.payment_method)
-                mapping = {"CASH": "كاش", "VISA": "فيزا", "INSTAPAY": "انستا"}
+                mapping = {"CASH": "كاش", "VISA": "فيزا", "VISA_1": "فيزا 1", "VISA_2": "فيزا 2", "INSTAPAY": "انستا"}
                 payment_method_arabic = mapping.get(method, "غير معروف")
 
             # Payload construction preserved (unused now, useful for future logging/audit)

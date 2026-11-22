@@ -1,7 +1,7 @@
 // Omar Admin shell RGB overlay. Canonical sources and behavior remain untouched.
 import fs from 'node:fs';import path from 'node:path';import{createHash}from'node:crypto';import{fileURLToPath}from'node:url';
 export const adminThemeStylesheet=fileURLToPath(new URL('./admin-theme.css',import.meta.url));
-export const adminPalette={page:'#162127',input:'#1A282F',surface:'#1E2C33',card:'#273740',border:'#3A4C56',text:'#F3F4F2',secondary:'#B4BEC3',muted:'#96A5AE',accent:'#D8B887','on-accent':'#17232A',hover:'#E4C99F',pressed:'#C4A474',selected:'#35434A',success:'#79B69B',warning:'#D6B576',error:'#DF9290',info:'#91B7CC'};
+export const adminPalette={page:'#0B0B0D',input:'#121215',surface:'#151518',card:'#1A1A1F',border:'#2B2B33',text:'#F6F6F7',secondary:'#B3B3BD',muted:'#7E7E8B',accent:'#A8906A','on-accent':'#0B0B0D',hover:'#BFA882',pressed:'#927A56',selected:'#24242C',success:'#22C55E',warning:'#F59E0B',error:'#EF4444',info:'#38BDF8'};
 export const shellFiles={sidebar:'admin/components/SideNav.tsx',header:'admin/components/Header.tsx',bottom:'admin/components/BottomNav.tsx'};
 const paintPattern=/(?<![\w:-])(?:(?:[\w-]+):)*(?:bg|text|border|shadow)-(?:\[[^\]\s]+\]|white|black|transparent|current|gray-\d+)(?:\/(?:\d+|\[[\d.]+\]))?/g;
 export const shellPaintClasses=s=>[...new Set(s.match(paintPattern)||[])].sort();
@@ -27,7 +27,7 @@ const accent='var(--omar-admin-navigation-accent, var(--omar-admin-accent))';
 export function shellPaint(cls,region){
  const m=cls.match(/^(?:(group-hover|hover):)?(bg|text|border|shadow)-(.+)$/);if(!m)return null;
  const[,variant='',kind,value]=m;
- if(kind==='shadow'&&value==='[0_0_4px_#E53935]')return{variant,declarations:{'--tw-shadow':'0 0 4px #D8B887'}};
+ if(kind==='shadow'&&value==='[0_0_4px_#E53935]')return{variant,declarations:{'--tw-shadow':'0 0 4px #A8906A'}};
  const v=value.match(/^(\[[^\]]+\]|[^/]+)(?:\/(\d+|\[[\d.]+\]))?$/);if(!v)return null;let[,base,alpha]=v;
  base=base.replace(/^\[|\]$/g,'');let color;
  const rgba=base.match(/^rgba\(229,57,53,([\d.]+)\)$/);if(rgba){color=accent;alpha='['+rgba[1]+']';}
@@ -57,9 +57,9 @@ export function buildAdminThemeCSS(workspace){
    lines.push('  '+scope+' .admin-side-nav-control { color: var(--omar-admin-accent); }');
    lines.push('  '+scope+' :is(.admin-side-nav-item,.admin-side-nav-control):focus-visible { outline-color: var(--omar-admin-accent); }');
    lines.push('  '+scope+' [data-omar-admin-semantic="logout"] { --omar-admin-navigation-accent: #EF3434; }');
-   lines.push('  '+scope+' .sidebar-scroll { scrollbar-color: rgba(216,184,135,0.25) transparent; }');
-   lines.push('  '+scope+' .sidebar-scroll::-webkit-scrollbar-thumb { background-color: rgba(216,184,135,0.25); }');
-   lines.push('  '+scope+' .sidebar-scroll::-webkit-scrollbar-thumb:hover { background-color: rgba(216,184,135,0.55); }');
+   lines.push('  '+scope+' .sidebar-scroll { scrollbar-color: rgba(168,144,106,0.25) transparent; }');
+   lines.push('  '+scope+' .sidebar-scroll::-webkit-scrollbar-thumb { background-color: rgba(168,144,106,0.25); }');
+   lines.push('  '+scope+' .sidebar-scroll::-webkit-scrollbar-thumb:hover { background-color: rgba(168,144,106,0.55); }');
   }
  }
  // Owner-authorized content removal in both modes. Retain the original line box
