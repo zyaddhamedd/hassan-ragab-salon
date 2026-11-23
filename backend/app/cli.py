@@ -14,6 +14,239 @@ from sqlalchemy.sql import text
 def register_cli_commands(app: Flask):
     """Register all CLI commands with the Flask app."""
 
+    @app.cli.command('setup-hassan-railway')
+    @click.option('--apply', is_flag=True, help='Apply the setup (dry-run is the default)')
+    def setup_hassan_railway(apply: bool):
+        """Idempotently create the Hassan Ragab Railway branches and accounts."""
+        from app.extensions import db
+        from app.models.branch import Branch
+        from app.models.employee import Employee, EmployeeType
+        from app.models.user import User, UserRole
+
+        ADMIN_EMAIL = 'admin@hassanragab.com'
+        BRANCHES = (
+            ('حسن رجب صالون', 'الشيخ زايد'),
+            ('Hasan Ragab Truck', 'الشيخ زايد'),
+        )
+        CASHIERS = (
+            ('cashier-1', 'كاشير١', 'حسن رجب صالون'),
+            ('cashier-2', 'كاشير٢', 'Hasan Ragab Truck'),
+        )
+
+        def show_state(prefix):
+            click.echo(f"\n{prefix}")
+            click.echo("Existing branches:")
+            existing_branches = Branch.query.order_by(Branch.id).all()
+            if existing_branches:
+                for branch in existing_branches:
+                    click.echo(
+                        f"  - {branch.name} | city={branch.city} | active={branch.is_active} "
+                        f"| main_warehouse={branch.is_main_warehouse} | allow_discounts={branch.allow_discounts}"
+                    )
+            else:
+                click.echo("  (none)")
+
+            click.echo("Existing accounts:")
+            existing_users = User.query.order_by(User.id).all()
+            if existing_users:
+                for user in existing_users:
+                    branch_name = user.branch.name if user.branch else None
+                    click.echo(
+                        f"  - {user.email} | name={user.full_name} | role={user.role.value} "
+                        f"| branch={branch_name or 'global'} | active={user.is_active}"
+                    )
+            else:
+                click.echo("  (none)")
+
+        def find_existing_cashier_email(display_name, branch_name):
+            branch = Branch.query.filter_by(name=branch_name).first()
+            if not branch:
+                return None
+            employee = Employee.query.filter_by(
+                full_name=display_name,
+                branch_id=branch.id,
+                employee_type=EmployeeType.CASHIER,
+                is_active=True,
+            ).first()
+            if employee:
+                user = User.query.filter_by(
+                    full_name=display_name,
+                    role=UserRole.CASHIER,
+                    branch_id=branch.id,
+                    is_active=True,
+                ).first()
+                if user:
+                    return user.email
+            return None
+
+        show_state("Hassan Ragab Railway setup")
+        click.echo("Planned branches:")
+        for name, city in BRANCHES:
+            click.echo(f"  - {name} | city={city} | active=True | main_warehouse=False | allow_discounts=True")
+
+        click.echo("Planned roles and assignments:")
+        click.echo(f"  - SUPER_ADMIN | {ADMIN_EMAIL} | name=حسن رجب | branch=global")
+        for _, display_name, branch_name in CASHIERS:
+            existing_email = find_existing_cashier_email(display_name, branch_name)
+            login_email = existing_email or '<prompt for login email>'
+            click.echo(
+                f"  - CASHIER | {display_name} | login={login_email} | branch={branch_name}"
+            )
+
+        if not apply:
+            click.echo("\nDRY RUN: no changes made. Re-run with --apply to create or verify records.")
+            return
+
+        try:
+            admin = User.query.filter_by(email=ADMIN_EMAIL).first()
+            admin_password = None
+            if admin is None:
+                admin_password = click.prompt(
+                    'SUPER_ADMIN password',
+                    hide_input=True,
+                    confirmation_prompt='Confirm SUPER_ADMIN password',
+                )
+                if not admin_password:
+                    raise click.ClickException('Password cannot be empty')
+
+            cashier_inputs = {}
+            for key, display_name, branch_name in CASHIERS:
+                existing_email = find_existing_cashier_email(display_name, branch_name)
+                email = existing_email
+                password = None
+                if email is None:
+                    email = click.prompt(
+                        f'Login email for {display_name}',
+                        type=str,
+                    ).strip()
+                    if not email:
+                        raise click.ClickException(f'Login email for {display_name} cannot be empty')
+                    existing_account = User.query.filter_by(email=email).first()
+                    if existing_account is None:
+                        password = click.prompt(
+                            f'Password for {display_name}',
+                            hide_input=True,
+                            confirmation_prompt=f'Confirm password for {display_name}',
+                        )
+                        if not password:
+                            raise click.ClickException(f'Password for {display_name} cannot be empty')
+                cashier_inputs[key] = {
+                    'display_name': display_name,
+                    'branch_name': branch_name,
+                    'email': email,
+                    'password': password,
+                }
+
+            used_cashier_emails = [
+                item['email'].lower() for item in cashier_inputs.values()
+            ]
+            if len(set(used_cashier_emails)) != len(used_cashier_emails):
+                raise click.ClickException('The two cashiers must use different login emails')
+
+            db.session.rollback()
+            with db.session.begin():
+                branches = {}
+                for name, city in BRANCHES:
+                    branch = Branch.query.filter_by(name=name).first()
+                    if branch:
+                        if (branch.city != city or branch.is_active is not True
+                                or branch.is_main_warehouse is not False
+                                or branch.allow_discounts is not True):
+                            raise click.ClickException(
+                                f"Conflict: branch '{name}' has details other than "
+                                "city=الشيخ زايد, active=True, main_warehouse=False, allow_discounts=True"
+                            )
+                    else:
+                        branch = Branch(
+                            name=name,
+                            city=city,
+                            is_active=True,
+                            is_main_warehouse=False,
+                            allow_discounts=True,
+                        )
+                        db.session.add(branch)
+                        db.session.flush()
+                    branches[name] = branch
+
+                admin = User.query.filter_by(email=ADMIN_EMAIL).first()
+                if admin:
+                    if (admin.role != UserRole.SUPER_ADMIN or admin.branch_id is not None
+                            or admin.is_active is not True):
+                        raise click.ClickException(
+                            f"Conflict: account '{ADMIN_EMAIL}' is not an active global SUPER_ADMIN"
+                        )
+                else:
+                    admin = User(
+                        full_name='حسن رجب',
+                        email=ADMIN_EMAIL,
+                        role=UserRole.SUPER_ADMIN,
+                        branch_id=None,
+                        is_active=True,
+                    )
+                    admin.set_password(admin_password)
+                    db.session.add(admin)
+
+                for _, display_name, branch_name in CASHIERS:
+                    info = next(
+                        item for item in cashier_inputs.values()
+                        if item['display_name'] == display_name
+                    )
+                    branch = branches[branch_name]
+                    user = User.query.filter_by(email=info['email']).first()
+
+                    if user:
+                        if (user.role != UserRole.CASHIER or user.branch_id != branch.id
+                                or user.full_name != display_name or user.is_active is not True):
+                            raise click.ClickException(
+                                f"Conflict: account '{info['email']}' is not an active "
+                                f"CASHIER named '{display_name}' assigned only to '{branch_name}'"
+                            )
+                    else:
+                        user = User(
+                            full_name=display_name,
+                            email=info['email'],
+                            role=UserRole.CASHIER,
+                            branch_id=branch.id,
+                            is_active=True,
+                        )
+                        user.set_password(info['password'])
+                        db.session.add(user)
+                        db.session.flush()
+
+                    employee = Employee.query.filter_by(
+                        full_name=display_name,
+                        branch_id=branch.id,
+                        employee_type=EmployeeType.CASHIER,
+                    ).first()
+                    if employee:
+                        if (employee.is_active is not True or employee.is_deleted is not False
+                                or employee.status.value != 'ACTIVE'):
+                            raise click.ClickException(
+                                f"Conflict: cashier employee '{display_name}' is not active "
+                                f"in '{branch_name}'"
+                            )
+                    else:
+                        employee = Employee(
+                            full_name=display_name,
+                            branch_id=branch.id,
+                            employee_type=EmployeeType.CASHIER,
+                            is_active=True,
+                        )
+                        db.session.add(employee)
+                        db.session.flush()
+
+            click.echo("APPLY: setup completed successfully.")
+            click.echo("Cashier login identifiers:")
+            for _, display_name, branch_name in CASHIERS:
+                info = next(item for item in cashier_inputs.values() if item['display_name'] == display_name)
+                click.echo(f"  - {display_name}: {info['email']} ({branch_name})")
+        except click.ClickException:
+            db.session.rollback()
+            raise
+        except Exception as error:
+            db.session.rollback()
+            raise click.ClickException(str(error)) from error
+
     @app.cli.command('backfill-tip-expenses')
     @click.option('--dry-run', is_flag=True, help='Show what would be updated without changing anything')
     @click.option('--verbose', is_flag=True, help='Show detailed information about each update')

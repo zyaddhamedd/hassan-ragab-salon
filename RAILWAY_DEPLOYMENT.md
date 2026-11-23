@@ -118,6 +118,22 @@ Before pushing commits to trigger Railway builds:
 
 ---
 
+## 3A. One-Time Hassan Railway Account Setup
+
+Run this command manually from inside the Railway backend container. It is not part of deployment, startup, or migrations.
+
+```bash
+# Read-only preview
+flask --app hr_production setup-hassan-railway
+
+# Apply; prompts hide and confirm passwords for newly created accounts
+flask --app hr_production setup-hassan-railway --apply
+```
+
+The Mini login screen accepts the exact login email submitted to the backend. The display names `كاشير١` and `كاشير٢` are employee/account names; they are not automatically accepted as identifiers. The apply command prompts for two separate login emails. Each cashier should type the email entered during setup for that cashier.
+
+---
+
 ## 4. Post-Deployment Smoke-Test Checklist
 
 Perform these tests immediately after the services report **Active**:
