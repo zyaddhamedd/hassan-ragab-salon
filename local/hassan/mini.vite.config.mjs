@@ -1,5 +1,6 @@
 import {omarTextContrast} from './mini-text-contrast.mjs';
 import {omarMiniBrandCleanup} from './mini-brand-cleanup.mjs';
+import {omarMiniPwa} from './mini-pwa.mjs';
 import {omarConfig, workspace} from './frontend-config.mjs';
 import {omarLoginLayout} from './mini-login-layout.mjs';
 import {omarAuthTheme} from './mini-auth-theme.mjs';
@@ -20,5 +21,6 @@ export default async environment => {
   config.plugins.splice(8, 0, omarLoginLayout({workspace, app:'mini', mode:environment.mode}));
   config.plugins.splice(9, 0, omarMiniBrandCleanup({workspace, app:'mini', mode:environment.mode}));
   config.plugins.splice(10, 0, omarTextContrast({workspace, app:'mini', mode:environment.mode}));
+  config.plugins.push(omarMiniPwa({workspace, app:'mini', mode:environment.mode}));
   return config;
 };

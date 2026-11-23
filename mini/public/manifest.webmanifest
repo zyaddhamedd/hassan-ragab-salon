@@ -1,0 +1,52 @@
+{
+  "id": "/mini/",
+  "name": "Hassan Ragab Cashier",
+  "short_name": "HR Cashier",
+  "description": "Hassan Ragab Salon — Dedicated Cashier & Point of Sale Application",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "/mini/",
+  "scope": "/mini/",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#0B0B0D",
+  "background_color": "#0B0B0D",
+  "categories": [
+    "business",
+    "finance",
+    "productivity"
+  ],
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "/mini/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/mini/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/mini/icons/icon-maskable-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/mini/icons/icon-maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/mini/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
