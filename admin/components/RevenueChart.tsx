@@ -44,37 +44,55 @@ const RevenueChart: React.FC<RevenueChartProps> = ({ isDarkMode, selectedBranch 
             const isForecast = payload[0].payload.isForecast;
 
             return (
-                <div className={`p-4 rounded-xl border backdrop-blur-xl shadow-[0_30px_60px_rgba(0,0,0,0.5)] transition-all duration-500 scale-in-sm ${isDarkMode ? 'bg-black/90 border-white/20 text-white' : 'bg-white/95 border-black/10 text-gray-900'
+                <div className={`p-4 rounded-xl border backdrop-blur-xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.9),0_0_20px_rgba(230,214,144,0.12)] transition-all duration-300 scale-in-sm ${isDarkMode ? 'bg-[#121215]/95 border-[#E6D690]/30 text-white' : 'bg-white/95 border-[#C5A880]/30 text-gray-900'
                     }`} dir="rtl">
-                    <p className="text-[10px] font-bold uppercase tracking-wider opacity-50 mb-3 text-right">
-                        {formatDate(label)} {isForecast && '(متوقع)'}
-                    </p>
-                    <div className="flex flex-col gap-3 min-w-[180px]">
+                    <div className="flex items-center justify-between gap-3 border-b border-white/10 pb-2 mb-3">
+                        <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#E6D690]">
+                            {formatDate(label)}
+                        </span>
+                        {isForecast && (
+                            <span className="text-[9px] font-bold bg-[#E6D690]/10 text-[#E6D690] border border-[#E6D690]/20 px-1.5 py-0.5 rounded-full">
+                                متوقع
+                            </span>
+                        )}
+                    </div>
+                    <div className="flex flex-col gap-2.5 min-w-[190px]">
                         {/* Revenue Item */}
                         <div className="flex justify-between items-center group">
-                            <span className="text-xs font-semibold flex items-center gap-2 text-gray-400">
-                                <div className="w-1.5 h-1.5 rounded-full bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]"></div>
-                                الإيرادات
+                            <span className="text-xs font-semibold flex items-center gap-2 text-gray-300">
+                                <span className="w-2 h-2 rounded-full bg-[#E6D690] shadow-[0_0_8px_rgba(230,214,144,0.8)] shrink-0" />
+                                <span>الإيرادات</span>
                             </span>
-                            <span className="font-bold font-mono text-sm tracking-tight">{new Intl.NumberFormat('ar-EG').format(revenue)}</span>
+                            <span className="font-bold font-mono text-sm tracking-tight text-white" dir="ltr">
+                                {new Intl.NumberFormat('ar-EG').format(revenue)} <span className="text-[10px] text-[#E6D690]">ج.م</span>
+                            </span>
                         </div>
 
                         {/* Net Profit Item */}
                         <div className="flex justify-between items-center group">
-                            <span className="text-xs font-semibold flex items-center gap-2 text-gray-400">
-                                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]"></div>
-                                صافي الربح
+                            <span className="text-xs font-semibold flex items-center gap-2 text-gray-300">
+                                <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)] shrink-0" />
+                                <span>صافي الربح</span>
                             </span>
-                            <span className="font-bold font-mono text-sm tracking-tight text-emerald-500">{new Intl.NumberFormat('ar-EG').format(netProfit)}</span>
+                            <span className="font-bold font-mono text-sm tracking-tight text-emerald-400" dir="ltr">
+                                {new Intl.NumberFormat('ar-EG').format(netProfit)} <span className="text-[10px] text-emerald-400/80">ج.م</span>
+                            </span>
                         </div>
 
                         {/* Margin Separator */}
-                        <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-gray-500/20 to-transparent"></div>
+                        <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-[#E6D690]/20 to-transparent my-0.5" />
 
                         {/* Margin */}
                         <div className="flex justify-between items-center">
-                            <span className="text-[10px] font-bold uppercase tracking-wider opacity-60">هامش الربح</span>
-                            <span className={`text-xs font-black ${margin >= 0 ? 'text-emerald-400' : 'text-red-400'}`} dir="ltr">
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">هامش الربح</span>
+                            <span
+                                className={`text-xs font-black px-2 py-0.5 rounded-md ${
+                                    margin >= 0
+                                        ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400'
+                                        : 'bg-rose-500/10 border border-rose-500/20 text-rose-400'
+                                }`}
+                                dir="ltr"
+                            >
                                 {margin.toFixed(1)}%
                             </span>
                         </div>
@@ -95,7 +113,7 @@ const RevenueChart: React.FC<RevenueChartProps> = ({ isDarkMode, selectedBranch 
             <div className={`absolute inset-0 rounded-[32px] border border-white/[0.03] pointer-events-none z-20`}></div>
 
             {/* Subtle Hero Gradient Background */}
-            <div className={`absolute inset-0 opacity-[0.03] pointer-events-none ${isDarkMode ? 'bg-gradient-to-br from-red-500 via-transparent to-emerald-500' : 'bg-gradient-to-br from-red-200 via-transparent to-emerald-200'}`}></div>
+            <div className={`absolute inset-0 opacity-[0.04] pointer-events-none ${isDarkMode ? 'bg-gradient-to-br from-[#E6D690] via-transparent to-emerald-500' : 'bg-gradient-to-br from-[#C5A880] via-transparent to-emerald-200'}`}></div>
 
             {/* Header */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 relative z-10" dir="rtl">
@@ -105,11 +123,11 @@ const RevenueChart: React.FC<RevenueChartProps> = ({ isDarkMode, selectedBranch 
                     </h3>
                     <div className="flex items-center gap-2">
                         <span className="relative flex h-2 w-2">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#E6D690] opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#E6D690]"></span>
                         </span>
-                        <p className={`text-[10px] font-bold uppercase tracking-wider opacity-40 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                            الأداء المالي المباشر
+                        <p className={`text-[10px] font-bold uppercase tracking-wider opacity-60 ${isDarkMode ? 'text-[#E6D690]' : 'text-gray-500'}`}>
+                            الأداء المالي المباشر · صالون حسن رجب
                         </p>
                     </div>
                 </div>
@@ -124,9 +142,9 @@ const RevenueChart: React.FC<RevenueChartProps> = ({ isDarkMode, selectedBranch 
                         <button
                             key={opt.val}
                             onClick={() => setRange(opt.val)}
-                            className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all duration-300 ${range === opt.val
-                                ? (isDarkMode ? 'bg-white/10 text-white shadow-lg backdrop-blur-md' : 'bg-white text-black shadow-md')
-                                : (isDarkMode ? 'text-gray-500 hover:text-gray-300' : 'text-gray-400 hover:text-gray-600')
+                            className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all duration-300 cursor-pointer ${range === opt.val
+                                ? (isDarkMode ? 'bg-gradient-to-r from-[#C5A880] to-[#E6D690] text-black font-extrabold shadow-md' : 'bg-black text-white shadow-md')
+                                : (isDarkMode ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-gray-800')
                                 }`}
                         >
                             {opt.label}
@@ -150,8 +168,8 @@ const RevenueChart: React.FC<RevenueChartProps> = ({ isDarkMode, selectedBranch 
                         >
                             <defs>
                                 <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stopColor="#ef4444" stopOpacity={0.25} />
-                                    <stop offset="100%" stopColor="#ef4444" stopOpacity={0} />
+                                    <stop offset="0%" stopColor="#E6D690" stopOpacity={0.3} />
+                                    <stop offset="100%" stopColor="#C5A880" stopOpacity={0} />
                                 </linearGradient>
                                 <linearGradient id="colorProfit" x1="0" y1="0" x2="0" y2="1">
                                     <stop offset="0%" stopColor="#10b981" stopOpacity={0.25} />
@@ -190,7 +208,7 @@ const RevenueChart: React.FC<RevenueChartProps> = ({ isDarkMode, selectedBranch 
                             <Tooltip
                                 content={<CustomTooltip />}
                                 cursor={{
-                                    stroke: isDarkMode ? '#ffffff08' : '#00000008',
+                                    stroke: isDarkMode ? 'rgba(230,214,144,0.15)' : '#00000008',
                                     strokeWidth: 60,
                                     className: "transition-all duration-700"
                                 }}
@@ -202,9 +220,9 @@ const RevenueChart: React.FC<RevenueChartProps> = ({ isDarkMode, selectedBranch 
                             <Area
                                 type="monotone"
                                 dataKey="revenue"
-                                stroke="#ef4444"
+                                stroke="#E6D690"
                                 strokeWidth={8}
-                                strokeOpacity={0.15}
+                                strokeOpacity={0.2}
                                 fill="none"
                                 filter="url(#glowRevenue)"
                                 className="opacity-0 group-hover/chart:opacity-100 transition-opacity duration-1000 pointer-events-none"
@@ -217,14 +235,14 @@ const RevenueChart: React.FC<RevenueChartProps> = ({ isDarkMode, selectedBranch 
                             <Area
                                 type="monotone"
                                 dataKey="revenue"
-                                stroke="#ef4444"
+                                stroke="#E6D690"
                                 strokeWidth={3}
                                 fill="url(#colorRevenue)"
                                 isAnimationActive={true}
                                 animationBegin={800}
                                 animationDuration={3200}
                                 animationEasing="cubic-bezier(0.65, 0, 0.35, 1)"
-                                activeDot={{ r: 8, strokeWidth: 0, fill: '#ef4444', className: "transition-all duration-500 shadow-[0_0_15px_rgba(239,68,68,0.5)]" }}
+                                activeDot={{ r: 8, strokeWidth: 0, fill: '#E6D690', className: "transition-all duration-500 shadow-[0_0_15px_rgba(230,214,144,0.8)]" }}
                             />
 
                             {/* Net Profit Line Glow (Hover Only) */}
@@ -261,8 +279,8 @@ const RevenueChart: React.FC<RevenueChartProps> = ({ isDarkMode, selectedBranch 
             </div>
 
             {/* Background Ambient Glow */}
-            <div className={`absolute -top-[20%] -right-[20%] w-[500px] h-[500px] bg-red-500/[0.12] blur-[120px] rounded-full pointer-events-none transition-opacity duration-1000 mix-blend-screen ${isLoading ? 'opacity-0' : 'opacity-100'}`}></div>
-            <div className={`absolute -bottom-[20%] -left-[20%] w-[500px] h-[500px] bg-emerald-500/[0.12] blur-[120px] rounded-full pointer-events-none transition-opacity duration-1000 mix-blend-screen ${isLoading ? 'opacity-0' : 'opacity-100'}`}></div>
+            <div className={`absolute -top-[20%] -right-[20%] w-[500px] h-[500px] bg-[#E6D690]/[0.06] blur-[120px] rounded-full pointer-events-none transition-opacity duration-1000 mix-blend-screen ${isLoading ? 'opacity-0' : 'opacity-100'}`}></div>
+            <div className={`absolute -bottom-[20%] -left-[20%] w-[500px] h-[500px] bg-emerald-500/[0.08] blur-[120px] rounded-full pointer-events-none transition-opacity duration-1000 mix-blend-screen ${isLoading ? 'opacity-0' : 'opacity-100'}`}></div>
         </div>
     );
 };

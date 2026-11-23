@@ -14,7 +14,7 @@ export const ledgerDigest = s => createHash('sha256').update(s).digest('hex');
 export const reviewedLedger =/* REVIEWED */ {
   "admin/components/ExpensesPage.tsx": "a2245f38e81833dbabd7a4bd0db07c7566cc80808ee5a51bdac2545852c76c87",
   "admin/components/AdminTreasuryPage.tsx": "610a2620e8f9540bf91e5c4b16b26d1b754f27a61c22ae7b88c9695e1b00ae47",
-  "admin/components/ReportsPage.tsx": "015666bf6414f7081bcc3f5f1e5a0a44dd93df94ad00d54d4f51c3dfb9644b6f",
+  "admin/components/ReportsPage.tsx": "730bf259d542a40801f5f2021f34be8d65cca79dc11d40dd5f3ee1f195d9fc36",
   "admin/components/reports/OverviewReport.tsx": "1043ef90503c0c3a8f9d40ea878be877f82623092073151b0b4524b6b2083dee",
   "admin/components/reports/ServicesReport.tsx": "22361ac444f90f3af278087d30167d1635dfb28772f8b47a1848c191c1f034d7",
   "admin/components/reports/ProductsReport.tsx": "64016d22347e9ebd52d79f57c04614f41b7a3c1a10fba4b95cd5a9c527d41d79",

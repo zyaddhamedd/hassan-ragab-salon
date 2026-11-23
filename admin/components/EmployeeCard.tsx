@@ -51,7 +51,7 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
       className={`group relative w-full max-w-[275px] mx-auto rounded-[20px] border transition-all duration-300 ease-out cursor-pointer select-none flex flex-col justify-between overflow-hidden ${
         isDarkMode
           ? 'bg-[#121215] border-white/10 hover:border-[#E6D690]/40 shadow-xl hover:shadow-[0_16px_32px_-8px_rgba(0,0,0,0.8)] hover:-translate-y-1'
-          : 'bg-[#18181C] border-black/10 hover:border-[#B33939]/30 shadow-md hover:shadow-xl hover:-translate-y-1'
+          : 'bg-[#18181C] border-white/10 hover:border-[#E6D690]/40 shadow-md hover:shadow-xl hover:-translate-y-1'
       } ${employee.is_deleted ? 'opacity-60' : ''}`}
       style={{ height: '385px' }}
       dir="rtl"
@@ -79,7 +79,7 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
             aria-hidden="true"
           />
           <span className="font-mono text-[8px] font-bold tracking-[0.25em] text-[#E6D690]/80 uppercase truncate">
-            SECRET MEN CLUB
+            HASSAN RAGAB SALON
           </span>
         </div>
 

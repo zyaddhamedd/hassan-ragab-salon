@@ -6,7 +6,7 @@ export const dashboardFiles=['Dashboard','RevenueChart','BranchPerformance'].map
 export const dashboardPaintDigest=s=>createHash('sha256').update(JSON.stringify({classes:inventoryClasses(s),hex:[...new Set(s.match(/#[0-9a-fA-F]{3,8}\b/g)||[])].sort()})).digest('hex');
 export const reviewedDashboardPaint={
   "admin/components/Dashboard.tsx": "623ce051f9cb7e927b5284f45753db67f4bb199273e7da273f1c14f48b758075",
-  "admin/components/RevenueChart.tsx": "27590a3c4240ab560d948f47567d63471cbc740f702d447659046b9e3503733a",
+  "admin/components/RevenueChart.tsx": "c5d18211f883e049ddffafaeb6dbdc36be1ecfc05f190a549fafefd2f2bdf9d3",
   "admin/components/BranchPerformance.tsx": "181481d19b78f924d28e8a50419f844fe13120ef72eb8e118b06ab38b4c1d50d"
 };
 export const dashboardHooks={

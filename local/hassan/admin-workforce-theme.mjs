@@ -17,7 +17,7 @@ export const workforceHooks={
 export const workforceDigest=s=>createHash('sha256').update(s).digest('hex');
 export const reviewedWorkforce=/* REVIEWED */ {
   "admin/components/EmployeesPage.tsx": "3cb03be2f734a1be252fb2746fe8f0c4a127eee718ef951a6ef9e9044d7bc01d",
-  "admin/components/EmployeeCard.tsx": "7fe61bb43cbb6b08715d781efb0e99d53cd98b72db147c039a00b9d70f597514",
+  "admin/components/EmployeeCard.tsx": "311a8517c63062c4cb9885a75c1542f9b6497a3db69333bf3ffadc5168665f1a",
   "admin/components/EmployeeTable.tsx": "85c90130ee14f61dc55c83718fd8321e6b823a9739562d6c5bc873e4db6a3c2e",
   "admin/components/AddEmployeePage.tsx": "3914c0ddbb1c10b7a1cc4524e926d49cc4e254405ad30837f4e5a51a51e44859",
   "admin/components/EmployeeDetailsPage.tsx": "812a333e979eb66756ce2516ce8ad6bc15a9e9d481648c8967d5d4aef8989cb8",

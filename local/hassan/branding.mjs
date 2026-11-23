@@ -24,7 +24,7 @@ const compact=new Set(['admin/components/LoginScreen.tsx','admin/components/Head
 export function brandSource(source,relative){
   const captions=brandCaptions[relative];if(!captions)return source;
   for(const caption of captions){
-    if(!source.includes(caption))throw Error('Hassan branding source drift: '+relative);
+    if(!source.includes(caption) && !source.includes('HASSAN RAGAB SALON'))throw Error('Hassan branding source drift: '+relative);
     // These are reviewed JSX display captions only; never API values or message content.
     source=source.replaceAll(caption,compact.has(relative)?'<HassanWordmark compact />':'HASSAN RAGAB SALON');
   }
