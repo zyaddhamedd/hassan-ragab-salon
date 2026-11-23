@@ -583,6 +583,9 @@ const AdminAttendanceDashboard: React.FC<AdminAttendanceDashboardProps> = ({
       'بيان يوم العمل': getRowBusinessDayText(row),
       'التاريخ التشغيلي': getRowBusinessDateValue(row),
       'وقت الحضور': row.check_in_time ? formatDateTime(row.check_in_time) : '—',
+      'طبيعة تسجيل الحضور': row.is_manual_check_in
+        ? `يدوي (الساعة: ${row.created_at ? formatDateTime(row.created_at) : '—'}${row.recorded_by ? ` • بواسطة ${row.recorded_by}` : ''})`
+        : 'مباشر (تلقائي)',
       'وقت الانصراف': row.check_out_time ? formatDateTime(row.check_out_time) : '—',
       'المدة (دقائق)': row.duration_minutes,
       'الحالة': STATUS_LABELS[getRowStatus(row)],
@@ -961,8 +964,26 @@ const AdminAttendanceDashboard: React.FC<AdminAttendanceDashboardProps> = ({
                         <td className="p-5 text-center align-top">
                           {row.check_in_time ? (
                             <div className="space-y-1">
-                              <p className="font-mono text-xs font-bold">{formatTime(row.check_in_time)}</p>
+                              <div className="flex items-center justify-center gap-1.5">
+                                <span className="font-mono text-xs font-bold">{formatTime(row.check_in_time)}</span>
+                                {row.is_manual_check_in && (
+                                  <span
+                                    className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-semibold bg-[#A8906A]/15 text-[#A8906A] border border-[#A8906A]/30 cursor-help"
+                                    title={`تسجيل يدوي — الساعة ${row.created_at ? formatTime(row.created_at) : '—'}${row.recorded_by ? ` • بواسطة ${row.recorded_by}` : ''}`}
+                                  >
+                                    يدوي
+                                  </span>
+                                )}
+                              </div>
                               <p className="text-[10px] opacity-40">{formatDate(row.check_in_time)}</p>
+                              {row.is_manual_check_in && row.created_at && (
+                                <p
+                                  className="text-[9px] text-[#A8906A]/75 font-medium"
+                                  title={`الساعة: ${formatTime(row.created_at)}${row.recorded_by ? ` بواسطة ${row.recorded_by}` : ''}`}
+                                >
+                                  الساعة {formatTime(row.created_at)}
+                                </p>
+                              )}
                             </div>
                           ) : (
                             <span className="opacity-20">—</span>

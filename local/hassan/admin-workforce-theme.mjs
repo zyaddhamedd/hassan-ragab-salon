@@ -17,11 +17,11 @@ export const workforceHooks={
 export const workforceDigest=s=>createHash('sha256').update(s).digest('hex');
 export const reviewedWorkforce=/* REVIEWED */ {
   "admin/components/EmployeesPage.tsx": "3cb03be2f734a1be252fb2746fe8f0c4a127eee718ef951a6ef9e9044d7bc01d",
-  "admin/components/EmployeeCard.tsx": "34e90d324e77a47f63efc961e24924a3e2767f2095d48909f4b34b86e9b49126",
+  "admin/components/EmployeeCard.tsx": "7fe61bb43cbb6b08715d781efb0e99d53cd98b72db147c039a00b9d70f597514",
   "admin/components/EmployeeTable.tsx": "85c90130ee14f61dc55c83718fd8321e6b823a9739562d6c5bc873e4db6a3c2e",
   "admin/components/AddEmployeePage.tsx": "3914c0ddbb1c10b7a1cc4524e926d49cc4e254405ad30837f4e5a51a51e44859",
   "admin/components/EmployeeDetailsPage.tsx": "812a333e979eb66756ce2516ce8ad6bc15a9e9d481648c8967d5d4aef8989cb8",
-  "admin/components/AdminAttendanceDashboard.tsx": "43ecf6866ca13cacc5f3565275d53c111c66a08b330872c151cc1fad84d06111",
+  "admin/components/AdminAttendanceDashboard.tsx": "69d7426422306d33bfdd840ddc74d0fec788b9ff2a7b029a91a1755c6ad5442e",
   "admin/components/TransferModal.tsx": "efbaab16b80ea55cd266023c1f1020fd89d64bdff46bd086920e25e568da7df2",
   "admin/components/settlement/SettlementStudio.tsx": "250089a9e3ee6679f9a4f5135164646f5fae73942c2ac20110544f83bfa859c5",
   "admin/components/settlement/SettlementControls.tsx": "7acbc85f234fb345e692015e946362eed8b6a634c68e58adc2786fa5f32c1f71",

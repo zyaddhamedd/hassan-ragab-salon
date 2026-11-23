@@ -1,26 +1,48 @@
 import React, { useState } from 'react';
-import { formatDateTime } from '../src/utils/dateFormatter';
-import { MapPin, Power, Search, X, Loader2 } from 'lucide-react';
+import { formatDateTime, getCairoNow } from '../src/utils/dateFormatter';
+import { MapPin, Power, Search, X, Loader2, Clock } from 'lucide-react';
 import { Cashier, StaffMember } from '../App';
 import { BACKEND_URL } from '../src/api/client';
 
 interface AttendanceScreenProps {
   staff: StaffMember[];
-  onToggleAttendance: (id: number) => Promise<void>;
+  onToggleAttendance: (id: number, manualTime?: string, isManual?: boolean) => Promise<void>;
   cashier: Cashier | null;
 }
 
 const AttendanceScreen: React.FC<AttendanceScreenProps> = ({ staff, onToggleAttendance, cashier }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [togglingId, setTogglingId] = useState<number | null>(null);
+  const [checkInTarget, setCheckInTarget] = useState<StaffMember | null>(null);
 
-  const handleToggle = async (emp: StaffMember) => {
+  const handleCardClick = async (emp: StaffMember) => {
     if (togglingId === emp.id) return;
-    setTogglingId(emp.id);
+
+    if (emp.isPresent) {
+      // Check-out: preserve exact instant behavior without modal or extra steps
+      setTogglingId(emp.id);
+      try {
+        await onToggleAttendance(emp.id);
+      } catch (error) {
+        console.error('Failed to toggle attendance:', error);
+      } finally {
+        setTogglingId(null);
+      }
+    } else {
+      // Check-in: open smart manual check-in confirmation modal
+      setCheckInTarget(emp);
+    }
+  };
+
+  const handleConfirmCheckIn = async (manualTime: string, isManual: boolean) => {
+    if (!checkInTarget) return;
+    const empId = checkInTarget.id;
+    setTogglingId(empId);
     try {
-      await onToggleAttendance(emp.id);
+      await onToggleAttendance(empId, manualTime, isManual);
+      setCheckInTarget(null);
     } catch (error) {
-      console.error('Failed to toggle attendance:', error);
+      console.error('Failed to confirm check-in:', error);
     } finally {
       setTogglingId(null);
     }
@@ -100,7 +122,7 @@ const AttendanceScreen: React.FC<AttendanceScreenProps> = ({ staff, onToggleAtte
                   key={emp.id}
                   emp={emp}
                   isToggling={togglingId === emp.id}
-                  onToggle={() => handleToggle(emp)}
+                  onToggle={() => handleCardClick(emp)}
                 />
               ))}
             </div>
@@ -125,12 +147,127 @@ const AttendanceScreen: React.FC<AttendanceScreenProps> = ({ staff, onToggleAtte
                   key={emp.id}
                   emp={emp}
                   isToggling={togglingId === emp.id}
-                  onToggle={() => handleToggle(emp)}
+                  onToggle={() => handleCardClick(emp)}
                 />
               ))}
             </div>
           )}
         </section>
+      </div>
+
+      {/* Smart Manual Check-In Modal */}
+      {checkInTarget && (
+        <CheckInTimeModal
+          emp={checkInTarget}
+          isLoading={togglingId === checkInTarget.id}
+          onClose={() => setCheckInTarget(null)}
+          onConfirm={handleConfirmCheckIn}
+        />
+      )}
+    </div>
+  );
+};
+
+const CheckInTimeModal: React.FC<{
+  emp: StaffMember;
+  isLoading: boolean;
+  onClose: () => void;
+  onConfirm: (manualTime: string, isManual: boolean) => Promise<void>;
+}> = ({ emp, isLoading, onClose, onConfirm }) => {
+  const getCairoTimeStr = () => {
+    const cairoNow = getCairoNow();
+    const h = String(cairoNow.getHours()).padStart(2, '0');
+    const m = String(cairoNow.getMinutes()).padStart(2, '0');
+    return `${h}:${m}`;
+  };
+
+  const [timeValue, setTimeValue] = useState<string>(getCairoTimeStr());
+  const [isManual, setIsManual] = useState<boolean>(false);
+
+  const resetToNow = () => {
+    setTimeValue(getCairoTimeStr());
+    setIsManual(false);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!timeValue) return;
+    onConfirm(timeValue, isManual);
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-200" dir="rtl">
+      <div className="w-full max-w-xs rounded-2xl bg-[#161616] border border-[#A8906A]/30 p-5 shadow-2xl shadow-black/80 relative space-y-4">
+        {/* Header */}
+        <div className="flex items-center justify-between border-b border-white/5 pb-3">
+          <div className="flex items-center gap-2.5">
+            <div className="w-1.5 h-5 rounded-full bg-[#A8906A]" />
+            <div>
+              <h3 className="text-sm font-black text-white">{emp.name}</h3>
+              <p className="text-[11px] text-[#A8906A] font-medium">تسجيل حضور • {emp.role}</p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            disabled={isLoading}
+            className="w-7 h-7 rounded-full bg-white/5 flex items-center justify-center text-white/40 hover:text-white transition-colors"
+          >
+            <X size={14} />
+          </button>
+        </div>
+
+        {/* Short Instruction */}
+        <p className="text-xs text-white/60">
+          حدد وقت الوصول الفعلي للموظف:
+        </p>
+
+        {/* Single clear time picker with inline 'الآن' button */}
+        <div className="flex items-center gap-2 bg-[#202020] border border-white/10 rounded-xl p-1.5 focus-within:border-[#A8906A] transition-colors">
+          <div className="flex items-center gap-2 flex-1 px-2">
+            <Clock size={16} className="text-[#A8906A] shrink-0" />
+            <input
+              type="time"
+              value={timeValue}
+              onChange={(e) => {
+                setTimeValue(e.target.value);
+                setIsManual(true);
+              }}
+              className="w-full bg-transparent text-white font-mono font-bold text-base outline-none [color-scheme:dark]"
+              dir="ltr"
+              required
+            />
+          </div>
+          <button
+            type="button"
+            onClick={resetToNow}
+            className="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-[#A8906A] font-bold text-xs shrink-0 transition-colors"
+            title="إعادة التعيين للوقت الحالي"
+          >
+            الآن
+          </button>
+        </div>
+
+        {/* Actions */}
+        <div className="flex items-center gap-2 pt-1">
+          <button
+            type="button"
+            onClick={handleSubmit}
+            disabled={isLoading || !timeValue}
+            className="flex-1 flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#A8906A] to-[#8C7654] text-black font-black text-xs shadow-lg shadow-[#A8906A]/20 hover:brightness-110 active:scale-95 transition-all disabled:opacity-50"
+          >
+            {isLoading ? <Loader2 size={14} className="animate-spin" /> : null}
+            <span>تأكيد الحضور</span>
+          </button>
+          <button
+            type="button"
+            onClick={onClose}
+            disabled={isLoading}
+            className="py-2.5 px-3 rounded-xl bg-white/5 hover:bg-white/10 text-white/70 font-bold text-xs transition-all"
+          >
+            إلغاء
+          </button>
+        </div>
       </div>
     </div>
   );

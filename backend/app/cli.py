@@ -177,3 +177,76 @@ def register_cli_commands(app: Flask):
         except Exception as e:
             click.echo(f"\n✗ Error checking TIP expenses: {str(e)}", err=True)
             raise
+
+    @app.cli.command('init-production-data')
+    @click.option('--email', envvar='INITIAL_ADMIN_EMAIL', help='Initial SUPER_ADMIN login email/username')
+    @click.option('--password', envvar='INITIAL_ADMIN_PASSWORD', help='Initial SUPER_ADMIN password (never logged)')
+    @click.option('--display-name', envvar='INITIAL_ADMIN_NAME', default='Hassan Ragab Administrator', help='Admin display name')
+    @click.option('--branch-name', envvar='INITIAL_BRANCH_NAME', default='Hassan Ragab Salon', help='Initial operating branch name')
+    @click.option('--branch-city', envvar='INITIAL_BRANCH_CITY', default='Giza', help='Initial operating branch city')
+    def init_production_data(email, password, display_name, branch_name, branch_city):
+        """
+        Idempotent production bootstrap command.
+        Creates initial operating branch and initial SUPER_ADMIN user if none exist.
+        Credentials are read from CLI options or environment variables (INITIAL_ADMIN_EMAIL, INITIAL_ADMIN_PASSWORD).
+        Never logs passwords. Safe to run multiple times.
+        """
+        import os
+        from app.extensions import db
+        from app.models import Branch, User, UserRole
+
+        try:
+            click.echo(f"\n{'='*70}")
+            click.echo("Hassan Ragab Salon — Production Bootstrap")
+            click.echo(f"{'='*70}")
+
+            # 1. Operating Branch Provisioning
+            operating_branch = Branch.query.filter_by(is_main_warehouse=False).first()
+            if operating_branch:
+                click.echo(f"[INFO] Operating branch already exists: '{operating_branch.name}' (id={operating_branch.id}). Skipping.")
+            else:
+                branch = Branch(
+                    name=branch_name.strip(),
+                    city=branch_city.strip(),
+                    is_active=True,
+                    is_main_warehouse=False,
+                    allow_discounts=True
+                )
+                db.session.add(branch)
+                db.session.flush()
+                click.echo(f"[SUCCESS] Created operating branch: '{branch.name}' in '{branch.city}' (id={branch.id})")
+
+            # 2. SUPER_ADMIN Provisioning
+            super_admin = User.query.filter_by(role=UserRole.SUPER_ADMIN).first()
+            if super_admin:
+                click.echo(f"[INFO] SUPER_ADMIN already exists: '{super_admin.email}' (id={super_admin.id}). Skipping.")
+            else:
+                if not email or not email.strip():
+                    click.echo("[ERROR] INITIAL_ADMIN_EMAIL is required to create the initial admin.", err=True)
+                    db.session.rollback()
+                    raise click.ClickException("Missing INITIAL_ADMIN_EMAIL")
+                if not password or len(password.strip()) < 4:
+                    click.echo("[ERROR] INITIAL_ADMIN_PASSWORD is required (at least 4 chars) to create the initial admin.", err=True)
+                    db.session.rollback()
+                    raise click.ClickException("Missing or too short INITIAL_ADMIN_PASSWORD")
+
+                admin = User(
+                    full_name=display_name.strip(),
+                    email=email.strip(),
+                    role=UserRole.SUPER_ADMIN,
+                    branch_id=None,
+                    is_active=True
+                )
+                admin.set_password(password.strip())
+                db.session.add(admin)
+                db.session.flush()
+                click.echo(f"[SUCCESS] Created SUPER_ADMIN user: '{admin.email}' (name='{admin.full_name}', id={admin.id})")
+
+            db.session.commit()
+            click.echo("[SUCCESS] Production bootstrap completed successfully.")
+            click.echo(f"{'='*70}\n")
+        except Exception as e:
+            db.session.rollback()
+            click.echo(f"[ERROR] Production bootstrap failed: {e}", err=True)
+            raise
+

@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { getTodayISO, getCairoNow, formatDate } from './src/utils/dateFormatter';
 import LoginScreen from './components/LoginScreen';
 import CashierScreen from './components/CashierScreen';
@@ -16,6 +16,7 @@ import Sidebar from './components/Sidebar';
 import PagePlaceholder from './components/PagePlaceholder';
 import MiniTreasuryPage from './pages/MiniTreasuryPage';
 import InventoryOnlyApp from './components/InventoryOnlyApp';
+import { BookingAlertsNotification } from './components/BookingAlertsNotification';
 
 export type PageType = 'الانتظار' | 'الكاشير' | 'الحضور والانصراف' | 'العملاء' | 'الحلاقين' | 'المواعيد القادمة' | 'المصروفات' | 'المخزن' | 'الخزينة';
 
@@ -62,6 +63,8 @@ export interface Appointment {
   service: string;
   barberName: string;
   time: string;
+  rawTime?: string;
+  rawDate?: string;
   date: string;
   status: 'قادم' | 'تم';
   deposit?: number;
@@ -184,6 +187,7 @@ const App: React.FC = () => {
       setCashier(null);
       setDeviceContext(null);
       setIsLoggedIn(false);
+      setIsBootstrapping(false);
       setActivePage('الكاشير');
       setBookingHandoff(null); setHandoffFeedback(null); handoffPendingRef.current = false;
       setIsMiniSidebarOpen(false);
@@ -242,8 +246,11 @@ const App: React.FC = () => {
       }
 
       try {
-        // Silent validation using our global client which handles headers/formatting
-        const data = await apiClient.get('/auth/me');
+        // Silent validation with timeout race so 401 unhandled promise cannot hang
+        const data = await Promise.race([
+          apiClient.get('/auth/me'),
+          new Promise<null>((_, reject) => setTimeout(() => reject(new Error('TIMEOUT')), 2500))
+        ]);
 
         if (data) {
           const resolvedDeviceContext = normalizeMiniDeviceContext(data.device_context);
@@ -297,6 +304,7 @@ const App: React.FC = () => {
     const handleAuthLogout = (event: Event) => {
       console.warn('[App] auth:logout event received — clearing session');
       clearMiniSession();
+      setIsBootstrapping(false);
       const message = (event as CustomEvent<{ message?: string }>).detail?.message;
       if (message) setSessionError(message);
     };
@@ -404,59 +412,91 @@ const App: React.FC = () => {
 
 
   // Fetch appointments from backend
-  useEffect(() => {
+  const fetchAppointments = useCallback(async () => {
     if (!cashier) return;
 
-    const fetchAppointments = async () => {
-      try {
-        const data = await apiClient.get('/appointments');
-        // Map backend response to frontend Appointment type
-        const mappedAppointments: Appointment[] = [
-          ...data.today.map((a: any) => ({
-            id: a.id.toString(),
-            customerId: a.customer_id, barberId: a.barber_id, serviceId: a.service_id, rawStatus: a.status,
-            customerName: a.customer_name,
-            phone: a.phone,
-            service: a.service_name,
-            barberName: a.barber_name || 'غير محدد',
-            time: formatTimeToArabic(a.time),
-            date: 'اليوم',
-            status: 'قادم' as const,
-            deposit: a.deposit > 0 ? a.deposit : undefined
-          })),
-          ...data.tomorrow.map((a: any) => ({
-            id: a.id.toString(),
-            customerId: a.customer_id, barberId: a.barber_id, serviceId: a.service_id, rawStatus: a.status,
-            customerName: a.customer_name,
-            phone: a.phone,
-            service: a.service_name,
-            barberName: a.barber_name || 'غير محدد',
-            time: formatTimeToArabic(a.time),
-            date: 'الغد',
-            status: 'قادم' as const,
-            deposit: a.deposit > 0 ? a.deposit : undefined
-          })),
-          ...data.future.map((a: any) => ({
-            id: a.id.toString(),
-            customerId: a.customer_id, barberId: a.barber_id, serviceId: a.service_id, rawStatus: a.status,
-            customerName: a.customer_name,
-            phone: a.phone,
-            service: a.service_name,
-            barberName: a.barber_name || 'غير محدد',
-            time: formatTimeToArabic(a.time),
-            date: a.date, // Use actual date from backend
-            status: 'قادم' as const,
-            deposit: a.deposit > 0 ? a.deposit : undefined
-          }))
-        ];
-        setAppointments(mappedAppointments);
-      } catch (error) {
-        console.error("Failed to fetch appointments:", error);
-      }
-    };
-
-    fetchAppointments();
+    try {
+      const data = await apiClient.get('/appointments');
+      // Map backend response to frontend Appointment type
+      const mappedAppointments: Appointment[] = [
+        ...data.today.map((a: any) => ({
+          id: a.id.toString(),
+          customerId: a.customer_id,
+          barberId: a.barber_id,
+          serviceId: a.service_id,
+          rawStatus: a.status,
+          customerName: a.customer_name,
+          phone: a.phone,
+          service: a.service_name,
+          barberName: a.barber_name || 'غير محدد',
+          time: formatTimeToArabic(a.time),
+          rawTime: a.time,
+          rawDate: a.date,
+          date: 'اليوم',
+          status: 'قادم' as const,
+          deposit: a.deposit > 0 ? a.deposit : undefined,
+        })),
+        ...data.tomorrow.map((a: any) => ({
+          id: a.id.toString(),
+          customerId: a.customer_id,
+          barberId: a.barber_id,
+          serviceId: a.service_id,
+          rawStatus: a.status,
+          customerName: a.customer_name,
+          phone: a.phone,
+          service: a.service_name,
+          barberName: a.barber_name || 'غير محدد',
+          time: formatTimeToArabic(a.time),
+          rawTime: a.time,
+          rawDate: a.date,
+          date: 'الغد',
+          status: 'قادم' as const,
+          deposit: a.deposit > 0 ? a.deposit : undefined,
+        })),
+        ...data.future.map((a: any) => ({
+          id: a.id.toString(),
+          customerId: a.customer_id,
+          barberId: a.barber_id,
+          serviceId: a.service_id,
+          rawStatus: a.status,
+          customerName: a.customer_name,
+          phone: a.phone,
+          service: a.service_name,
+          barberName: a.barber_name || 'غير محدد',
+          time: formatTimeToArabic(a.time),
+          rawTime: a.time,
+          rawDate: a.date,
+          date: a.date, // Use actual date from backend
+          status: 'قادم' as const,
+          deposit: a.deposit > 0 ? a.deposit : undefined,
+        })),
+      ];
+      setAppointments(mappedAppointments);
+    } catch (error) {
+      console.error('Failed to fetch appointments:', error);
+    }
   }, [cashier]);
+
+  useEffect(() => {
+    if (!cashier) return;
+    fetchAppointments();
+
+    // Background polling every 15 seconds to keep bookings and reminder queue updated
+    const interval = setInterval(() => {
+      fetchAppointments();
+    }, 15000);
+
+    return () => clearInterval(interval);
+  }, [cashier, fetchAppointments]);
+
+  const todayAppointmentsCount = useMemo(() => {
+    const todayISO = getTodayISO();
+    return appointments.filter((a) => {
+      const isToday = a.date === 'اليوم' || a.rawDate === todayISO;
+      const isActive = a.rawStatus !== 'cancelled' && a.rawStatus !== 'completed';
+      return isToday && isActive;
+    }).length;
+  }, [appointments]);
 
   // Fetch expenses from backend
   useEffect(() => {
@@ -484,13 +524,18 @@ const App: React.FC = () => {
     fetchExpenses();
   }, [cashier]);
 
-  const toggleStaffAttendance = useCallback(async (id: number) => {
+  const toggleStaffAttendance = useCallback(async (id: number, manualTime?: string, isManual?: boolean) => {
     const member = staff.find(s => s.id === id);
     if (!member) return;
 
     try {
       const endpoint = member.isPresent ? '/attendance/check-out' : '/attendance/check-in';
-      const response = await apiClient.post(endpoint, { employee_id: id });
+      const payload: { employee_id: number; manual_time?: string; is_manual?: boolean } = { employee_id: id };
+      if (!member.isPresent && manualTime) {
+        payload.manual_time = manualTime;
+        payload.is_manual = !!isManual;
+      }
+      const response = await apiClient.post(endpoint, payload);
 
       console.log(`✅ ${member.isPresent ? 'Check-out' : 'Check-in'} successful:`, response);
 
@@ -501,6 +546,7 @@ const App: React.FC = () => {
     } catch (error: any) {
       console.error("Attendance toggle failed:", error);
       alert(error.message || "فشل تحديث حالة الحضور. الرجاء المحاولة مرة أخرى.");
+      throw error;
     }
   }, [staff]);
 
@@ -558,37 +604,44 @@ const App: React.FC = () => {
       // Add to local state with proper date formatting
       const newApp: Appointment = {
         id: response.id.toString(),
-        customerId: response.customer_id, barberId: response.barber_id, serviceId: response.service_id, rawStatus: response.status,
+        customerId: response.customer_id,
+        barberId: response.barber_id,
+        serviceId: response.service_id,
+        rawStatus: response.status,
         customerName: response.customer_name,
         phone: response.phone,
         service: response.service_name,
         barberName: response.barber_name || 'غير محدد',
         time: formatTimeToArabic(response.time),
-        date: formatISODateToArabic(response.date),  // Convert ISO to Arabic format
+        rawTime: response.time,
+        rawDate: response.date,
+        date: formatISODateToArabic(response.date), // Convert ISO to Arabic format
         status: 'قادم',
-        deposit: response.deposit > 0 ? response.deposit : undefined
+        deposit: response.deposit > 0 ? response.deposit : undefined,
       };
-      setAppointments(prev => [newApp, ...prev]);
+      setAppointments((prev) => [newApp, ...prev.filter((a) => a.id !== newApp.id)]);
+      fetchAppointments();
       return {
         appointment: newApp,
         depositTransaction: response.deposit_transaction,
       };
     } catch (error) {
-      console.error("Failed to create appointment:", error);
-      alert(error instanceof Error ? error.message : "فشل في إنشاء الموعد. الرجاء المحاولة مرة أخرى.");
+      console.error('Failed to create appointment:', error);
+      alert(error instanceof Error ? error.message : 'فشل في إنشاء الموعد. الرجاء المحاولة مرة أخرى.');
       return null;
     }
-  }, [staff]);
+  }, [fetchAppointments, staff]);
 
   const deleteAppointment = useCallback(async (id: string) => {
     try {
       await apiClient.delete(`/appointments/${id}`);
-      setAppointments(prev => prev.filter(app => app.id !== id));
+      setAppointments((prev) => prev.filter((app) => app.id !== id));
+      fetchAppointments();
     } catch (error) {
-      console.error("Failed to delete appointment:", error);
-      alert(error instanceof Error ? error.message : "فشل في حذف الموعد. الرجاء المحاولة مرة أخرى.");
+      console.error('Failed to delete appointment:', error);
+      alert(error instanceof Error ? error.message : 'فشل في حذف الموعد. الرجاء المحاولة مرة أخرى.');
     }
-  }, []);
+  }, [fetchAppointments]);
 
   // Helper function to convert Arabic time to 24-hour format
   const convertArabicTimeTo24Hour = (arabicTime: string): string => {
@@ -872,6 +925,7 @@ const App: React.FC = () => {
         onLogout={handleLogout}
         isOpen={isMiniSidebarOpen}
         onToggle={() => setIsMiniSidebarOpen(prev => !prev)}
+        todayAppointmentsCount={todayAppointmentsCount}
       />
       <div className="mini-shell-page relative z-0 min-w-0 flex-1 transition-all duration-300 ease-in-out">
         {cashier && <div hidden={activePage !== 'الكاشير'} className="h-full min-h-0">
@@ -883,6 +937,13 @@ const App: React.FC = () => {
             handoffRequest={bookingHandoff} onHandoffResult={completeBookingHandoff} />
         </div>}
         {renderContent()}
+        {cashier && (
+          <BookingAlertsNotification
+            appointments={appointments}
+            branchId={cashier.branch_id}
+            cashierId={cashier.id}
+          />
+        )}
       </div>
     </div>
   );

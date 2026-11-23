@@ -16,7 +16,7 @@ from app.models.employee import Employee, EmployeeType
 from app.models.customer import Customer
 from app.services.booking_deposit_service import serialize_settlement
 from app.models.customer_balance import CustomerBalance
-from app.models.invoice import Invoice, InvoiceStatus, InvoiceItem, PaymentMethod
+from app.models.invoice import Invoice, InvoiceStatus, InvoiceItem, PaymentMethod, InvoicePayment
 from app.models.service import ServiceCategory, CommissionType, Service, BranchService
 from app.models.expense_category import ExpenseCategory
 from sqlalchemy import func, case, or_
@@ -3565,7 +3565,7 @@ def get_invoices():
     - per_page: Page size
     """
     from datetime import date as date_obj
-    from sqlalchemy import or_
+    from sqlalchemy import or_, and_
     from app.models.customer import Customer
     
     try:
@@ -3594,7 +3594,7 @@ def get_invoices():
 
         # 2. Build Query with Eager Loading to avoid N+1 queries
         from sqlalchemy.orm import joinedload, contains_eager
-        from app.models.invoice import InvoiceItem
+        from app.models.invoice import InvoiceItem, InvoicePayment
         # Eager-load related objects to avoid N+1: customer, cashier, branch, and invoice_items.barber
         query = Invoice.query.outerjoin(Customer)\
             .options(
@@ -3660,7 +3660,12 @@ def get_invoices():
                     query = query.filter(
                         or_(
                             Invoice.payment_method.in_(visa_methods),
-                            Invoice.invoice_payments.any(InvoicePayment.method.in_(visa_methods))
+                            Invoice.invoice_payments.any(
+                                and_(
+                                    InvoicePayment.method.in_(visa_methods),
+                                    InvoicePayment.amount > 0
+                                )
+                            )
                         )
                     )
                 else:
@@ -3668,7 +3673,12 @@ def get_invoices():
                     query = query.filter(
                         or_(
                             Invoice.payment_method == pm_enum,
-                            Invoice.invoice_payments.any(InvoicePayment.method == pm_enum)
+                            Invoice.invoice_payments.any(
+                                and_(
+                                    InvoicePayment.method == pm_enum,
+                                    InvoicePayment.amount > 0
+                                )
+                            )
                         )
                     )
             except ValueError:
@@ -3773,6 +3783,17 @@ def get_invoices():
             promo_info = redemption_map.get(inv.id)
             draft_evidence = emptied_draft_evidence.get(inv.id)
 
+            # Payment method resolution (support split payments, legacy rows, and payment slices)
+            active_methods = {p.method for p in inv.invoice_payments if p.amount > 0} if inv.invoice_payments else set()
+            if len(active_methods) > 1:
+                resolved_method = "SPLIT"
+            elif len(active_methods) == 1:
+                resolved_method = next(iter(active_methods)).value
+            elif inv.payment_method:
+                resolved_method = inv.payment_method.value
+            else:
+                resolved_method = "غير محدد"
+
             results.append({
                 "id": inv.id,
                 "number": str(inv.invoice_number) if inv.invoice_number else "---",
@@ -3781,7 +3802,15 @@ def get_invoices():
                 "cashier": inv.cashier.full_name if inv.cashier else "Unknown",
                 **barber_preview,
                 "branch": inv.branch.name if inv.branch else "Unknown",
-                "method": inv.payment_method.value if inv.payment_method else "غير محدد",
+                "method": resolved_method,
+                "payments": [
+                    {
+                        "method": p.method.value,
+                        "amount": float(p.amount),
+                        "entered_amount": float(p.entered_amount if p.entered_amount is not None else p.amount)
+                    }
+                    for p in inv.invoice_payments
+                ] if inv.invoice_payments else [],
                 "status": STATUS_MAP.get(inv.status, "معلقة"),
                 "status_code": inv.status.value,
                 "draft_state": (

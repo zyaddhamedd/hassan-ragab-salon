@@ -44,7 +44,7 @@ class AttendanceCompatibilityTests(unittest.TestCase):
         # Exercise route logic with an already authenticated, scoped principal;
         # auth/device middleware has its own existing regression suites.
         with self.app.test_request_context('/', method='POST' if data is not None else 'GET', json=data):
-            g.current_user=self.manager; g.branch_id=self.branch.id; g.cashier_id=self.employee.id
+            g.current_user=self.manager; g.user_id=self.manager.id; g.branch_id=self.branch.id; g.cashier_id=self.employee.id
             return view.__wrapped__(**kwargs)
 
     def transfer(self, review=None):
@@ -134,6 +134,120 @@ class AttendanceCompatibilityTests(unittest.TestCase):
         row=self.attendance();response,status=self.close_day();self.assertEqual(status,200,response.json)
         self.assertEqual(row.checkout_source,AttendanceCheckoutSource.BUSINESS_DAY_CLOSE)
         self.assertEqual(response.json['auto_checked_out_count'],1)
+
+    def test_manual_checkin_effective_time_and_audit_preservation(self):
+        from app.utils.admin_attendance_workspace import build_attendance_workspace_payload
+        from app.utils.date_utils import CAIRO_TZ, to_iso_string
+        from datetime import timedelta
+
+        # Configure business day as opened at 10:15 Cairo time today
+        now_cairo = self.now.astimezone(CAIRO_TZ)
+        opened_cairo = now_cairo.replace(hour=10, minute=15, second=0, microsecond=0)
+        self.day.opened_at = opened_cairo.astimezone(timezone.utc)
+        db.session.commit()
+
+        # Cashier records arrival earlier than drawer opening: 09:30 Cairo time
+        target_hour = 9
+        target_minute = 30
+        manual_str = f"{target_hour:02d}:{target_minute:02d}"
+
+        # Mock current time to 10:30 Cairo time so 09:30 is in the past
+        test_now_cairo = now_cairo.replace(hour=10, minute=30, second=0, microsecond=0)
+        test_now_utc = test_now_cairo.astimezone(timezone.utc)
+
+        with patch('app.utils.date_utils.get_utc_now', return_value=test_now_utc):
+            response, status = self.call(check_in_employee, {
+                'employee_id': self.employee.id,
+                'manual_time': manual_str
+            })
+            self.assertEqual(status, 201)
+            self.assertEqual(response.json['status'], 'PRESENT')
+
+            row = Attendance.query.filter_by(employee_id=self.employee.id).one()
+            # check_in_time is effective arrival: 09:30 Cairo time in UTC
+            expected_cairo = now_cairo.replace(hour=target_hour, minute=target_minute, second=0, microsecond=0)
+            expected_utc = expected_cairo.astimezone(timezone.utc)
+            row_time = row.check_in_time if row.check_in_time.tzinfo else row.check_in_time.replace(tzinfo=timezone.utc)
+            self.assertEqual(row_time, expected_utc)
+            self.assertTrue(row.is_manual_check_in)
+            self.assertEqual(row.check_in_actor_id, self.manager.id)
+
+            # Workspace payload verifies effective time, manual audit badge, and recorded_by actor
+            payload = build_attendance_workspace_payload(self.day)
+            att_row = next(r for r in payload['rows'] if r.get('employee_id') == self.employee.id)
+            self.assertTrue(att_row['is_manual_check_in'])
+            self.assertEqual(att_row['recorded_by'], self.manager.full_name)
+            self.assertTrue(att_row['check_in_time'].startswith(expected_utc.strftime('%Y-%m-%dT%H:%M:%S')))
+
+    def test_manual_checkin_future_time_rejected(self):
+        from app.utils.date_utils import CAIRO_TZ
+        from datetime import timedelta
+        now_cairo = self.now.astimezone(CAIRO_TZ)
+        # Attempt to set check-in time 2 hours into the future
+        future_cairo = now_cairo + timedelta(hours=2)
+        future_str = f"{future_cairo.hour:02d}:{future_cairo.minute:02d}"
+
+        response, status = self.call(check_in_employee, {
+            'employee_id': self.employee.id,
+            'manual_time': future_str
+        })
+        self.assertEqual(status, 400)
+        self.assertIn("المستقبل", response.json['error'])
+
+    def test_manual_checkin_overlap_and_checkout_unchanged(self):
+        from app.utils.date_utils import CAIRO_TZ
+        from datetime import timedelta
+
+        # First session: checked in at 09:00, checked out at 11:00
+        now_cairo = self.now.astimezone(CAIRO_TZ)
+        cairo_9am = now_cairo.replace(hour=9, minute=0, second=0, microsecond=0).astimezone(timezone.utc)
+        cairo_11am = now_cairo.replace(hour=11, minute=0, second=0, microsecond=0).astimezone(timezone.utc)
+
+        first_att = Attendance(
+            employee_id=self.employee.id,
+            branch_id=self.branch.id,
+            business_day_id=self.day.id,
+            date=self.now.date(),
+            check_in_time=cairo_9am,
+            check_out_time=cairo_11am,
+            status=AttendanceStatus.LEFT,
+            checkout_source=AttendanceCheckoutSource.MANUAL
+        )
+        db.session.add(first_att)
+        db.session.commit()
+
+        # Attempting check-in at 10:30 overlaps with [09:00, 11:00] -> rejected
+        test_now_cairo = now_cairo.replace(hour=14, minute=0, second=0, microsecond=0)
+        test_now_utc = test_now_cairo.astimezone(timezone.utc)
+        with patch('app.utils.date_utils.get_utc_now', return_value=test_now_utc):
+            resp, status = self.call(check_in_employee, {
+                'employee_id': self.employee.id,
+                'manual_time': '10:30'
+            })
+            self.assertEqual(status, 400)
+            self.assertIn("يتعارض", resp.json['error'])
+
+            # Non-overlapping check-in at 11:30 succeeds
+            resp, status = self.call(check_in_employee, {
+                'employee_id': self.employee.id,
+                'manual_time': '11:30'
+            })
+            self.assertEqual(status, 201)
+
+            # Duplicate check-in while PRESENT is blocked
+            dup_resp, dup_status = self.call(check_in_employee, {
+                'employee_id': self.employee.id,
+                'manual_time': '12:00'
+            })
+            self.assertEqual(dup_status, 400)
+
+            # Check-out unchanged: calling check-out without extra parameters works as before
+            co_resp, co_status = self.call(check_out_employee, {
+                'employee_id': self.employee.id
+            })
+            self.assertEqual(co_status, 200)
+            self.assertEqual(co_resp.json['status'], 'LEFT')
+            self.assertEqual(co_resp.json['checkout_source'], 'MANUAL')
 
 
 if __name__=='__main__': unittest.main()

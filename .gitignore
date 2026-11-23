@@ -4,6 +4,8 @@
 .env.*
 **/.env
 **/.env.*
+!*.example
+!**/*.example
 node_modules/
 venv/
 .venv/

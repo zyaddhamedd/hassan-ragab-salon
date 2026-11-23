@@ -31,7 +31,7 @@ Config.STAFF_IDENTITY_ENABLED = _env_flag("STAFF_IDENTITY_ENABLED", "false")
 
 Config.MINI_LEGACY_DEVICE_COMPATIBILITY_ENABLED = _env_flag(
     "MINI_LEGACY_DEVICE_COMPATIBILITY_ENABLED",
-    "false",
+    "true",
 )
 Config.MINI_PROOF_ENROLLMENT_REQUIRED = _env_flag(
     "MINI_PROOF_ENROLLMENT_REQUIRED",
@@ -41,19 +41,25 @@ Config.MINI_DEVICE_COOKIE_NAME = "hr_mini_device_credential"
 Config.MINI_ENROLLMENT_PROOF_COOKIE_NAME = "hr_mini_enrollment_proof"
 Config.SESSION_COOKIE_NAME = "hr_session"
 
+frontend_url = os.environ.get("FRONTEND_URL", "").strip().rstrip("/")
+cors_env = os.environ.get("CORS_ALLOWED_ORIGINS", "").strip()
+if not cors_env and frontend_url:
+    cors_env = frontend_url
+elif not cors_env:
+    cors_env = "http://127.0.0.1:3200,http://127.0.0.1:5276"
+cors_origins = _parse_origins(cors_env)
+
+mini_trusted_env = os.environ.get("MINI_TRUSTED_ORIGINS", "").strip()
+if not mini_trusted_env:
+    mini_trusted_origins = cors_origins
+else:
+    mini_trusted_origins = _parse_origins(mini_trusted_env)
+
 external_api_base = os.environ.get("MINI_EXTERNAL_API_BASE_URL", "").strip().rstrip("/")
-cors_origins = _parse_origins(
-    os.environ.get(
-        "CORS_ALLOWED_ORIGINS",
-        "http://127.0.0.1:3200,http://127.0.0.1:5276",
-    )
-)
-mini_trusted_origins = _parse_origins(
-    os.environ.get(
-        "MINI_TRUSTED_ORIGINS",
-        "http://127.0.0.1:3200,http://127.0.0.1:5276",
-    )
-)
+if not external_api_base and frontend_url:
+    external_api_base = frontend_url
+elif not external_api_base and cors_origins and not cors_origins[0].startswith("http://127.0.0.1"):
+    external_api_base = cors_origins[0]
 
 Config.API_CORS_ALLOWED_ORIGINS = cors_origins
 Config.MINI_FINALIZATION_TRUSTED_ORIGINS = mini_trusted_origins

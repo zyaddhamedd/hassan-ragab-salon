@@ -23,11 +23,12 @@
  html[data-omar-admin-theme="foundation"] [data-omar-revenue-v2="dark"] [filter="url(#glowProfit)"] { display:none; }
  html[data-omar-admin-theme="foundation"] [data-omar-revenue-v2="dark"] .recharts-area-area { fill-opacity:.06; }
  html[data-omar-admin-theme="foundation"] [data-omar-revenue-v2="dark"] .recharts-active-dot circle { r:4px; stroke:#151518; stroke-width:2px; filter:none; }
- html[data-omar-admin-theme="foundation"] [data-omar-revenue-v2="dark"] .recharts-tooltip-cursor { stroke:#B8C5CC; stroke-opacity:.55; stroke-width:1px; stroke-dasharray:4 4; }
- html[data-omar-admin-theme="foundation"] [data-omar-revenue-v2="dark"] [data-omar-revenue-tooltip="dark"] { background:#18262E; border-color:#52636D; border-radius:12px; padding:15px; color:#FFFFFF; backdrop-filter:none; box-shadow:0 8px 24px rgb(0 0 0 / .25); transition:none; max-width:calc(100vw - 48px); }
- html[data-omar-admin-theme="foundation"] [data-omar-revenue-v2="dark"] [data-omar-revenue-tooltip="dark"] [class~="opacity-50"],
- html[data-omar-admin-theme="foundation"] [data-omar-revenue-v2="dark"] [data-omar-revenue-tooltip="dark"] [class~="opacity-60"] { opacity:1; color:#B8C5CC; }
+ html[data-omar-admin-theme="foundation"] [data-omar-revenue-v2="dark"] .recharts-tooltip-cursor { stroke:#A8906A; stroke-opacity:.4; stroke-width:1px; stroke-dasharray:4 4; }
+ html[data-omar-admin-theme="foundation"] [data-omar-revenue-v2="dark"] [data-omar-revenue-tooltip="dark"] { background:#18181B; border:1px solid #2E2A20; border-radius:14px; padding:15px; color:#FFFFFF; backdrop-filter:none; box-shadow:0 12px 32px rgb(0 0 0 / .6),0 0 0 1px rgb(230 214 144 / .15); transition:none; max-width:calc(100vw - 48px); }
+ html[data-omar-admin-theme="foundation"] [data-omar-revenue-v2="dark"] [data-omar-revenue-tooltip="dark"] [class~="opacity-50"] { opacity:1; color:#E6D690; }
+ html[data-omar-admin-theme="foundation"] [data-omar-revenue-v2="dark"] [data-omar-revenue-tooltip="dark"] [class~="opacity-60"] { opacity:1; color:#A1A1AA; }
  html[data-omar-admin-theme="foundation"] [data-omar-revenue-v2="dark"] [data-omar-revenue-tooltip="dark"] .rounded-full { box-shadow:none; }
+ html[data-omar-admin-theme="foundation"] [data-omar-revenue-v2="dark"] [data-omar-revenue-tooltip="dark"] [class*="bg-gradient-to-r"] { background:linear-gradient(90deg, transparent, rgb(230 214 144 / .2), transparent); }
  html[data-omar-admin-theme="foundation"] [data-omar-revenue-v2="dark"] .recharts-area-area[fill="url(#colorRevenue)"] { fill:#EF3434; }
  html[data-omar-admin-theme="foundation"] [data-omar-revenue-v2="dark"] .recharts-area-area[fill="url(#colorProfit)"] { fill:#16C784; }
  html[data-omar-admin-theme="foundation"] [data-omar-revenue-v2="dark"] .recharts-active-dot circle[fill="#ef4444"] { fill:#EF3434; }

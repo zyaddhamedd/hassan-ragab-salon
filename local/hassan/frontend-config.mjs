@@ -24,7 +24,7 @@ export const storageKeys = [
   'admin_token', 'admin_refresh_token', 'admin_user', 'smc_active_tab', 'smc_selected_branch',
   'admin.invoiceExport.columns.v1', 'mini_token', 'mini_refresh_token', 'mini_cashier',
   'mini_device_context', 'mini_device_id', 'mini_active_payment_attempt', 'mini_booking_handoff:',
-  'smc_queue', 'mini-device-proof',
+  'mini_booking_acks:', 'smc_queue', 'mini-device-proof',
 ];
 
 export function namespaceSource(source) {

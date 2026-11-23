@@ -2522,12 +2522,14 @@ def check_in_employee():
     from app.models.employee import Employee, EmployeeType
     from app.models.attendance import Attendance, AttendanceStatus
     from app.models.business_day import BusinessDay, BusinessDayStatus
-    from app.utils.date_utils import CAIRO_TZ
+    from app.utils.date_utils import CAIRO_TZ, get_utc_now, to_iso_string
+    from datetime import datetime, timedelta, timezone
     from sqlalchemy.exc import IntegrityError
 
     try:
-        data = request.get_json()
+        data = request.get_json() or {}
         employee_id = data.get('employee_id')
+        manual_time = data.get('manual_time')
 
         if not employee_id:
             return jsonify({"error": "employee_id is required"}), 400
@@ -2577,6 +2579,78 @@ def check_in_employee():
 
         attendance_date = open_day.opened_at.astimezone(CAIRO_TZ).date()
         now_utc = get_utc_now()
+        effective_check_in_time = now_utc
+
+        # Handle optional manual check-in time in Africa/Cairo
+        if manual_time:
+            if not isinstance(manual_time, str):
+                return jsonify({"error": "صيغة الوقت غير صالحة"}), 400
+
+            parts = manual_time.strip().split(':')
+            if len(parts) not in (2, 3):
+                return jsonify({"error": "صيغة الوقت غير صالحة، يجب أن تكون بتنسيق HH:MM"}), 400
+
+            try:
+                hour = int(parts[0])
+                minute = int(parts[1])
+                second = int(parts[2]) if len(parts) == 3 else 0
+                if not (0 <= hour <= 23 and 0 <= minute <= 59 and 0 <= second <= 59):
+                    raise ValueError()
+            except ValueError:
+                return jsonify({"error": "قيمة الساعة أو الدقيقة غير صالحة"}), 400
+
+            now_cairo = now_utc.astimezone(CAIRO_TZ)
+            opened_at_cairo = open_day.opened_at.astimezone(CAIRO_TZ)
+            business_date = opened_at_cairo.date()
+
+            # Date resolution:
+            if now_cairo.date() == business_date:
+                candidate_date = business_date
+            else:
+                # Business day spans across midnight
+                candidate_today = datetime(now_cairo.year, now_cairo.month, now_cairo.day, hour, minute, second, tzinfo=CAIRO_TZ)
+                if candidate_today <= now_cairo:
+                    candidate_date = now_cairo.date()
+                else:
+                    candidate_date = business_date
+
+            candidate_cairo = datetime(candidate_date.year, candidate_date.month, candidate_date.day, hour, minute, second, tzinfo=CAIRO_TZ)
+            candidate_utc = candidate_cairo.astimezone(timezone.utc)
+
+            # Future time rejection (allow 60s skew tolerance)
+            if candidate_utc > now_utc + timedelta(seconds=60):
+                return jsonify({"error": "لا يمكن تسجيل وقت حضور في المستقبل"}), 400
+
+            # Do not allow selecting times from unrelated previous days
+            if candidate_cairo.date() < business_date:
+                return jsonify({"error": "وقت الحضور لا يمكن أن يكون قبل تاريخ يوم العمل"}), 400
+
+            # Overlapping sessions rejection: check against closed sessions today in this business day
+            existing_closed_sessions = Attendance.query.filter(
+                Attendance.employee_id == employee_id,
+                Attendance.business_day_id == open_day.id,
+                Attendance.status == AttendanceStatus.LEFT
+            ).all()
+
+            for sess in existing_closed_sessions:
+                if sess.check_out_time:
+                    sess_checkout = sess.check_out_time if sess.check_out_time.tzinfo else sess.check_out_time.replace(tzinfo=timezone.utc)
+                    if candidate_utc < sess_checkout:
+                        return jsonify({
+                            "error": "وقت الحضور يتعارض مع جلسة حضور سابقة مسجلة للموظف"
+                        }), 400
+
+            effective_check_in_time = candidate_utc
+
+        # Determine whether check-in was explicitly adjusted / manual
+        is_manual_entry = False
+        if manual_time:
+            is_manual_flag = data.get('is_manual', False) if isinstance(data, dict) else False
+            diff_from_recording = abs((now_utc - effective_check_in_time).total_seconds())
+            if is_manual_flag or diff_from_recording >= 60:
+                is_manual_entry = True
+
+        actor_id = getattr(g, 'user_id', None)
 
         # Create attendance record
         attendance = Attendance(
@@ -2584,12 +2658,21 @@ def check_in_employee():
             branch_id=g.branch_id,
             business_day_id=open_day.id,
             date=attendance_date,          # business-day start date, not wall-clock date
-            check_in_time=now_utc,
-            status=AttendanceStatus.PRESENT
+            check_in_time=effective_check_in_time,
+            status=AttendanceStatus.PRESENT,
+            is_manual_check_in=is_manual_entry,
+            check_in_actor_id=actor_id
         )
 
         db.session.add(attendance)
         db.session.commit()
+
+        actor_name = None
+        if is_manual_entry:
+            if attendance.check_in_actor:
+                actor_name = attendance.check_in_actor.full_name
+            elif getattr(g, 'current_user', None):
+                actor_name = getattr(g.current_user, 'full_name', None)
 
         return jsonify({
             'id': attendance.id,
@@ -2598,6 +2681,9 @@ def check_in_employee():
             'date': attendance_date.isoformat(),
             'business_day_id': attendance.business_day_id,
             "check_in_time": to_iso_string(attendance.check_in_time),
+            "created_at": to_iso_string(attendance.created_at),
+            "is_manual_check_in": attendance.is_manual_check_in,
+            "recorded_by": actor_name,
             'check_out_time': None,
             'checkout_source': None,
             'status': attendance.status.value
@@ -3670,6 +3756,37 @@ def create_appointment():
         except ValueError as e:
             print(f"❌ DATE PARSING ERROR: {str(e)}")
             return jsonify({"error": f"Invalid date or time format: {str(e)}"}), 400
+
+        # Deposit Lock Enforcement: Check if slot is locked by an active appointment with a paid deposit
+        from app.models.appointment import AppointmentStatus
+        from sqlalchemy import or_, and_, exists
+
+        # Lock any existing rows at this branch/date/time to prevent concurrent deposit race conditions
+        existing_slot_appointments = (
+            Appointment.query
+            .filter_by(
+                branch_id=g.branch_id,
+                appointment_date=parsed_date,
+                appointment_time=parsed_time
+            )
+            .with_for_update()
+            .all()
+        )
+        for existing_app in existing_slot_appointments:
+            if existing_app.status != AppointmentStatus.CANCELLED:
+                has_deposit_tx = (
+                    AppointmentDepositTransaction.query
+                    .filter_by(
+                        appointment_id=existing_app.id,
+                        transaction_type=AppointmentDepositTransactionType.DEPOSIT_COLLECTION
+                    )
+                    .filter(AppointmentDepositTransaction.amount > 0)
+                    .first()
+                )
+                if existing_app.deposit_amount > 0 or has_deposit_tx:
+                    return jsonify({
+                        "error": "هذا الموعد محجوز ومؤكد بعربون. يرجى اختيار موعد آخر."
+                    }), 409
         
         # Create appointment
         appointment = Appointment(
@@ -3852,6 +3969,25 @@ def update_appointment_status(appointment_id):
         if appointment.branch_id != g.branch_id:
             return jsonify({"error": "Unauthorized access to this appointment"}), 403
         
+        # If reactivating or modifying an appointment with a paid deposit, ensure slot is not locked by another appointment
+        if new_status != AppointmentStatus.CANCELLED and appointment.status == AppointmentStatus.CANCELLED and appointment.deposit_amount > 0:
+            other_locked = (
+                Appointment.query
+                .filter(
+                    Appointment.branch_id == appointment.branch_id,
+                    Appointment.appointment_date == appointment.appointment_date,
+                    Appointment.appointment_time == appointment.appointment_time,
+                    Appointment.id != appointment.id,
+                    Appointment.status != AppointmentStatus.CANCELLED,
+                    Appointment.deposit_amount > 0
+                )
+                .first()
+            )
+            if other_locked:
+                return jsonify({
+                    "error": "هذا الموعد محجوز ومؤكد بعربون. يرجى اختيار موعد آخر."
+                }), 409
+
         # Update status
         appointment.status = new_status
         db.session.commit()

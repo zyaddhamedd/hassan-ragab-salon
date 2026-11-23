@@ -8,7 +8,7 @@ import {couponArtifactSource,omarCouponArtifact} from './admin-coupon-artifact.m
 const root=process.cwd(),require=createRequire(path.join(root,'admin/package.json'));
 const ts=require('typescript'),React=require('react'),{renderToStaticMarkup}=require('react-dom/server');
 function load(file){const source=fs.readFileSync(file,'utf8');const output=ts.transpileModule(source,{compilerOptions:{jsx:ts.JsxEmit.React,module:ts.ModuleKind.CommonJS,esModuleInterop:true,target:ts.ScriptTarget.ES2022},reportDiagnostics:true});assert.equal(output.diagnostics.length,0);const module={exports:{}};vm.runInNewContext(output.outputText,{module,exports:module.exports,require:id=>id.endsWith('/utils/promoCodes')?load('admin/utils/promoCodes.ts'):require(id),Intl,Date,Error,Number,Set});return module.exports;}
-const Card=load('local/omar/coupon-artifact.tsx').default,utils=load('admin/utils/promoCodes.ts');
+const Card=load('local/hassan/coupon-artifact.tsx').default,utils=load('admin/utils/promoCodes.ts');
 const promo={id:12,code:'QA_25',discount_type:'PERCENTAGE',discount_value:'25',discount_scope:'SERVICES_ONLY',category_scope:'ALL_SERVICE_CATEGORIES',category_ids:[],branch_scope:'ALL_BRANCHES',branch_ids:[],is_active:true,starts_at:null,expires_at:null,usage_limit:null,archived_at:null};
 const props={promo,now:Date.parse('2026-10-29'),canManage:true,disabled:false,pending:false,onEdit:()=>{},onToggle:()=>{},onArchive:()=>{},children:React.createElement('dl',null,'Original complete details')};
 const render=changes=>renderToStaticMarkup(React.createElement(Card,{...props,...changes}));
@@ -46,7 +46,7 @@ test('Original callbacks, disabled guards and read-only permissions remain intac
  assert.ok(render({promo:{...promo,is_active:false}}).includes('تفعيل'));
 });
 test('Styles use unique artifact selectors and existing responsive composition, no global or print rules',()=>{
- const css=fs.readFileSync('local/omar/coupon-artifact.css','utf8');
+ const css=fs.readFileSync('local/hassan/coupon-artifact.css','utf8');
  assert.ok(css.includes('@media screen'));assert.ok(css.includes('@container (max-width:350px)'));assert.ok(css.includes('prefers-reduced-motion'));assert.ok(!css.includes('@media print'));
  assert.ok(!/(?:^|})\s*(?:body|html|button|summary|dl|dt|dd|svg|\*)\s*[{:,]/m.test(css));
  assert.ok(!css.includes('http'));assert.ok(!css.includes('.oc-artifact summary svg{transform'));

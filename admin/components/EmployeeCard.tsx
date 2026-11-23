@@ -224,21 +224,21 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
           )}
         </div>
 
-        {/* Lower Portion: Integrated Ivory Identification Plate (Bonded directly beneath portrait) */}
-        <div className="bg-[#F0ECE4] text-[#141414] border-t border-[#D5D0C5] p-3 flex flex-col justify-between shrink-0">
+        {/* Lower Portion: Integrated Dark Identification Plate (Bonded directly beneath portrait) */}
+        <div className="bg-[#18181B] text-white border-t border-white/10 p-3 flex flex-col justify-between shrink-0">
           {/* Header Row: Role Title & Department Mark */}
-          <div className="flex items-center justify-between border-b border-black/10 pb-1.5 mb-1.5">
-            <span className="text-xs font-black tracking-tight text-[#111111]">
+          <div className="flex items-center justify-between border-b border-white/10 pb-1.5 mb-1.5">
+            <span className="text-xs font-black tracking-tight text-[#E6D690]">
               {roleLabel}
             </span>
-            <span className="text-[9px] font-mono font-bold text-black/45 uppercase tracking-wider">
+            <span className="text-[9px] font-mono font-bold text-white/40 uppercase tracking-wider">
               CREW
             </span>
           </div>
 
           {/* Middle Row: Full Name with Single-Line Truncation */}
           <h3
-            className={`text-[17px] font-extrabold text-[#111111] truncate tracking-tight leading-tight ${
+            className={`text-[17px] font-extrabold text-white truncate tracking-tight leading-tight ${
               employee.is_deleted ? 'line-through opacity-50' : ''
             }`}
             title={employee.name}
@@ -247,18 +247,18 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
           </h3>
 
           {/* Bottom Row: Assigned Branch & Phone */}
-          <div className="mt-1.5 flex items-center justify-between text-[10px] text-black/75 font-medium">
+          <div className="mt-1.5 flex items-center justify-between text-[10px] text-white/70 font-medium">
             <span className="flex items-center gap-1 truncate max-w-[155px]" title={employee.branch}>
-              <MapPin size={11} className="text-[#B33939] shrink-0" />
+              <MapPin size={11} className="text-[#E6D690] shrink-0" />
               <span className="truncate">{employee.branch}</span>
             </span>
 
             {employee.phone ? (
-              <span className="font-mono text-[9px] text-black/60 truncate" dir="ltr">
+              <span className="font-mono text-[9px] text-white/50 truncate" dir="ltr">
                 {employee.phone}
               </span>
             ) : (
-              <span className="font-mono text-[9px] text-black/35">---</span>
+              <span className="font-mono text-[9px] text-white/35">---</span>
             )}
           </div>
         </div>

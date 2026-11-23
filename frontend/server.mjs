@@ -34,6 +34,7 @@ function contentType(filePath) {
     '.ico': 'image/x-icon',
     '.woff': 'font/woff',
     '.woff2': 'font/woff2',
+    '.mp3': 'audio/mpeg',
   };
   return types[path.extname(filePath).toLowerCase()] || 'application/octet-stream';
 }
@@ -83,20 +84,6 @@ function proxyBackend(request, response) {
   request.pipe(upstream);
 }
 
-function serveStatic(response, filePath) {
-  fs.stat(filePath, (error, stats) => {
-    if (error || !stats.isFile()) return false;
-    response.writeHead(200, {
-      'Content-Type': contentType(filePath),
-      'Cache-Control': filePath.includes(`${path.sep}assets${path.sep}`)
-        ? 'public, max-age=31536000, immutable'
-        : 'no-cache',
-    });
-    fs.createReadStream(filePath).pipe(response);
-    return true;
-  });
-}
-
 const server = http.createServer((request, response) => {
   const pathname = new URL(request.url || '/', 'http://localhost').pathname;
 
@@ -115,9 +102,30 @@ const server = http.createServer((request, response) => {
     return;
   }
 
-  if (pathname === '/') {
+  if (pathname === '/' || pathname === '') {
     response.writeHead(302, {Location: '/admin/'});
     response.end();
+    return;
+  }
+
+  if (pathname === '/audio' || pathname.startsWith('/audio/')) {
+    const audioRoot = path.join(distRoot, 'mini');
+    const audioFile = path.resolve(audioRoot, `.${pathname}`);
+    if (!audioFile.startsWith(audioRoot + path.sep)) {
+      sendText(response, 403, 'Forbidden');
+      return;
+    }
+    fs.stat(audioFile, (error, stats) => {
+      if (!error && stats.isFile()) {
+        response.writeHead(200, {
+          'Content-Type': contentType(audioFile),
+          'Cache-Control': 'public, max-age=31536000, immutable',
+        });
+        fs.createReadStream(audioFile).pipe(response);
+        return;
+      }
+      sendText(response, 404, 'Audio asset not found');
+    });
     return;
   }
 

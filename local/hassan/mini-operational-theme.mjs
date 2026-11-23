@@ -35,8 +35,8 @@ export const reviewedOperationalPaint = /* REVIEWED_PAINT */ {
   "mini/components/WaitingScreen.tsx": "2d2903b47c46fe7642ba6d26d4244bcf0f60a560db2f1e57ccd17c801728f817",
   "mini/components/CustomersScreen.tsx": "c2a9ac67c2a2c8d22fa9dcc6805dfd7dad23ee75e7fa1ee5fc9c3ce25f808de8",
   "mini/components/BarbersScreen.tsx": "48e138600282e39f96db7476b7fce75294b5178c8f1e9e8eda85e76ceb69c726",
-  "mini/components/AppointmentsScreen.tsx": "e46e22bc999c1c192ea08e0c6bf391a365cf8451129c92f9a91783dad040776c",
-  "mini/components/AttendanceScreen.tsx": "7c1712f034fada7ef00772b7b0353fb10cb4561fe94ecc7809674fc20be3345f",
+  "mini/components/AppointmentsScreen.tsx": "df982a84638d4c9351570e0955a058923af121950cb706ab9ace57bdaa8c9724",
+  "mini/components/AttendanceScreen.tsx": "12525f0f1a574d2ffe56b66e3a92e693ce9eaf0b14a060ac5f2de7333b6c05bb",
   "mini/components/ExpensesScreen.tsx": "0930f5cb33002ed7a4dc4b0937140c1845d94ba6b77d771123df16bcc14e65ca",
   "mini/pages/MiniTreasuryPage.tsx": "717e71ac5ac274f28b3e6d81bbf17bb173a4165395aea158d518f489a9d041c3"
 };

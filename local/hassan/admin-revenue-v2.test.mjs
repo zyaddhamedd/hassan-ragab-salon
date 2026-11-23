@@ -41,7 +41,7 @@ test('Omar Admin Dark panel only; all other Dashboard sections, Light mode and c
  const css=fs.readFileSync(revenueV2Stylesheet,'utf8');assert.ok(css.includes('@media screen'));assert.ok(css.includes('(max-width:639px)'));
  for(const rule of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)){assert.ok(rule[1].includes('html[data-omar-admin-theme="foundation"]'));assert.ok(rule[1].includes('[data-omar-revenue-v2="dark"]'));}
  assert.ok(!css.includes('oc-artifact'));assert.ok(!css.includes('[data-omar-revenue-v2="light"]'));
- const originalCSS=fs.readFileSync('local/omar/admin-dashboard-theme.css','utf8');assert.match(originalCSS,/\[stroke="#ef4444"\] \{ stroke: #EF3434;/);assert.match(originalCSS,/\[stroke="#10b981"\] \{ stroke: #16C784;/);
+ const originalCSS=fs.readFileSync('local/hassan/admin-dashboard-theme.css','utf8');assert.match(originalCSS,/\[stroke="#ef4444"\] \{ stroke: #EF3434;/);assert.match(originalCSS,/\[stroke="#10b981"\] \{ stroke: #16C784;/);
 });
 
 test('V2.1 uses existing tick grid, restrained fills and semantic active dots without dimension changes',()=>{

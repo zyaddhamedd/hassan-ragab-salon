@@ -189,8 +189,9 @@ const InvoiceDetailsModal: React.FC<InvoiceDetailsModalProps> = ({
     if (m === 'VISA_1') return 'فيزا 1';
     if (m === 'VISA_2') return 'فيزا 2';
     if (m === 'بطاقة مدى' || m === 'فيزا' || m === 'VISA') return 'فيزا';
-    if (m === 'INSTAPAY' || method === 'InstaPay' || method === 'إنستا باي') return 'إنستا باي';
-    return method || 'نقدي';
+    if (m === 'INSTAPAY' || method === 'InstaPay' || method === 'إنستا باي' || method === 'إنستاباي') return 'إنستاباي';
+    if (m.startsWith('VISA_')) return `فيزا ${m.replace('VISA_', '')}`;
+    return method || 'كاش';
   };
 
   // Only calculate commissions for PAID invoices
@@ -605,7 +606,7 @@ const InvoiceDetailsModal: React.FC<InvoiceDetailsModalProps> = ({
                 </div>
               ) : (
                 <div className="flex items-center gap-1.5">
-                  <CreditCard size={13} className="text-emerald-400 shrink-0" />
+                  <CreditCard size={13} className="text-[#A8906A] shrink-0" />
                   <span className={`text-xs font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                     {getPaymentLabel(currentInvoice.payments?.[0]?.method || currentInvoice.method)}
                   </span>

@@ -922,13 +922,13 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({ isDarkMode, selectedBranch,
                   type="button"
                   onClick={() => setActivePayment('VISA_1')}
                   className={`px-2.5 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 ${activePayment === 'VISA_1'
-                      ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                      ? 'bg-[#A8906A]/20 text-[#C4AB84] border border-[#A8906A]/40'
                       : isDarkMode
                         ? 'text-gray-400 hover:text-gray-200 hover:bg-white/5'
                         : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                     }`}
                 >
-                  <CreditCard size={12} />
+                  <CreditCard size={12} className={activePayment === 'VISA_1' ? 'text-[#A8906A]' : ''} />
                   فيزا 1
                 </button>
 
@@ -936,13 +936,13 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({ isDarkMode, selectedBranch,
                   type="button"
                   onClick={() => setActivePayment('VISA_2')}
                   className={`px-2.5 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 ${activePayment === 'VISA_2'
-                      ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
+                      ? 'bg-[#A8906A]/20 text-[#C4AB84] border border-[#A8906A]/40'
                       : isDarkMode
                         ? 'text-gray-400 hover:text-gray-200 hover:bg-white/5'
                         : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                     }`}
                 >
-                  <CreditCard size={12} />
+                  <CreditCard size={12} className={activePayment === 'VISA_2' ? 'text-[#A8906A]' : ''} />
                   فيزا 2
                 </button>
 

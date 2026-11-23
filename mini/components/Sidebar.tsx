@@ -22,9 +22,10 @@ interface SidebarProps {
   onLogout: () => void;
   isOpen: boolean;
   onToggle: () => void;
+  todayAppointmentsCount?: number;
 }
 
-const Sidebar: React.FC<SidebarProps> = React.memo(({ activePage, setActivePage, onLogout, isOpen, onToggle }) => {
+const Sidebar: React.FC<SidebarProps> = React.memo(({ activePage, setActivePage, onLogout, isOpen, onToggle, todayAppointmentsCount }) => {
   const menuItems: { name: PageType; icon: React.ReactNode }[] = [
     { name: 'الانتظار', icon: <Ticket size={20} /> },
     { name: 'الكاشير', icon: <Calculator size={20} /> },
@@ -89,7 +90,20 @@ const Sidebar: React.FC<SidebarProps> = React.memo(({ activePage, setActivePage,
 
                 <span className="ml-0 whitespace-nowrap text-sm">{item.name}</span>
 
-                {activePage === item.name && (
+                {item.name === 'المواعيد القادمة' && (todayAppointmentsCount ?? 0) > 0 && (
+                  <span
+                    data-testid="today-appointments-badge"
+                    className={`mr-auto flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[10px] font-black transition-colors ${
+                      activePage === item.name
+                        ? 'bg-[#121212] text-[#A8906A]'
+                        : 'bg-[#A8906A] text-[#121212]'
+                    }`}
+                  >
+                    {todayAppointmentsCount}
+                  </span>
+                )}
+
+                {activePage === item.name && (item.name !== 'المواعيد القادمة' || (todayAppointmentsCount ?? 0) === 0) && (
                   <div className="mr-auto h-1.5 w-1.5 flex-shrink-0 rounded-full bg-[#121212]" />
                 )}
               </button>

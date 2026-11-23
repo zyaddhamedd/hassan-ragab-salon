@@ -44,6 +44,11 @@ class Attendance(db.Model):
     closure_recorded_at = db.Column(db.DateTime(timezone=True), nullable=True)
     closure_review_required = db.Column(db.Boolean, nullable=True)
 
+    # Manual check-in audit metadata
+    is_manual_check_in = db.Column(db.Boolean, default=False, server_default='false', nullable=False)
+    check_in_actor_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='RESTRICT'), nullable=True)
+    check_in_actor = db.relationship('User', foreign_keys=[check_in_actor_id])
+
     # Use named enum for PostgreSQL
     status = db.Column(db.Enum(AttendanceStatus, name='attendance_status_enum'), nullable=False)
     

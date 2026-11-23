@@ -807,6 +807,9 @@ interface AdminAttendanceWorkspaceBaseRow {
   business_day_label: string | null;
   check_in_time: string | null;
   check_out_time: string | null;
+  created_at?: string | null;
+  is_manual_check_in?: boolean;
+  recorded_by?: string | null;
   duration_minutes: number;
   checkout_source: AttendanceCheckoutSourceValue | null;
 }
@@ -847,6 +850,9 @@ export interface AdminAttendanceLegacyRow {
   attendance_date: string | null;
   check_in_time: string | null;
   check_out_time: string | null;
+  created_at?: string | null;
+  is_manual_check_in?: boolean;
+  recorded_by?: string | null;
   duration_minutes: number;
   attendance_status: 'PRESENT' | 'LEFT';
   checkout_source: AttendanceCheckoutSourceValue | null;

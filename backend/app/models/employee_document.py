@@ -16,9 +16,16 @@ class EmployeeDocument(db.Model):
     employee = db.relationship('Employee', backref=db.backref('documents', cascade='all, delete-orphan'))
 
     def to_dict(self):
-        # Adjust path for frontend serving
-        # Assuming static serving from /uploads
-        url = f"http://localhost:5001/uploads/{self.file_path.replace(os.sep, '/')}" if self.file_path else None
+        # Adjust path for frontend serving (supports Cloudinary, local uploads, or UPLOAD_BASE_URL)
+        url = None
+        if self.file_path:
+            clean_path = self.file_path.replace(os.sep, '/')
+            if clean_path.startswith(('http://', 'https://')):
+                url = clean_path
+            else:
+                base = os.environ.get('UPLOAD_BASE_URL', '').strip().rstrip('/')
+                relative = clean_path if clean_path.startswith('/uploads/') else f"/uploads/{clean_path.lstrip('/')}"
+                url = f"{base}{relative}" if base else relative
         
         return {
             'id': self.id,

@@ -37,6 +37,7 @@
   "admin/utils/AudioManager.ts": "379e94c3fff86286643bcc80e4c1f86618ca2353faf8747e668a429c6813f4ed",
   "admin/utils/supplyCatalogNavigation.ts": "efc018cd51206392c8382327c705e06f12882c8dd1a21ddd05249654156d89a9",
   "mini/App.tsx": "e28475ae95809204cbb51af962129c72c7a309bc3312a10068e8a890d5df8ddd",
+  "mini/components/BookingAlertsNotification.tsx": "ded312695786de5498ba02424fa423561a2fb55f8b5ecad41c326bcf0f39c226",
   "mini/components/CashierScreen.tsx": "40ea55c706c06764225c52c004548a230d828fae531ff5c924b490c50ddb533e",
   "mini/components/QueueScreen.tsx": "13a91e329624d2d1936162188a9af8d2c0d72f33c1ee0e9f92567bccaf14243f",
   "mini/components/Receipt.tsx": "1f58cb8fcc41e934c10f8770eedb889de1f12a2cafb10c4f775f21f5b27c9a3d",

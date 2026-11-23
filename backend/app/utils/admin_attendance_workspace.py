@@ -146,6 +146,18 @@ def _serialize_business_day_metadata(business_day: BusinessDay) -> dict:
 
 def _serialize_workspace_attendance_row(attendance: Attendance, business_day: BusinessDay) -> dict:
     metadata = _serialize_business_day_metadata(business_day)
+    is_manual = bool(getattr(attendance, 'is_manual_check_in', False))
+    if not is_manual and attendance.created_at and attendance.check_in_time:
+        diff_seconds = abs((_ensure_utc(attendance.created_at) - _ensure_utc(attendance.check_in_time)).total_seconds())
+        if diff_seconds >= 60:
+            is_manual = True
+
+    recorded_by = None
+    if is_manual:
+        actor = getattr(attendance, 'check_in_actor', None)
+        if actor and getattr(actor, 'full_name', None):
+            recorded_by = actor.full_name
+
     return {
         "row_type": "ATTENDANCE",
         "attendance_id": attendance.id,
@@ -159,6 +171,9 @@ def _serialize_workspace_attendance_row(attendance: Attendance, business_day: Bu
         "business_day_label": metadata["day_label"],
         "check_in_time": to_iso_string(attendance.check_in_time),
         "check_out_time": to_iso_string(attendance.check_out_time),
+        "created_at": to_iso_string(attendance.created_at),
+        "is_manual_check_in": is_manual,
+        "recorded_by": recorded_by,
         "duration_minutes": _calculate_duration_minutes(
             attendance.check_in_time,
             attendance.check_out_time,
@@ -184,6 +199,9 @@ def _serialize_workspace_absence_row(employee: Employee, business_day: BusinessD
         "business_day_label": metadata["day_label"],
         "check_in_time": None,
         "check_out_time": None,
+        "created_at": None,
+        "is_manual_check_in": False,
+        "recorded_by": None,
         "duration_minutes": 0,
         "attendance_status": "ABSENT",
         "checkout_source": None,
@@ -191,6 +209,18 @@ def _serialize_workspace_absence_row(employee: Employee, business_day: BusinessD
 
 
 def _serialize_legacy_attendance_row(attendance: Attendance) -> dict:
+    is_manual = bool(getattr(attendance, 'is_manual_check_in', False))
+    if not is_manual and attendance.created_at and attendance.check_in_time:
+        diff_seconds = abs((_ensure_utc(attendance.created_at) - _ensure_utc(attendance.check_in_time)).total_seconds())
+        if diff_seconds >= 60:
+            is_manual = True
+
+    recorded_by = None
+    if is_manual:
+        actor = getattr(attendance, 'check_in_actor', None)
+        if actor and getattr(actor, 'full_name', None):
+            recorded_by = actor.full_name
+
     return {
         "row_type": "ATTENDANCE",
         "attendance_id": attendance.id,
@@ -202,6 +232,9 @@ def _serialize_legacy_attendance_row(attendance: Attendance) -> dict:
         "attendance_date": attendance.date.isoformat() if attendance.date else None,
         "check_in_time": to_iso_string(attendance.check_in_time),
         "check_out_time": to_iso_string(attendance.check_out_time),
+        "created_at": to_iso_string(attendance.created_at),
+        "is_manual_check_in": is_manual,
+        "recorded_by": recorded_by,
         "duration_minutes": _calculate_duration_minutes(
             attendance.check_in_time,
             attendance.check_out_time,

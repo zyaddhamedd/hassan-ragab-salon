@@ -29,9 +29,9 @@ export const reviewedRecords =/* REVIEWED */ {
   "admin/components/ClientsPage.tsx": "06d56c84672c560bf88ba47c415e52750e1daa90b20a247aab22339e4a72ceb1",
   "admin/components/ClientTable.tsx": "d25930825fd79504f040ce3cf3ab8198790bc3ef3dc9e4c8e428d136ce8fd387",
   "admin/components/ClientDetailsModal.tsx": "8d69507f29aabe8aa72891343f88e2a7f32b2ca7ce9578de7d44b44778f15cb3",
-  "admin/components/InvoicesPage.tsx": "8587f578ec1c588981dfe218e75ee55ccba3492c9f9162cc7994e79f8882ca3e",
-  "admin/components/InvoiceTable.tsx": "e8cf5b4fae436da9c0d6709bb8f426692e4368a1de157cc74544a01eb89d01fa",
-  "admin/components/InvoiceDetailsModal.tsx": "e6b8d715a45fa92c57a3bec16d943007add4077ae170e73e76fe01311203a059",
+  "admin/components/InvoicesPage.tsx": "b4f23f93002a7921850e7bd4447d8e5af76239e4d1284ee0e029e07a264e6e16",
+  "admin/components/InvoiceTable.tsx": "5c755cde3c0c3ed66a1403f2a31fc79b6423fdba2a43d08b44d6a1b0f01533ca",
+  "admin/components/InvoiceDetailsModal.tsx": "242d864832a49e55edd775e9422e7885d98a49671d331d30a329596eb0040e11",
   "admin/components/InvoiceActivityTimeline.tsx": "43dc90421a5e09e1b81943143e189308d5b656fa24cdf465e49e7d7e2b0a6e2d",
   "admin/components/clients/ClientsExportModal.tsx": "20e8c6968726ed1a2db56c88d89858bf9aa358d8840c107788a6c5b123493f1f",
   "admin/components/invoices/InvoiceExportModal.tsx": "4151a54cd99aeb1e8eac1b972a0783182d76fdaed089da0fedf1cb62786ff077"

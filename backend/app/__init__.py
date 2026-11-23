@@ -98,6 +98,13 @@ def create_app(*, bootstrap=False):
     if bootstrap:
         raise RuntimeError('Legacy bootstrap is unavailable in standalone Omar; use explicit guarded initialization.')
 
+    # Ensure upload directory exists
+    uploads_dir = os.environ.get('UPLOAD_FOLDER') or os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'uploads')
+    try:
+        os.makedirs(uploads_dir, exist_ok=True)
+    except Exception as e:
+        print(f"[WARN] Could not create uploads directory {uploads_dir}: {e}")
+
     # Serve uploaded files
     @app.route('/uploads/<path:filename>')
     def serve_upload(filename):

@@ -263,7 +263,7 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ invoices, isDarkMode, onRow
 
   const getPaymentBadge = (method: string) => {
     const m = (method || '').toUpperCase();
-    if (m === 'CASH' || method === 'كاش') {
+    if (m === 'CASH' || method === 'كاش' || m === 'نقدي') {
       return {
         label: 'كاش',
         icon: <Banknote size={11} className="shrink-0" />,
@@ -272,7 +272,25 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ invoices, isDarkMode, onRow
           : 'bg-emerald-50 text-emerald-700 border-emerald-200',
       };
     }
-    if (m === 'VISA' || method === 'فيزا') {
+    if (m === 'VISA_1' || method === 'فيزا 1') {
+      return {
+        label: 'فيزا 1',
+        icon: <CreditCard size={11} className="shrink-0" />,
+        cls: isDarkMode
+          ? 'bg-[#A8906A]/10 text-[#C4AB84] border-[#A8906A]/30'
+          : 'bg-[#A8906A]/15 text-[#7A6341] border-[#A8906A]/35',
+      };
+    }
+    if (m === 'VISA_2' || method === 'فيزا 2') {
+      return {
+        label: 'فيزا 2',
+        icon: <CreditCard size={11} className="shrink-0" />,
+        cls: isDarkMode
+          ? 'bg-[#A8906A]/10 text-[#C4AB84] border-[#A8906A]/30'
+          : 'bg-[#A8906A]/15 text-[#7A6341] border-[#A8906A]/35',
+      };
+    }
+    if (m === 'VISA' || method === 'فيزا' || m === 'بطاقة مدى') {
       return {
         label: 'فيزا',
         icon: <CreditCard size={11} className="shrink-0" />,
@@ -281,13 +299,32 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ invoices, isDarkMode, onRow
           : 'bg-blue-50 text-blue-700 border-blue-200',
       };
     }
-    if (m === 'INSTAPAY' || method === 'إنستا باي' || method === 'إنستاباي') {
+    if (m === 'INSTAPAY' || method === 'إنستا باي' || method === 'إنستاباي' || m === 'INSTA') {
       return {
         label: 'إنستاباي',
         icon: <Smartphone size={11} className="shrink-0" />,
         cls: isDarkMode
           ? 'bg-purple-500/10 text-purple-400 border-purple-500/20'
           : 'bg-purple-50 text-purple-700 border-purple-200',
+      };
+    }
+    if (m === 'SPLIT' || m === 'MULTIPLE' || method === 'دفع متعدد' || method === 'متعدد') {
+      return {
+        label: 'دفع متعدد',
+        icon: <CreditCard size={11} className="shrink-0" />,
+        cls: isDarkMode
+          ? 'bg-[#A8906A]/10 text-[#C4AB84] border-[#A8906A]/30'
+          : 'bg-[#A8906A]/15 text-[#7A6341] border-[#A8906A]/35',
+      };
+    }
+    if (m.startsWith('VISA_')) {
+      const num = m.replace('VISA_', '');
+      return {
+        label: `فيزا ${num}`,
+        icon: <CreditCard size={11} className="shrink-0" />,
+        cls: isDarkMode
+          ? 'bg-[#A8906A]/10 text-[#C4AB84] border-[#A8906A]/30'
+          : 'bg-[#A8906A]/15 text-[#7A6341] border-[#A8906A]/35',
       };
     }
     return {
