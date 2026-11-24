@@ -103,6 +103,29 @@ const server = http.createServer((request, response) => {
     return;
   }
 
+  const adminFaviconNames = new Set([
+    '/favicon.ico',
+    '/favicon-32x32.png',
+    '/favicon-16x16.png',
+    '/apple-touch-icon.png',
+  ]);
+  if (adminFaviconNames.has(pathname)) {
+    const fileName = pathname.slice(1);
+    const filePath = path.join(distRoot, 'admin', fileName);
+    fs.stat(filePath, (error, stats) => {
+      if (!error && stats.isFile()) {
+        response.writeHead(200, {
+          'Content-Type': contentType(filePath),
+          'Cache-Control': 'no-cache',
+        });
+        fs.createReadStream(filePath).pipe(response);
+        return;
+      }
+      sendText(response, 404, 'Admin favicon not found');
+    });
+    return;
+  }
+
   if (pathname === '/' || pathname === '') {
     response.writeHead(302, {Location: '/admin/'});
     response.end();
