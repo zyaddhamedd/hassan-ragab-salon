@@ -134,6 +134,31 @@ The Mini login screen accepts the exact login email submitted to the backend. Th
 
 ---
 
+## Customer CSV Import
+
+The customer importer is manual and is never run during deployment or migrations.
+It reads CSV exported from the Customers table and writes only new valid customers.
+
+From Railway, use SSH stdin to avoid storing the CSV in the repository or deployment:
+
+```bash
+cat /local/path/customer.csv | railway ssh -p <PROJECT> -e <ENVIRONMENT> -s <BACKEND_SERVICE> python3 import_customers_csv.py -
+```
+
+If the backend Console requires a file path instead, place a private CSV outside Git and run:
+
+```bash
+python3 import_customers_csv.py /private/path/customer.csv
+python3 import_customers_csv.py /private/path/customer.csv --apply
+```
+
+The first command is always a Dry Run. `--apply` is the only write mode.
+The script uses `DATABASE_URL`, normalizes Egyptian phone formats, requires an exact existing branch
+name, skips missing/invalid rows, duplicates, and name conflicts, and relies on `(branch_id, phone)`
+uniqueness for rerun safety.
+
+---
+
 ## 4. Post-Deployment Smoke-Test Checklist
 
 Perform these tests immediately after the services report **Active**:
