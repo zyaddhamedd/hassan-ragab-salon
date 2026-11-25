@@ -10,6 +10,9 @@ class Customer(db.Model):
     branch_id = db.Column(db.Integer, db.ForeignKey('branches.id'), nullable=False)
     last_barber_id = db.Column(db.Integer, db.ForeignKey('employees.id'), nullable=True)
     is_active = db.Column(db.Boolean, default=True, nullable=False)
+    imported_visit_count = db.Column(db.Integer, default=0, nullable=False)
+    imported_last_visit = db.Column(db.DateTime(timezone=True), nullable=True)
+    visit_history_cutoff_at = db.Column(db.DateTime(timezone=True), nullable=True)
     created_at = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
     updated_at = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc), nullable=False)
 

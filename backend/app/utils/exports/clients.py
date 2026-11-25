@@ -80,19 +80,42 @@ def build_customer_filter_conditions(
 
 
 def build_customer_stats_subquery(allowed_branch_ids: Sequence[int]):
+    invoice_is_after_history_baseline = or_(
+        Customer.visit_history_cutoff_at.is_(None),
+        Invoice.paid_at > Customer.visit_history_cutoff_at,
+    )
+    invoice_visit_count = func.count(
+        case((invoice_is_after_history_baseline, Invoice.id), else_=None)
+    )
+    invoice_last_visit = func.max(
+        case((invoice_is_after_history_baseline, Invoice.paid_at), else_=None)
+    )
+    last_visit = case(
+        (Customer.imported_last_visit.is_(None), invoice_last_visit),
+        (invoice_last_visit.is_(None), Customer.imported_last_visit),
+        (invoice_last_visit > Customer.imported_last_visit, invoice_last_visit),
+        else_=Customer.imported_last_visit,
+    )
     return (
         db.session.query(
-            Invoice.customer_id.label("customer_id"),
-            func.count(Invoice.id).label("visits_count"),
-            func.max(Invoice.paid_at).label("last_visit"),
+            Customer.id.label("customer_id"),
+            (Customer.imported_visit_count + invoice_visit_count).label("visits_count"),
+            last_visit.label("last_visit"),
             func.sum(Invoice.total_amount).label("total_spend"),
         )
-        .filter(
-            Invoice.status == InvoiceStatus.PAID,
-            Invoice.customer_id.isnot(None),
-            Invoice.branch_id.in_(allowed_branch_ids),
+        .outerjoin(
+            Invoice,
+            (Invoice.customer_id == Customer.id)
+            & (Invoice.branch_id == Customer.branch_id)
+            & (Invoice.status == InvoiceStatus.PAID),
         )
-        .group_by(Invoice.customer_id)
+        .filter(Customer.branch_id.in_(allowed_branch_ids))
+        .group_by(
+            Customer.id,
+            Customer.imported_visit_count,
+            Customer.imported_last_visit,
+            Customer.visit_history_cutoff_at,
+        )
         .subquery()
     )
 

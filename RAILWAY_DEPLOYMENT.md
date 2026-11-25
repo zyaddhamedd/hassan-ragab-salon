@@ -157,6 +157,21 @@ The script uses `DATABASE_URL`, normalizes Egyptian phone formats, requires an e
 name, skips missing/invalid rows, duplicates, and name conflicts, and relies on `(branch_id, phone)`
 uniqueness for rerun safety.
 
+To preview the historical visit count and last-visit date for customers already imported from the
+sheet, use a separate mode:
+
+```bash
+python3 import_customers_csv.py /private/path/customer.csv --sync-visit-history
+python3 import_customers_csv.py /private/path/customer.csv --sync-visit-history --apply
+```
+
+The preview is read-only. Apply sets a per-customer historical baseline once; reruns report matching
+baselines without incrementing them. Paid invoices recorded after the customer's creation remain
+counted on top of that baseline, and the displayed last visit is the later of the imported date and
+those newer paid invoices. This stores no fake invoices; individual imported visit details are not
+created. Apply skips missing/invalid data, duplicate sheet rows, unmatched customers, and conflicts
+for manual review.
+
 ---
 
 ## 4. Post-Deployment Smoke-Test Checklist

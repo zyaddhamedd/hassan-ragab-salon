@@ -3175,7 +3175,7 @@ def get_customers():
     """Get paginated customers for the current cashier's branch."""
     from app.models.customer import Customer
     from app.models.customer_balance import CustomerBalance
-    from app.models.invoice import Invoice, InvoiceStatus
+    from app.utils.exports.clients import build_customer_stats_subquery
     from sqlalchemy.orm import joinedload, selectinload
     from sqlalchemy import and_, func, or_
     from math import ceil
@@ -3203,19 +3203,7 @@ def get_customers():
         total = base_query.count()
         total_pages = ceil(total / per_page) if total else 0
 
-        visit_stats_subquery = (
-            db.session.query(
-                Invoice.customer_id.label('customer_id'),
-                func.count(Invoice.id).label('visits_count'),
-                func.max(Invoice.paid_at).label('last_visit'),
-            )
-            .filter(
-                Invoice.branch_id == g.branch_id,
-                Invoice.status == InvoiceStatus.PAID,
-            )
-            .group_by(Invoice.customer_id)
-            .subquery()
-        )
+        visit_stats_subquery = build_customer_stats_subquery([g.branch_id])
 
         balances_subquery = (
             db.session.query(
